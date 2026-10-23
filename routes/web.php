@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -18,7 +18,14 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
  Route::post('/me/activity/{activity}/cancel',[StudentLifeController::class,'cancel'])->name('student.activity.cancel');
  Route::post('/me/practice/{practice}/diary',[StudentLifeController::class,'diary'])->name('student.practice.diary');
+ Route::get('/practice/{practice}',[PracticeController::class,'show'])->name('practice.show');
+ Route::put('/practice/{practice}',[PracticeController::class,'update'])->name('practice.update');
+ Route::post('/practice/{practice}/report',[PracticeController::class,'report'])->name('practice.report');
+ Route::post('/practice/{practice}/plan',[PracticeController::class,'plan'])->name('practice.plan');
+ Route::get('/practice/{practice}/print/{form}',[PracticeController::class,'print'])->name('practice.print');
  Route::get('/academic-office',[AcademicOfficeController::class,'index'])->name('academic.index');
+ Route::get('/academic-office/control',[AcademicControlController::class,'index'])->name('academic.control');
+ Route::post('/academic-office/admission/{student}',[AcademicControlController::class,'admission'])->name('academic.admission');
  Route::post('/academic-office/news',[AcademicOfficeController::class,'news'])->name('academic.news');
  Route::post('/academic-office/activity',[AcademicOfficeController::class,'activity'])->name('academic.activity');
  Route::post('/academic-office/practice',[AcademicOfficeController::class,'practice'])->name('academic.practice');
