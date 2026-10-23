@@ -358,6 +358,30 @@ chmod -R 770 bootstrap/cache storage
 
 ---
 
+### Ошибка /login: unexpected token "endif"
+
+Если после настройки маршрутизации Timeweb страница `/login` показывает Symfony/Laravel:
+
+```text
+syntax error, unexpected token "endif", expecting end of file
+resources/views/layouts/app.blade.php
+```
+
+это была ошибка общего Blade-layout, а не PHP/Timeweb. Исправлено в актуальном `main`.
+
+После обновления обязательно удалить скомпилированные Blade-шаблоны:
+
+```bash
+cd ~/Chist/public_html
+git pull origin main
+/opt/php82/bin/php artisan view:clear
+/opt/php82/bin/php artisan optimize:clear
+```
+
+Затем снова открыть `/login`.
+
+---
+
 ### Вариант Timeweb: проект находится прямо в public_html
 
 Если репозиторий установлен непосредственно в `~/Chist/public_html`, корневой `.htaccess` из репозитория работает как адаптер Timeweb:
