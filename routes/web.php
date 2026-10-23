@@ -293,7 +293,6 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/upbringing/scholarships',[ScholarshipController::class,'index'])->name('upbringing.scholarships');
  Route::post('/upbringing/scholarship-commissions',[ScholarshipController::class,'commission'])->name('upbringing.scholarship.commission');
  Route::post('/upbringing/scholarship-commissions/{commission}/decisions',[ScholarshipController::class,'decision'])->name('upbringing.scholarship.decision');
- Route::post('/upbringing/social/{group}',[UpbringingExtendedController::class,'socialSave'])->name('upbringing.social.save');
  Route::get('/upbringing/clubs',[UpbringingExtendedController::class,'clubs'])->name('upbringing.clubs');
  Route::post('/upbringing/clubs',[UpbringingExtendedController::class,'clubStore'])->name('upbringing.club.store');
  Route::post('/upbringing/clubs/{club}/member',[UpbringingExtendedController::class,'clubMember'])->name('upbringing.club.member');
