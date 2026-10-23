@@ -323,6 +323,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/academic-office/tarification/allocate',[TarificationController::class,'allocate'])->name('tarification.allocate');
  Route::get('/academic-office/tarification/print',[TarificationController::class,'print'])->name('tarification.print');
  Route::post('/academic-office/loads',[TeachingLoadController::class,'store'])->name('loads.store');
+ Route::put('/academic-office/loads/{load}',[TeachingLoadController::class,'update'])->name('loads.update');
  Route::delete('/academic-office/loads/{load}',[TeachingLoadController::class,'destroy'])->name('loads.destroy');
  Route::get('/academic-office/loads/export/rector',[TeachingLoadController::class,'export'])->name('loads.export');
  Route::get('/management/teacher/{teacher}',[TeacherWorkspaceController::class,'index'])->name('management.teacher');
