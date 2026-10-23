@@ -11,6 +11,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::post('/edo/from/{module}/{type}/{id}',[DocumentIntegrationController::class,'create'])->name('edo.integration.create');
  Route::get('/edo',[DocumentWorkflowController::class,'index'])->name('edo.index');
  Route::get('/edo/create',[DocumentWorkflowController::class,'create'])->name('edo.create');
  Route::post('/edo',[DocumentWorkflowController::class,'store'])->name('edo.store');
