@@ -1,0 +1,12 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request; use Illuminate\Support\Facades\DB; use Carbon\Carbon;
+class StudentProgressController extends Controller {
+ public function index(Request $r){$u=$r->user();abort_unless($u->student_id&&($u->hasRole('student')||$u->hasRole('starosta')),403);$p=$r->attributes->get('academic_period');abort_if(!$p,404);$sid=$u->student_id;$student=DB::table('students')->find($sid);$membership=DB::table('student_group_memberships as m')->join('study_groups as g','g.id','=','m.study_group_id')->where('m.student_id',$sid)->where('m.academic_period_id',$p->id)->select('g.id','g.name')->first();$gid=$membership?->id??$student->current_group_id;$group=$membership?:DB::table('study_groups')->where('id',$gid)->select('id','name')->first();
+  $subjects=DB::table('lesson_occurrences as l')->join('subjects as s','s.id','=','l.subject_id')->leftJoin('grade_records as gr',fn($j)=>$j->on('gr.lesson_occurrence_id','=','l.id')->where('gr.student_id','=',$sid))->where('l.academic_period_id',$p->id)->where('l.study_group_id',$gid)->select('s.id','s.name',DB::raw('AVG(CASE WHEN gr.value IN ("2","3","4","5") THEN CAST(gr.value AS REAL) END) as avg_grade'),DB::raw('COUNT(gr.id) as grade_count'))->groupBy('s.id','s.name')->orderBy('s.name')->get();
+  $grades=DB::table('grade_records as gr')->join('lesson_occurrences as l','l.id','=','gr.lesson_occurrence_id')->join('subjects as s','s.id','=','l.subject_id')->where('gr.student_id',$sid)->where('l.academic_period_id',$p->id)->select('gr.value','gr.grade_type','gr.created_at','l.lesson_date','s.name as subject_name')->orderByDesc('l.lesson_date')->orderByDesc('gr.id')->limit(60)->get();
+  $attendance=DB::table('attendance_records as a')->join('lesson_occurrences as l','l.id','=','a.lesson_occurrence_id')->where('a.student_id',$sid)->where('l.academic_period_id',$p->id)->select('a.status',DB::raw('COUNT(*) as cnt'))->groupBy('a.status')->pluck('cnt','status');
+  $homework=DB::table('lesson_occurrences as l')->join('subjects as s','s.id','=','l.subject_id')->where('l.academic_period_id',$p->id)->where('l.study_group_id',$gid)->whereNotNull('l.homework')->where('l.homework','!=','')->whereBetween('l.lesson_date',[now()->subDay()->toDateString(),now()->addDays(7)->toDateString()])->select('l.id','l.lesson_date','l.lesson_number','l.homework','l.topic','s.name as subject_name')->orderBy('l.lesson_date')->orderBy('l.lesson_number')->get();
+  return view('student.progress',compact('student','group','subjects','grades','attendance','homework','p'));
+ }
+}

@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -12,6 +12,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
  Route::get('/notifications',[AnnouncementController::class,'index'])->name('announcements.index');
+ Route::get('/me/progress',[StudentProgressController::class,'index'])->name('student.progress');
  Route::post('/notifications',[AnnouncementController::class,'store'])->name('announcements.store');
  Route::get('/reports',[ReportController::class,'groups'])->name('reports.groups')->middleware('permission:reports.view');
  Route::get('/reports/group/{group}',[ReportController::class,'group'])->name('reports.group')->middleware('permission:reports.view');
