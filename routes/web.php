@@ -1,10 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
-Route::middleware('auth')->group(function(){
+Route::middleware(['auth','academic.period'])->group(function(){
+ Route::post('/period/select',[AcademicPeriodController::class,'select'])->name('period.select');
+ Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
+ Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/',[DashboardController::class,'index'])->name('dashboard');
  Route::get('/journal',[JournalController::class,'today'])->name('journal.today')->middleware('permission:schedule.view');
  Route::get('/journal/lesson/{lesson}',[JournalController::class,'show'])->name('journal.lesson');

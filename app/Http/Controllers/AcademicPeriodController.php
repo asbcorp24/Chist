@@ -1,0 +1,8 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request; use Illuminate\Support\Facades\DB;
+class AcademicPeriodController extends Controller {
+ public function select(Request $r){$d=$r->validate(['academic_period_id'=>'required|integer']);abort_unless(DB::table('academic_periods')->where('id',$d['academic_period_id'])->exists(),404);$r->session()->put('academic_period_id',(int)$d['academic_period_id']);return back();}
+ public function close(Request $r,$id){abort_unless($r->user()->canDo('periods.close'),403);DB::table('academic_periods')->where('id',$id)->update(['is_closed'=>true,'updated_at'=>now()]);return back()->with('success','Период закрыт. Журнал переведён в архивный режим.');}
+ public function open(Request $r,$id){abort_unless($r->user()->isSuperAdmin()||$r->user()->hasRole('admin')||$r->user()->hasRole('head_academic'),403);DB::table('academic_periods')->where('id',$id)->update(['is_closed'=>false,'updated_at'=>now()]);return back()->with('success','Период открыт.');}
+}
