@@ -397,12 +397,13 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/academic-office/movements',[StudentMovementController::class,'index'])->name('academic.movements');
  Route::get('/academic-office/student/{student}/movement',[StudentMovementController::class,'create'])->name('academic.movement.create');
  Route::post('/academic-office/student/{student}/movement',[StudentMovementController::class,'store'])->name('academic.movement.store');
+ Route::get('/academic-office/plans',[StudentMovementController::class,'plans'])->name('academic.plans');
+ Route::get('/academic-office/student/{student}/plan',[StudentMovementController::class,'planEdit'])->name('academic.plan.edit');
  Route::post('/academic-office/student/{student}/plan',[StudentMovementController::class,'plan'])->name('academic.plan');
+ Route::delete('/academic-office/student/{student}/plan/{plan}',[StudentMovementController::class,'planDestroy'])->name('academic.plan.destroy');
  Route::post('/academic-office/admission/{student}',[AcademicControlController::class,'admission'])->name('academic.admission');
  Route::post('/academic-office/news',[AcademicOfficeController::class,'news'])->name('academic.news');
  Route::post('/academic-office/activity',[AcademicOfficeController::class,'activity'])->name('academic.activity');
- Route::post('/academic-office/practice',[AcademicOfficeController::class,'practice'])->name('academic.practice');
- Route::post('/academic-office/practice/{practice}/result',[AcademicOfficeController::class,'practiceResult'])->name('academic.practice.result');
  Route::post('/academic-office/order',[AcademicOfficeController::class,'order'])->name('academic.order');
  Route::get('/homework/teacher',[CalendarController::class,'homework'])->name('homework.teacher');
  Route::post('/notifications',[AnnouncementController::class,'store'])->name('announcements.store');
