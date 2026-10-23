@@ -6,6 +6,298 @@
 
 ---
 
+## ⚡ Timeweb: отдельная пошаговая установка с нуля
+
+Этот раздел можно проходить **строго сверху вниз**. Он учитывает реальные ошибки, обнаруженные при первой установке Chist на виртуальном хостинге Timeweb.
+
+> В примерах ниже проект уже находится в `~/Chist/public_html`. Если у вас другой путь, замените его своим. Проверить текущий путь: `pwd`.
+
+### Шаг 1. Перейти в каталог проекта и получить последнюю версию
+
+```bash
+cd ~/Chist/public_html
+git pull origin main
+```
+
+Проверка:
+
+```bash
+git status
+git log -1 --oneline
+```
+
+### Шаг 2. Обязательно создать служебные каталоги Laravel
+
+Git не хранит пустые каталоги. Поэтому после клонирования может отсутствовать `bootstrap/cache`. В этом случае Composer падает с ошибкой:
+
+```text
+The .../bootstrap/cache directory must be present and writable.
+```
+
+Исправление:
+
+```bash
+cd ~/Chist/public_html
+mkdir -p bootstrap/cache
+mkdir -p storage/framework/cache/data
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+chmod -R 770 bootstrap/cache storage
+```
+
+Проверить:
+
+```bash
+ls -ld bootstrap/cache storage storage/framework storage/logs
+```
+
+### Шаг 3. Установить Composer-зависимости
+
+Сначала проверьте PHP:
+
+```bash
+/opt/php82/bin/php -v
+```
+
+Затем:
+
+```bash
+cd ~/Chist/public_html
+/opt/php82/bin/php -d memory_limit=1024M $(which composer) install --no-dev --optimize-autoloader
+```
+
+Если `which composer` ничего не возвращает:
+
+```bash
+composer --version
+```
+
+и используйте доступный путь Composer.
+
+Успешная установка должна закончиться без красной ошибки `package:discover`.
+
+### Шаг 4. Если появляется ServiceProvider::defaultProviders()
+
+Ошибка:
+
+```text
+Call to undefined method Illuminate\Support\ServiceProvider::defaultProviders()
+```
+
+означает, что используется старый `config/app.php`, несовместимый с Laravel 9.
+
+Исправление уже находится в актуальном `main`. Выполните:
+
+```bash
+cd ~/Chist/public_html
+git pull origin main
+rm -f bootstrap/cache/*.php
+/opt/php82/bin/php -d memory_limit=1024M $(which composer) dump-autoload --no-dev --optimize
+```
+
+После коммита `6a9aedf` эта ошибка в Chist исправлена.
+
+### Шаг 5. Создать .env
+
+Если файла ещё нет:
+
+```bash
+cd ~/Chist/public_html
+cp .env.example .env
+nano .env
+```
+
+Минимальный production-вариант:
+
+```dotenv
+APP_NAME="Chist"
+ORGANIZATION_NAME="Название колледжа"
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://ВАШ-ДОМЕН
+APP_TIMEZONE=Europe/Moscow
+
+LOG_CHANNEL=stack
+LOG_LEVEL=warning
+
+DB_CONNECTION=sqlite
+DB_DATABASE=/home/ВАШ_ЛОГИН/Chist/public_html/database/database.sqlite
+DB_FOREIGN_KEYS=true
+
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+```
+
+Точный абсолютный путь можно узнать:
+
+```bash
+cd ~/Chist/public_html
+pwd
+```
+
+### Шаг 6. Создать SQLite и права
+
+```bash
+cd ~/Chist/public_html
+mkdir -p database
+touch database/database.sqlite
+chmod 770 database
+chmod 660 database/database.sqlite
+chmod -R 770 storage bootstrap/cache
+```
+
+### Шаг 7. Сгенерировать ключ приложения
+
+```bash
+cd ~/Chist/public_html
+/opt/php82/bin/php artisan key:generate
+```
+
+Проверка:
+
+```bash
+grep APP_KEY .env
+```
+
+Если команда снова падает, сначала выполнить:
+
+```bash
+rm -f bootstrap/cache/*.php
+/opt/php82/bin/php artisan optimize:clear
+```
+
+### Шаг 8. Создать структуру базы
+
+```bash
+cd ~/Chist/public_html
+/opt/php82/bin/php artisan migrate --force
+/opt/php82/bin/php artisan db:seed --force
+```
+
+Проверить миграции:
+
+```bash
+/opt/php82/bin/php artisan migrate:status
+```
+
+### Шаг 9. Создать главного администратора
+
+```bash
+/opt/php82/bin/php artisan chist:superadmin
+```
+
+Сохраните созданные логин/пароль в безопасном месте.
+
+### Шаг 10. Оптимизировать production
+
+```bash
+/opt/php82/bin/php artisan optimize:clear
+/opt/php82/bin/php artisan config:cache
+/opt/php82/bin/php artisan route:cache
+/opt/php82/bin/php artisan view:cache
+```
+
+### Шаг 11. Проверить Laravel из консоли
+
+```bash
+/opt/php82/bin/php artisan about
+/opt/php82/bin/php artisan route:list
+```
+
+Если эти команды работают без исключений, Laravel загружается корректно.
+
+### Шаг 12. Настроить корень сайта
+
+В браузер должен отдаваться **каталог Laravel `public`**, а не корень Chist.
+
+Если проект действительно установлен непосредственно в `~/Chist/public_html`, предпочтительнее в панели Timeweb изменить корневую директорию сайта на:
+
+```text
+Chist/public_html/public
+```
+
+Если конфигурация Timeweb использует отдельный `public_html` как web-root, проект лучше держать вне него и сделать `public_html` ссылкой на `public`, как описано в основном разделе ниже.
+
+Критически важно: файл `.env` не должен открываться через браузер.
+
+### Шаг 13. Проверить журнал Laravel при HTTP 500
+
+```bash
+cd ~/Chist/public_html
+tail -n 100 storage/logs/laravel.log
+```
+
+Для наблюдения в реальном времени:
+
+```bash
+tail -f storage/logs/laravel.log
+```
+
+Остановить просмотр: `Ctrl+C`.
+
+### Шаг 14. Демо-данные — только при необходимости
+
+Для тестового сайта:
+
+```bash
+/opt/php82/bin/php artisan db:seed --class=RectorAutumn2026DemoSeeder --force
+/opt/php82/bin/php artisan optimize:clear
+```
+
+На рабочем сайте колледжа эту команду не выполняйте, если демонстрационные записи не нужны.
+
+### Шаг 15. Команды последующего обновления
+
+```bash
+cd ~/Chist/public_html
+cp database/database.sqlite ~/chist-backup-$(date +%Y%m%d-%H%M).sqlite
+git pull origin main
+mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
+chmod -R 770 bootstrap/cache storage
+/opt/php82/bin/php -d memory_limit=1024M $(which composer) install --no-dev --optimize-autoloader
+/opt/php82/bin/php artisan migrate --force
+/opt/php82/bin/php artisan db:seed --force
+/opt/php82/bin/php artisan optimize:clear
+/opt/php82/bin/php artisan config:cache
+/opt/php82/bin/php artisan route:cache
+/opt/php82/bin/php artisan view:cache
+```
+
+### Текущая ошибка на скриншоте
+
+Если видите:
+
+```text
+In PackageManifest.php line 178:
+The /home/.../Chist/public_html/bootstrap/cache directory must be present and writable.
+```
+
+выполните прямо сейчас:
+
+```bash
+cd ~/Chist/public_html
+mkdir -p bootstrap/cache
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
+chmod -R 770 bootstrap/cache storage
+/opt/php82/bin/php -d memory_limit=1024M $(which composer) install --no-dev --optimize-autoloader
+/opt/php82/bin/php artisan key:generate
+```
+
+Если `key:generate` завершился сообщением `Application key set successfully`, переходите к миграциям:
+
+```bash
+/opt/php82/bin/php artisan migrate --force
+/opt/php82/bin/php artisan db:seed --force
+/opt/php82/bin/php artisan chist:superadmin
+```
+
+---
+
 ## Установка на виртуальный хостинг Timeweb
 
 Инструкция предназначена именно для **обычного виртуального хостинга Timeweb**, а не VDS/VPS.
