@@ -1,0 +1,5 @@
+@extends('layouts.app') @section('title','Тарификация') @section('content')
+<div class="d-flex justify-content-between align-items-center mb-3"><div><h1 class="h4 mb-0">Тарификация</h1><small class="text-secondary">{{$p->year_name}} · {{$p->name}}</small></div><a href="{{route('tarification.print')}}" class="btn btn-outline-dark">Печать</a></div>
+<div class="row g-3 mb-3">@foreach($teachers as $x)<div class="col-md-4"><div class="card card-body"><b>{{$x->teacher?:'Вакансия'}}</b><span class="display-6">{{$x->hours}}</span><small>часов по плану</small></div></div>@endforeach</div>
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Преподаватель</th><th>Группа</th><th>Дисциплина</th><th>Всего часов</th><th>Часов/нед.</th></tr></thead><tbody>@foreach($rows as $x)<tr><td>{{$x->last_name}} {{$x->first_name}}</td><td>{{$x->group_name}}</td><td>{{$x->subject_name}}</td><td>{{$x->hours_total}}</td><td>{{$x->hours_week}}</td></tr>@endforeach</tbody></table></div></div>
+@endsection
