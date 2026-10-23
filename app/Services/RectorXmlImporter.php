@@ -110,6 +110,7 @@ class RectorXmlImporter
             DB::table('schedule_entries')->where('academic_period_id',$periodId)->update(['active'=>0,'updated_at'=>now()]);
 
             $loads=[];
+            DB::table('teaching_load_plans')->where('academic_period_id',$periodId)->delete();
             foreach ($xml->loads->load as $load) {
                 $classSource=$this->firstListInt($load->klass_id_list);
                 $details=[];
@@ -117,6 +118,8 @@ class RectorXmlImporter
                     'teacher'=>(int)$g->teacher_id,'subject'=>(int)$g->subject_id,'study_type'=>(int)$g->study_type_id
                 ];
                 $loads[(int)$load->id]=['class'=>$classSource,'details'=>$details];
+                $groupId=$classSource===null?null:DB::table('study_groups')->where('source_id',$classSource)->value('id');
+                foreach($details as $d){$teacherId=DB::table('teachers')->where('source_id',$d['teacher'])->value('id');$subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');$studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');DB::table('teaching_load_plans')->updateOrInsert(['academic_period_id'=>$periodId,'source_load_id'=>(int)$load->id,'teacher_id'=>$teacherId,'subject_id'=>$subjectId],['study_group_id'=>$groupId,'study_type_id'=>$studyTypeId,'hours_total'=>$this->nullableDecimal($load->hours_total),'hours_week'=>$this->nullableDecimal($load->hours_week),'created_at'=>now(),'updated_at'=>now()]);}
             }
 
             $count=0;
@@ -161,6 +164,7 @@ class RectorXmlImporter
         foreach($list->children() as $item) return (int)$item;
         return null;
     }
+    private function nullableDecimal($v): ?float {$s=str_replace(',','.',trim((string)$v));return $s===''?null:(float)$s;}
     private function nullableInt($v): ?int {$s=trim((string)$v);return $s===''?null:(int)$s;}
     private function nullableString($v): ?string {$s=trim((string)$v);return $s===''?null:$s;}
 }

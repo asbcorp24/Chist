@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -22,6 +22,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/student/{student}/private/representative',[StudentProfileController::class,'representative'])->name('student.private.representative');
  Route::post('/student/{student}/private/achievement',[StudentProfileController::class,'achievement'])->name('student.private.achievement');
  Route::get('/analytics',[AnalyticsController::class,'index'])->name('analytics.index');
+ Route::get('/management',[ManagementDashboardController::class,'index'])->name('management.index');
  Route::get('/analytics/export.csv',[AnalyticsController::class,'csv'])->name('analytics.csv');
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
  Route::post('/me/activity/{activity}/cancel',[StudentLifeController::class,'cancel'])->name('student.activity.cancel');
