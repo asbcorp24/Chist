@@ -1,0 +1,12 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
+class DepartmentWorkspaceController extends Controller{
+ public function index(Request $r){$u=$r->user();$teacherId=$u->teacher_id??null;$admin=$u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('academic_head');$departments=DB::table('academic_departments')->where('active',1)->when(!$admin,fn($q)=>$q->where('head_teacher_id',$teacherId))->orderBy('name')->get();abort_if($departments->isEmpty()&&!$admin,403);$id=$r->integer('department')?:($departments->first()->id??0);abort_unless($admin||$departments->contains('id',$id),403);$department=DB::table('academic_departments')->find($id);if(!$department)return view('departments.workspace',['departments'=>$departments,'department'=>null]);
+ $groups=DB::table('study_groups as g')->leftJoin('specialties as sp','sp.id','=','g.specialty_id')->where('g.academic_department_id',$id)->where('g.active',1)->select('g.*','sp.code as specialty_code','sp.name as specialty_name')->orderBy('g.name')->get();$gids=$groups->pluck('id');
+ $students=DB::table('students')->whereIn('current_group_id',$gids)->where('status','active')->count();$leave=DB::table('students')->whereIn('current_group_id',$gids)->where('status','academic_leave')->count();$teachers=DB::table('teachers')->where('academic_department_id',$id)->where('active',1)->orderBy('last_name')->get();
+ $groupStats=DB::table('study_groups as g')->leftJoin('students as s',function($j){$j->on('s.current_group_id','=','g.id')->where('s.status','=','active');})->where('g.academic_department_id',$id)->where('g.active',1)->groupBy('g.id','g.name')->select('g.id','g.name',DB::raw('count(s.id) as students_count'))->orderBy('g.name')->get();
+ $movements=DB::table('student_movements as m')->join('students as s','s.id','=','m.student_id')->leftJoin('study_groups as fg','fg.id','=','m.from_group_id')->leftJoin('study_groups as tg','tg.id','=','m.to_group_id')->where(function($q)use($gids){$q->whereIn('m.from_group_id',$gids)->orWhereIn('m.to_group_id',$gids);})->select('m.*','s.last_name','s.first_name','fg.name as from_group','tg.name as to_group')->orderByDesc('m.effective_on')->limit(20)->get();
+ return view('departments.workspace',compact('departments','department','groups','groupStats','students','leave','teachers','movements'));
+ }
+}
