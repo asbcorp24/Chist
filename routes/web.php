@@ -353,6 +353,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/practice/{practice}/plan',[PracticeController::class,'plan'])->name('practice.plan');
  Route::get('/practice/{practice}/print/{form}',[PracticeController::class,'print'])->name('practice.print');
  Route::get('/academic-office',[AcademicOfficeController::class,'index'])->name('academic.index');
+ Route::get('/academic-office/orders',[AcademicOfficeController::class,'orders'])->name('academic.orders');
  Route::get('/academic-office/control',[AcademicControlController::class,'index'])->name('academic.control');
  Route::get('/academic-office/progress',[ReportController::class,'progress'])->name('academic.progress');
  Route::get('/academic-office/compliance',[ComplianceController::class,'index'])->name('compliance.index');
