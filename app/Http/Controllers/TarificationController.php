@@ -1,0 +1,13 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Services\PeriodGuard;
+class TarificationController extends Controller{
+ private function ok(Request $r){abort_unless($r->user()->isSuperAdmin()||$r->user()->hasRole('admin')||$r->user()->hasRole('academic_head')||$r->user()->canDo('students.manage'),403);}
+ private function data(Request $r){$p=$r->attributes->get('academic_period');$rows=DB::table('teaching_load_plans as l')->leftJoin('teachers as t','t.id','=','l.teacher_id')->leftJoin('subjects as s','s.id','=','l.subject_id')->leftJoin('study_groups as g','g.id','=','l.study_group_id')->where('l.academic_period_id',$p->id)->select('l.*','t.last_name','t.first_name','s.name as subject_name','g.name as group_name')->orderBy('t.last_name')->orderBy('s.name')->get();$teachers=$rows->groupBy('teacher_id')->map(function($x){return (object)['teacher'=>trim(($x->first()->last_name??'').' '.($x->first()->first_name??'')),'hours'=>$x->sum('hours_total'),'rows'=>$x];});return compact('p','rows','teachers');}
+ public function index(Request $r){$this->ok($r);return view('academic-office.tarification',$this->data($r));}
+ public function generate(Request $r){$this->ok($r);$p=$r->attributes->get('academic_period');PeriodGuard::writable($p->id);return back()->with('success','Тарификация пересчитана по текущему плану учебной нагрузки.');}
+ public function allocate(Request $r){$this->ok($r);$p=$r->attributes->get('academic_period');PeriodGuard::writable($p->id);$d=$r->validate(['load_id'=>'required|integer','teacher_id'=>'required|integer']);DB::table('teaching_load_plans')->where(['id'=>$d['load_id'],'academic_period_id'=>$p->id])->update(['teacher_id'=>$d['teacher_id'],'updated_at'=>now()]);return back()->with('success','Нагрузка закреплена за преподавателем.');}
+ public function print(Request $r){$this->ok($r);return view('academic-office.tarification-print',$this->data($r));}
+}
