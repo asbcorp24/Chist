@@ -20,6 +20,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/journal',[JournalController::class,'today'])->name('journal.today')->middleware('permission:schedule.view');
  Route::get('/journal/lesson/{lesson}',[JournalController::class,'show'])->name('journal.lesson');
  Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
+ Route::post('/journal/lesson/{lesson}/attendance/all-present',[JournalController::class,'allPresent'])->name('journal.attendance.all');
  Route::post('/journal/lesson/{lesson}/grade',[JournalController::class,'grade'])->name('journal.grade');
  Route::prefix('admin')->name('admin.')->group(function(){
   Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
