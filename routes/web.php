@@ -32,6 +32,15 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/practice-office/organizations/{organization}/partner-access',[PracticePlanningController::class,'partnerAccess'])->name('practice-office.partner-access');
  Route::post('/practice-office/campaigns/{campaign}/mass-document',[PracticePlanningController::class,'massDocument'])->name('practice-office.mass-document');
  Route::get('/practice-office/mass-documents/{document}/print',[PracticePlanningController::class,'massPrint'])->name('practice-office.mass.print');
+ Route::get('/practice-office/loads',[PracticeControlController::class,'loads'])->name('practice-office.loads');
+ Route::post('/practice-office/loads',[PracticeControlController::class,'loadStore'])->name('practice-office.load.store');
+ Route::get('/practice-office/placements/{placement}/attendance',[PracticeControlController::class,'attendance'])->name('practice-office.attendance');
+ Route::post('/practice-office/placements/{placement}/attendance',[PracticeControlController::class,'attendanceStore'])->name('practice-office.attendance.store');
+ Route::post('/practice-office/placements/{placement}/photo',[PracticeControlController::class,'photo'])->name('practice-office.photo');
+ Route::post('/practice-office/placements/{placement}/safety',[PracticeControlController::class,'safety'])->name('practice-office.safety');
+ Route::get('/practice-office/agreements-control',[PracticeControlController::class,'agreementsControl'])->name('practice-office.agreements-control');
+ Route::get('/practice-office/analytics',[PracticeControlController::class,'analytics'])->name('practice-office.analytics');
+
 
 
  Route::get('/dormitory',[DormitoryController::class,'index'])->name('dormitory.index');
@@ -284,4 +293,5 @@ Route::middleware(['auth','academic.period'])->group(function(){
  });
 Route::get('/practice-partner/{token}',[PracticePartnerController::class,'index'])->name('practice.partner');
 Route::post('/practice-partner/{token}/{placement}',[PracticePartnerController::class,'save'])->name('practice.partner.save');
+Route::post('/practice-partner/{token}/diary/{entry}',[PracticePartnerController::class,'diary'])->name('practice.partner.diary');
 });
