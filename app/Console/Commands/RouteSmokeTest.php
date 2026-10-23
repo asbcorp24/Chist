@@ -58,11 +58,14 @@ class RouteSmokeTest extends Command
                 $code=$response->getStatusCode();
                 $kernel->terminate($request,$response);
 
-                if ($code>=500) { $error++; $status='ERROR'; }
+                if ($code>=500) {
+                    $error++; $status='ERROR';
+                    $detail=$this->responseError($response);
+                }
                 elseif ($code>=300 && $code<400) { $redirect++; $status='REDIRECT'; }
                 else { $ok++; $status='OK'; }
 
-                if ($status!=='OK' || $this->option('show-ok')) $rows[]=[$status,$uri,(string)$code,$url];
+                if ($status!=='OK' || $this->option('show-ok')) $rows[]=[$status,$uri,(string)$code,$status==='ERROR'?($url.' | '.$detail):$url];
                 if ($status==='ERROR' && $this->option('stop-on-error')) break;
             } catch (Throwable $e) {
                 $error++; $rows[]=['EXCEPTION',$uri,'500',get_class($e).': '.$e->getMessage()];
@@ -85,6 +88,24 @@ class RouteSmokeTest extends Command
         }
         if ($skip) $this->comment('SKIP means a required route parameter could not be resolved from the current database.');
         return $error ? self::FAILURE : self::SUCCESS;
+    }
+
+    private function responseError($response): string
+    {
+        try {
+            $body=(string)$response->getContent();
+            foreach([
+                '/<div class="exception-message[^>]*>(.*?)<\\/div>/si',
+                '/<title>(.*?)<\\/title>/si',
+                '/SQLSTATE\\[[^<\\n]+/i'
+            ] as $pattern) {
+                if (preg_match($pattern,$body,$m)) {
+                    $x=trim(strip_tags(html_entity_decode($m[1]??$m[0])));
+                    if ($x!=='') return mb_substr(preg_replace('/\\s+/u',' ',$x),0,500);
+                }
+            }
+        } catch (Throwable $e) {}
+        return 'HTTP 500; see storage/logs/laravel.log';
     }
 
     private function resolveUri(string $uri): array
