@@ -22,7 +22,11 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/facility',[FacilityController::class,'index'])->name('facility.index');
  Route::get('/facility/objects',[FacilityController::class,'objects'])->name('facility.objects');
  Route::post('/facility/buildings',[FacilityController::class,'building'])->name('facility.building');
+ Route::put('/facility/buildings/{building}',[FacilityController::class,'buildingUpdate'])->name('facility.building.update');
+ Route::delete('/facility/buildings/{building}',[FacilityController::class,'buildingDestroy'])->name('facility.building.destroy');
  Route::post('/facility/rooms',[FacilityController::class,'room'])->name('facility.room');
+ Route::put('/facility/rooms/{room}',[FacilityController::class,'roomUpdate'])->name('facility.room.update');
+ Route::delete('/facility/rooms/{room}',[FacilityController::class,'roomDestroy'])->name('facility.room.destroy');
  Route::get('/facility/assets',[FacilityController::class,'assets'])->name('facility.assets');
  Route::post('/facility/assets',[FacilityController::class,'assetStore'])->name('facility.asset.store');
  Route::get('/facility/orders',[FacilityMaintenanceController::class,'orders'])->name('facility.orders');
@@ -50,6 +54,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/quality',[QualityController::class,'index'])->name('quality.index');
  Route::get('/quality/indicators',[QualityController::class,'indicators'])->name('quality.indicators');
  Route::post('/quality/indicators',[QualityController::class,'indicatorStore'])->name('quality.indicator.store');
+ Route::put('/quality/indicators/{indicator}',[QualityController::class,'indicatorUpdate'])->name('quality.indicator.update');
+ Route::delete('/quality/indicators/{indicator}',[QualityController::class,'indicatorDestroy'])->name('quality.indicator.destroy');
  Route::post('/quality/indicators/{indicator}/measurement',[QualityController::class,'measurement'])->name('quality.measurement');
  Route::get('/quality/audits',[QualityAuditController::class,'audits'])->name('quality.audits');
  Route::post('/quality/audits',[QualityAuditController::class,'store'])->name('quality.audit.store');
@@ -75,6 +81,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/methodical',[MethodicalOfficeController::class,'index'])->name('methodical.index');
  Route::get('/methodical/commissions',[MethodicalOfficeController::class,'commissions'])->name('methodical.commissions');
  Route::post('/methodical/commissions',[MethodicalOfficeController::class,'commissionStore'])->name('methodical.commission.store');
+ Route::put('/methodical/commissions/{commission}',[MethodicalOfficeController::class,'commissionUpdate'])->name('methodical.commission.update');
+ Route::delete('/methodical/commissions/{commission}',[MethodicalOfficeController::class,'commissionDestroy'])->name('methodical.commission.destroy');
  Route::get('/methodical/materials',[MethodicalOfficeController::class,'materials'])->name('methodical.materials');
  Route::post('/methodical/materials',[MethodicalOfficeController::class,'materialStore'])->name('methodical.material.store');
  Route::post('/methodical/materials/{material}/review',[MethodicalOfficeController::class,'review'])->name('methodical.material.review');
@@ -127,6 +135,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/canteen',[CanteenController::class,'index'])->name('canteen.index');
  Route::get('/canteen/categories',[CanteenController::class,'categories'])->name('canteen.categories');
  Route::post('/canteen/categories',[CanteenController::class,'categoryStore'])->name('canteen.category.store');
+ Route::put('/canteen/categories/{category}',[CanteenController::class,'categoryUpdate'])->name('canteen.category.update');
+ Route::delete('/canteen/categories/{category}',[CanteenController::class,'categoryDestroy'])->name('canteen.category.destroy');
  Route::get('/canteen/menu',[CanteenController::class,'menu'])->name('canteen.menu');
  Route::post('/canteen/menu',[CanteenController::class,'menuStore'])->name('canteen.menu.store');
  Route::get('/canteen/assignments',[CanteenController::class,'assignments'])->name('canteen.assignments');
