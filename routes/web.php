@@ -15,6 +15,9 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/journal/gradebook/{group}/{subject}',[JournalController::class,'gradebook'])->name('journal.gradebook');
  Route::get('/journal/control',[JournalControlController::class,'index'])->name('journal.control');
  Route::post('/journal/control/notes',[JournalControlController::class,'note'])->name('journal.control.note');
+ Route::get('/journal/review-notes',[JournalControlController::class,'myNotes'])->name('journal.notes');
+ Route::post('/journal/review-notes/{note}/ack',[JournalControlController::class,'acknowledge'])->name('journal.notes.ack');
+ Route::post('/journal/control/notes/{note}/close',[JournalControlController::class,'close'])->name('journal.control.note.close');
  Route::get('/journal/groups/{group}/subgroups',[JournalControlController::class,'subgroups'])->name('journal.subgroups');
  Route::post('/journal/groups/{group}/subgroups',[JournalControlController::class,'subgroupSave'])->name('journal.subgroups.save');
 
