@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -31,6 +31,17 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/upbringing/clubs',[UpbringingExtendedController::class,'clubStore'])->name('upbringing.club.store');
  Route::post('/upbringing/clubs/{club}/member',[UpbringingExtendedController::class,'clubMember'])->name('upbringing.club.member');
  Route::get('/upbringing/signals',[UpbringingExtendedController::class,'signals'])->name('upbringing.signals');
+ Route::get('/upbringing/plans',[UpbringingWorkflowController::class,'plans'])->name('upbringing.plans');
+ Route::post('/upbringing/plans',[UpbringingWorkflowController::class,'planStore'])->name('upbringing.plan.store');
+ Route::post('/upbringing/plans/{plan}/item',[UpbringingWorkflowController::class,'planItem'])->name('upbringing.plan.item');
+ Route::get('/upbringing/meetings',[UpbringingWorkflowController::class,'meetings'])->name('upbringing.meetings');
+ Route::post('/upbringing/meetings',[UpbringingWorkflowController::class,'meetingStore'])->name('upbringing.meeting.store');
+ Route::get('/upbringing/appeals',[UpbringingWorkflowController::class,'appeals'])->name('upbringing.appeals');
+ Route::post('/upbringing/appeals',[UpbringingWorkflowController::class,'appealStore'])->name('upbringing.appeal.store');
+ Route::post('/upbringing/appeals/{appeal}/resolve',[UpbringingWorkflowController::class,'appealResolve'])->name('upbringing.appeal.resolve');
+ Route::get('/upbringing/specialists',[UpbringingWorkflowController::class,'specialists'])->name('upbringing.specialists');
+ Route::post('/upbringing/specialists',[UpbringingWorkflowController::class,'specialistStore'])->name('upbringing.specialist.store');
+ Route::get('/upbringing/report',[UpbringingWorkflowController::class,'report'])->name('upbringing.report');
  Route::get('/library',[LibraryController::class,'index'])->name('library.index');
  Route::get('/library/readers',[LibraryOperationsController::class,'readers'])->name('library.readers');
  Route::get('/library/scan',[LibraryPrintController::class,'scan'])->name('library.scan');
