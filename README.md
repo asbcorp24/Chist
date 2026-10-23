@@ -268,6 +268,41 @@ chmod -R 770 bootstrap/cache storage
 /opt/php82/bin/php artisan view:cache
 ```
 
+### Ошибка миграции: no such table practice_placements
+
+На ранней версии проекта чистая установка могла остановиться на:
+
+```text
+2026_10_23_000012_expand_practice_and_attestation ... FAIL
+SQLSTATE[HY000]: General error: 1 no such table: practice_placements
+```
+
+Причина: отсутствовала базовая миграция таблиц практики. Исправлено в репозитории добавлением миграции `000011_create_practice_core`.
+
+Если это произошло **во время первой установки на пустую SQLite-базу**, не продолжайте `db:seed`: миграции завершились не полностью. После `git pull` пересоздайте пустую базу:
+
+```bash
+cd ~/Chist/public_html
+git pull origin main
+rm -f database/database.sqlite
+touch database/database.sqlite
+chmod 660 database/database.sqlite
+chmod 770 database
+/opt/php82/bin/php artisan migrate --force
+```
+
+Только если все миграции завершились `DONE`, выполняйте:
+
+```bash
+/opt/php82/bin/php artisan db:seed --force
+/opt/php82/bin/php artisan chist:superadmin
+/opt/php82/bin/php artisan optimize:clear
+```
+
+**Важно:** удалять `database.sqlite` этой командой можно только при первой установке, когда в базе ещё нет рабочих данных. На действующей системе миграции исправляются без удаления базы.
+
+---
+
 ### Текущая ошибка на скриншоте
 
 Если видите:
