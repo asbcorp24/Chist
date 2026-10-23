@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Timeweb virtual hosting compatibility:
+    # the repository is installed directly into the site's public_html,
+    # while Laravel's web root is the public/ directory.
+    #
+    # Never rewrite requests that are already inside public/ or Apache
+    # will enter an internal redirect loop (AH00124).
+    RewriteRule ^public(?:/|$) - [L]
+
+    # Keep ACME/Let's Encrypt validation reachable from the site root.
+    RewriteRule ^\.well-known(?:/|$) - [L]
+
+    # Internally serve everything through Laravel's public directory.
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Deny direct access to sensitive project files if rewrite is unavailable
+# or another Apache rule exposes the repository root.
+<FilesMatch "^(\.env|\.env\..*|artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|README\.md)$">
+    Require all denied
+</FilesMatch>

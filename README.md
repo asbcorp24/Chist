@@ -358,6 +358,36 @@ chmod -R 770 bootstrap/cache storage
 
 ---
 
+### Вариант Timeweb: проект находится прямо в public_html
+
+Для текущей схемы, когда репозиторий Chist клонирован непосредственно в:
+
+```text
+~/Chist/public_html
+```
+
+в репозитории есть корневой `.htaccess`. Он внутренне направляет запросы в Laravel `public/` и отдельно защищён от повторного rewrite `public/`, который вызывает ошибку Apache `AH00124 Request exceeded the limit of 10 internal redirects`.
+
+После обновления достаточно:
+
+```bash
+cd ~/Chist/public_html
+git pull origin main
+/opt/php82/bin/php artisan optimize:clear
+```
+
+Проверить наличие обоих файлов:
+
+```bash
+ls -la .htaccess public/.htaccess
+```
+
+Не копируйте `public/.htaccess` поверх корневого `.htaccess`: у них разные задачи.
+
+Более безопасная production-схема по-прежнему состоит в назначении `public/` непосредственно document root сайта. Корневой rewrite предназначен для виртуального хостинга, где текущую структуру `public_html` удобнее оставить без переноса проекта.
+
+---
+
 ## Установка на виртуальный хостинг Timeweb
 
 Инструкция предназначена именно для **обычного виртуального хостинга Timeweb**, а не VDS/VPS.
