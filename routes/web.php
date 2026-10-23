@@ -223,6 +223,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::delete('/dormitory/buildings/{building}',[DormitoryController::class,'buildingDestroy'])->name('dormitory.building.destroy');
  Route::get('/dormitory/buildings/{building}/rooms',[DormitoryController::class,'rooms'])->name('dormitory.rooms');
  Route::post('/dormitory/buildings/{building}/rooms',[DormitoryController::class,'roomStore'])->name('dormitory.room.store');
+ Route::put('/dormitory/rooms/{room}',[DormitoryController::class,'roomUpdate'])->name('dormitory.room.update');
  Route::get('/dormitory/rooms/{room}',[DormitoryController::class,'roomCard'])->name('dormitory.room');
  Route::post('/dormitory/rooms/{room}/inspection',[DormitoryController::class,'inspection'])->name('dormitory.inspection');
  Route::get('/dormitory/residents',[DormitoryController::class,'residents'])->name('dormitory.residents');
@@ -235,6 +236,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/dormitory/absence',[DormitoryOperationsController::class,'absence'])->name('dormitory.absence');
  Route::post('/dormitory/absence/{absence}/returned',[DormitoryOperationsController::class,'returned'])->name('dormitory.returned');
  Route::post('/dormitory/incident',[DormitoryOperationsController::class,'incident'])->name('dormitory.incident');
+ Route::post('/dormitory/incidents/{incident}/status',[DormitoryOperationsController::class,'incidentStatus'])->name('dormitory.incident.status');
  Route::get('/dormitory/finance',[DormitoryOperationsController::class,'finance'])->name('dormitory.finance');
  Route::post('/dormitory/finance',[DormitoryOperationsController::class,'charge'])->name('dormitory.charge');
  Route::post('/dormitory/finance/{charge}/pay',[DormitoryOperationsController::class,'pay'])->name('dormitory.pay');
@@ -245,6 +247,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/dormitory/stays/{stay}/transfer',[DormitoryExtendedController::class,'transfer'])->name('dormitory.transfer');
  Route::get('/dormitory/maintenance',[DormitoryExtendedController::class,'maintenance'])->name('dormitory.maintenance');
  Route::post('/dormitory/maintenance',[DormitoryExtendedController::class,'maintenanceStore'])->name('dormitory.maintenance.store');
+ Route::post('/dormitory/maintenance/{request}/status',[DormitoryExtendedController::class,'maintenanceStatus'])->name('dormitory.maintenance.status');
  Route::post('/dormitory/maintenance/{request}/done',[DormitoryExtendedController::class,'maintenanceDone'])->name('dormitory.maintenance.done');
  Route::get('/dormitory/night',[DormitoryExtendedController::class,'night'])->name('dormitory.night');
  Route::post('/dormitory/night',[DormitoryExtendedController::class,'nightStore'])->name('dormitory.night.store');
@@ -253,6 +256,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/dormitory/my/application',[DormitoryStudentController::class,'application'])->name('dormitory.my.application');
  Route::get('/dormitory/rooms/{room}/assets',[DormitoryAssetController::class,'index'])->name('dormitory.assets');
  Route::post('/dormitory/rooms/{room}/assets',[DormitoryAssetController::class,'store'])->name('dormitory.asset.store');
+ Route::put('/dormitory/assets/{asset}',[DormitoryAssetController::class,'update'])->name('dormitory.asset.update');
  Route::post('/dormitory/rooms/{room}/asset-act',[DormitoryAssetController::class,'act'])->name('dormitory.asset.act');
  Route::get('/dormitory/asset-act/{act}/print',[DormitoryAssetController::class,'printAct'])->name('dormitory.asset.act.print');
 
