@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AuthController,DashboardController,JournalController};
-use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController};
+use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
 Route::middleware('auth')->group(function(){
@@ -11,6 +11,8 @@ Route::middleware('auth')->group(function(){
  Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
  Route::post('/journal/lesson/{lesson}/grade',[JournalController::class,'grade'])->name('journal.grade');
  Route::prefix('admin')->name('admin.')->group(function(){
+  Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
+  Route::post('schedule/import',[ScheduleImportController::class,'store'])->name('schedule.import.store')->middleware('permission:schedule.import');
   Route::resource('users',UserController::class)->except(['show','destroy'])->middleware('permission:users.manage');
   Route::get('roles',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.manage');
   Route::get('roles/{role}/edit',[RoleController::class,'edit'])->name('roles.edit')->middleware('permission:roles.manage');

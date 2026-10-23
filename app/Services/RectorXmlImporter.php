@@ -74,6 +74,30 @@ class RectorXmlImporter
                 }
             }
 
+            // Праздники храним отдельно и исключаем из генерации занятий.
+            foreach ($xml->holidays->holiday as $h) {
+                $dateText = trim((string)($h->date ?? $h));
+                if ($dateText === '') continue;
+                DB::table('calendar_exceptions')->updateOrInsert(
+                    ['academic_period_id'=>$periodId,'exception_date'=>$this->date($dateText),'type'=>'holiday'],
+                    ['title'=>'Праздничный/неучебный день','updated_at'=>now(),'created_at'=>now()]
+                );
+            }
+
+            // Замены Rector сохраняем без потери исходных полей. Их применение к конкретным занятиям
+            // выполняется отдельным слоем, потому что варианты XML замен различаются между версиями Rector.
+            DB::table('schedule_replacements')->where('academic_period_id',$periodId)->delete();
+            foreach ($xml->replacements->replacement as $rep) {
+                $arr=json_decode(json_encode($rep),true) ?: [];
+                $date=null;
+                foreach (['date','replacement_date','lesson_date'] as $key) if (!empty($arr[$key])) {$date=$this->date((string)$arr[$key]);break;}
+                DB::table('schedule_replacements')->insert([
+                    'academic_period_id'=>$periodId,'replacement_date'=>$date,
+                    'source_id'=>isset($arr['id'])?(int)$arr['id']:null,'payload'=>json_encode($arr,JSON_UNESCAPED_UNICODE),
+                    'created_at'=>now(),'updated_at'=>now()
+                ]);
+            }
+
             $n=1;
             foreach ($xml->times->time as $tm) {
                 DB::table('lesson_times')->updateOrInsert(
