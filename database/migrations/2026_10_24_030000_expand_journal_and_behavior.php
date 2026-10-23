@@ -1,0 +1,6 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{
+ Schema::table('grade_records',function(Blueprint $t){if(!Schema::hasColumn('grade_records','comment'))$t->string('comment',1000)->nullable();});
+ Schema::create('student_behavior_incidents',function(Blueprint $t){$t->id();$t->foreignId('academic_period_id')->constrained('academic_periods')->cascadeOnDelete();$t->foreignId('student_id')->constrained('students')->cascadeOnDelete();$t->foreignId('lesson_occurrence_id')->nullable()->constrained('lesson_occurrences')->nullOnDelete();$t->string('type',50);$t->string('severity',20)->default('normal');$t->text('description');$t->text('action_taken')->nullable();$t->string('status',30)->default('new');$t->foreignId('reported_by')->nullable()->constrained('users')->nullOnDelete();$t->foreignId('resolved_by')->nullable()->constrained('users')->nullOnDelete();$t->timestamp('resolved_at')->nullable();$t->timestamps();});
+}public function down():void{Schema::dropIfExists('student_behavior_incidents');}};
