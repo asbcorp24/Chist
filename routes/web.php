@@ -43,6 +43,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/dormitory/night',[DormitoryExtendedController::class,'nightStore'])->name('dormitory.night.store');
  Route::get('/dormitory/my',[DormitoryStudentController::class,'my'])->name('dormitory.my');
  Route::post('/dormitory/my/request',[DormitoryStudentController::class,'request'])->name('dormitory.my.request');
+ Route::post('/dormitory/my/application',[DormitoryStudentController::class,'application'])->name('dormitory.my.application');
  Route::get('/dormitory/rooms/{room}/assets',[DormitoryAssetController::class,'index'])->name('dormitory.assets');
  Route::post('/dormitory/rooms/{room}/assets',[DormitoryAssetController::class,'store'])->name('dormitory.asset.store');
  Route::post('/dormitory/rooms/{room}/asset-act',[DormitoryAssetController::class,'act'])->name('dormitory.asset.act');
