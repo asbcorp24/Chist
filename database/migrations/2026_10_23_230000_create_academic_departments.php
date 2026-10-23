@@ -1,0 +1,8 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{
+ Schema::create('academic_departments',function(Blueprint $t){$t->id();$t->string('code',50)->nullable()->unique();$t->string('name');$t->foreignId('head_teacher_id')->nullable()->constrained('teachers')->nullOnDelete();$t->string('phone',100)->nullable();$t->string('email')->nullable();$t->string('room',100)->nullable();$t->boolean('active')->default(true);$t->text('note')->nullable();$t->timestamps();});
+ Schema::table('specialties',function(Blueprint $t){$t->foreignId('academic_department_id')->nullable()->constrained('academic_departments')->nullOnDelete();});
+ Schema::table('study_groups',function(Blueprint $t){$t->foreignId('academic_department_id')->nullable()->constrained('academic_departments')->nullOnDelete();});
+ Schema::table('teachers',function(Blueprint $t){$t->foreignId('academic_department_id')->nullable()->constrained('academic_departments')->nullOnDelete();});
+}public function down():void{Schema::table('teachers',fn(Blueprint $t)=>$t->dropConstrainedForeignId('academic_department_id'));Schema::table('study_groups',fn(Blueprint $t)=>$t->dropConstrainedForeignId('academic_department_id'));Schema::table('specialties',fn(Blueprint $t)=>$t->dropConstrainedForeignId('academic_department_id'));Schema::dropIfExists('academic_departments');}};
