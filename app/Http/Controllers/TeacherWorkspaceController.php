@@ -1,0 +1,21 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
+class TeacherWorkspaceController extends Controller{
+ private function teacher(Request $r,$id=null){$u=$r->user();if($id){abort_unless($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('academic_head'),403);$tid=(int)$id;}else{$tid=(int)$u->teacher_id;abort_unless($tid,403);} $t=DB::table('teachers')->find($tid);abort_if(!$t,404);return $t;}
+ public function index(Request $r,$teacher=null){$t=$this->teacher($r,$teacher);$p=$r->attributes->get('academic_period');$pid=$p->id;$today=now()->toDateString();
+ $lessons=DB::table('lesson_occurrences as l')->join('study_groups as g','g.id','=','l.study_group_id')->join('subjects as s','s.id','=','l.subject_id')->where(['l.academic_period_id'=>$pid,'l.teacher_id'=>$t->id])->select('l.*','g.name as group_name','s.name as subject_name');
+ $todayLessons=(clone $lessons)->where('l.lesson_date',$today)->orderBy('l.lesson_number')->get();
+ $past=(clone $lessons)->where('l.lesson_date','<',$today)->whereNotIn('l.status',['cancelled']);
+ $missingTopics=(clone $past)->where(fn($q)=>$q->whereNull('l.topic')->orWhere('l.topic',''))->orderByDesc('l.lesson_date')->limit(20)->get();
+ $missingJournal=(clone $past)->leftJoin('attendance_records as a','a.lesson_occurrence_id','=','l.id')->groupBy('l.id')->havingRaw('COUNT(a.id)=0')->orderByDesc('l.lesson_date')->limit(20)->get();
+ $plan=DB::table('teaching_load_plans')->where(['academic_period_id'=>$pid,'teacher_id'=>$t->id])->sum('hours_total');$fact=(clone $lessons)->where('l.lesson_date','<=',$today)->whereNotIn('l.status',['cancelled'])->count();
+ $loads=DB::table('teaching_load_plans as p')->leftJoin('study_groups as g','g.id','=','p.study_group_id')->leftJoin('subjects as s','s.id','=','p.subject_id')->where(['p.academic_period_id'=>$pid,'p.teacher_id'=>$t->id])->select('p.*','g.name as group_name','s.name as subject_name')->get();foreach($loads as $x){$x->fact=DB::table('lesson_occurrences')->where(['academic_period_id'=>$pid,'teacher_id'=>$t->id,'subject_id'=>$x->subject_id])->when($x->study_group_id,fn($q)=>$q->where('study_group_id',$x->study_group_id))->where('lesson_date','<=',$today)->whereNotIn('status',['cancelled'])->count();$x->pct=$x->hours_total?round($x->fact*100/$x->hours_total,1):null;}
+ $lessonIds=(clone $lessons)->pluck('l.id');$grades=DB::table('grade_records')->whereIn('lesson_occurrence_id',$lessonIds)->whereIn('value',['2','3','4','5']);$avg=round((float)$grades->avg(DB::raw('CAST(value AS REAL)')),2);
+ $att=DB::table('attendance_records')->whereIn('lesson_occurrence_id',$lessonIds);$at=(clone $att)->count();$ap=(clone $att)->whereIn('status',['present','late'])->count();$attendance=$at?round($ap*100/$at,1):0;
+ $hw=DB::table('homework_submissions')->whereIn('lesson_occurrence_id',$lessonIds);$homework=['submitted'=>(clone $hw)->where('status','submitted')->count(),'revision'=>(clone $hw)->where('status','revision')->count(),'checked'=>(clone $hw)->where('status','checked')->count()];
+ $changes=(clone $lessons)->whereNotNull('l.change_note')->orderByDesc('l.lesson_date')->limit(10)->get();
+ $groups=(clone $lessons)->select('l.study_group_id','g.name')->distinct()->get();
+ $studentRisk=DB::table('students as st')->join('student_group_memberships as m','m.student_id','=','st.id')->where('m.academic_period_id',$pid)->whereIn('m.study_group_id',$groups->pluck('study_group_id'))->leftJoin('grade_records as gr',fn($j)=>$j->on('gr.student_id','=','st.id')->whereIn('gr.lesson_occurrence_id',$lessonIds)->whereIn('gr.value',['2','3','4','5']))->select('st.id','st.last_name','st.first_name',DB::raw('ROUND(AVG(CAST(gr.value AS REAL)),2) avg_grade'),DB::raw("SUM(CASE WHEN gr.value='2' THEN 1 ELSE 0 END) twos"))->groupBy('st.id','st.last_name','st.first_name')->havingRaw("SUM(CASE WHEN gr.value='2' THEN 1 ELSE 0 END)>0 OR AVG(CAST(gr.value AS REAL))<3.5")->orderByDesc('twos')->limit(15)->get();
+ return view('teacher.workspace',compact('t','p','todayLessons','missingTopics','missingJournal','plan','fact','loads','avg','attendance','homework','changes','groups','studentRisk'));}
+}
