@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -65,6 +65,14 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/academic-office/control',[AcademicControlController::class,'index'])->name('academic.control');
  Route::get('/academic-office/attestation',[AttestationController::class,'index'])->name('attestation.index');
  Route::get('/academic-office/gia',[GiaController::class,'index'])->name('gia.index');
+ Route::get('/academic-office/graduation',[GraduationController::class,'index'])->name('graduation.index');
+ Route::post('/academic-office/graduation/generate',[GraduationController::class,'generate'])->name('graduation.generate');
+ Route::get('/academic-office/graduation/register',[GraduationController::class,'register'])->name('graduation.register');
+ Route::get('/academic-office/graduation/{record}',[GraduationController::class,'show'])->name('graduation.show');
+ Route::post('/academic-office/graduation/{record}/check',[GraduationController::class,'check'])->name('graduation.check');
+ Route::post('/academic-office/graduation/{record}',[GraduationController::class,'update'])->name('graduation.update');
+ Route::post('/academic-office/graduation/{record}/document',[GraduationController::class,'document'])->name('graduation.document');
+ Route::post('/academic-office/graduation/document/{document}/receive',[GraduationController::class,'receive'])->name('graduation.receive');
  Route::post('/academic-office/gia',[GiaController::class,'store'])->name('gia.store');
  Route::get('/academic-office/gia/{gia}',[GiaController::class,'show'])->name('gia.show');
  Route::post('/academic-office/gia/{gia}/check',[GiaController::class,'check'])->name('gia.check');
