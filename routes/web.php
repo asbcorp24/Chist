@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -15,6 +15,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/me/progress',[StudentProgressController::class,'index'])->name('student.progress');
  Route::get('/calendar',[CalendarController::class,'index'])->name('calendar.index');
  Route::get('/me/life',[StudentLifeController::class,'index'])->name('student.life');
+ Route::get('/student/{student}/record',[StudentRecordController::class,'show'])->name('student.record');
+ Route::get('/student/{student}/gradebook',[StudentRecordController::class,'gradebook'])->name('student.gradebook');
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
  Route::post('/me/activity/{activity}/cancel',[StudentLifeController::class,'cancel'])->name('student.activity.cancel');
  Route::post('/me/practice/{practice}/diary',[StudentLifeController::class,'diary'])->name('student.practice.diary');
@@ -25,6 +27,9 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/practice/{practice}/print/{form}',[PracticeController::class,'print'])->name('practice.print');
  Route::get('/academic-office',[AcademicOfficeController::class,'index'])->name('academic.index');
  Route::get('/academic-office/control',[AcademicControlController::class,'index'])->name('academic.control');
+ Route::get('/academic-office/student/{student}/movement',[StudentMovementController::class,'create'])->name('academic.movement.create');
+ Route::post('/academic-office/student/{student}/movement',[StudentMovementController::class,'store'])->name('academic.movement.store');
+ Route::post('/academic-office/student/{student}/plan',[StudentMovementController::class,'plan'])->name('academic.plan');
  Route::post('/academic-office/admission/{student}',[AcademicControlController::class,'admission'])->name('academic.admission');
  Route::post('/academic-office/news',[AcademicOfficeController::class,'news'])->name('academic.news');
  Route::post('/academic-office/activity',[AcademicOfficeController::class,'activity'])->name('academic.activity');
