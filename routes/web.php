@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -26,6 +26,9 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/journal/lesson/{lesson}/attendance/all-present',[JournalController::class,'allPresent'])->name('journal.attendance.all');
  Route::post('/journal/lesson/{lesson}/grade',[JournalController::class,'grade'])->name('journal.grade');
  Route::post('/journal/lesson/{lesson}/content',[JournalController::class,'content'])->name('journal.content');
+ Route::post('/homework/{lesson}/submit',[HomeworkController::class,'submit'])->name('homework.submit');
+ Route::post('/homework/submission/{submission}/review',[HomeworkController::class,'review'])->name('homework.review');
+ Route::get('/homework/submission/{submission}/file',[HomeworkController::class,'download'])->name('homework.download');
  Route::prefix('admin')->name('admin.')->group(function(){
   Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
   Route::post('schedule/import',[ScheduleImportController::class,'store'])->name('schedule.import.store')->middleware('permission:schedule.import');
