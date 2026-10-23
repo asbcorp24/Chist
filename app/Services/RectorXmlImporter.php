@@ -54,14 +54,14 @@ class RectorXmlImporter
                 $p=$t->person;
                 $this->upsert('teachers',(int)$p->id,[
                     'last_name'=>(string)$p->surname,'first_name'=>$this->nullableString($p->first_name),
-                    'middle_name'=>$this->nullableString($p->second_name),'active'=>1
+                    'middle_name'=>$this->nullableString($p->second_name),'active'=>1,'is_visible'=>1
                 ]);
             }
             foreach ($xml->classes->class as $c) {
                 $specialtyId=DB::table('specialties')->where('source_id',(int)$c->speciality_id)->value('id');
                 $this->upsert('study_groups',(int)$c->id,[
                     'name'=>(string)$c->name,'specialty_id'=>$specialtyId,
-                    'expected_students'=>$this->nullableInt($c->student),'active'=>1
+                    'expected_students'=>$this->nullableInt($c->student),'active'=>1,'is_visible'=>1
                 ]);
             }
 

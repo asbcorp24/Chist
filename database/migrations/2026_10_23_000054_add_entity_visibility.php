@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up(){Schema::table('teachers',function(Blueprint $t){$t->boolean('is_visible')->default(true)->index();});Schema::table('students',function(Blueprint $t){$t->boolean('is_visible')->default(true)->index();});Schema::table('study_groups',function(Blueprint $t){$t->boolean('is_visible')->default(true)->index();});}public function down(){Schema::table('teachers',fn(Blueprint $t)=>$t->dropColumn('is_visible'));Schema::table('students',fn(Blueprint $t)=>$t->dropColumn('is_visible'));Schema::table('study_groups',fn(Blueprint $t)=>$t->dropColumn('is_visible'));}};

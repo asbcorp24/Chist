@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,DormitoryController,DormitoryOperationsController,DormitoryExtendedController,DormitoryStudentController,DormitoryAssetController};
-use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController,CredentialController};
+use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController,CredentialController,VisibilityController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
@@ -418,6 +418,9 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::get('roles',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.manage');
   Route::get('roles/{role}/edit',[RoleController::class,'edit'])->name('roles.edit')->middleware('permission:roles.manage');
   Route::put('roles/{role}',[RoleController::class,'update'])->name('roles.update')->middleware('permission:roles.manage');
+  Route::post('visibility/group/{id}',[VisibilityController::class,'group'])->name('visibility.group');
+  Route::post('visibility/teacher/{id}',[VisibilityController::class,'teacher'])->name('visibility.teacher');
+  Route::post('visibility/student/{id}',[VisibilityController::class,'student'])->name('visibility.student');
   Route::get('groups',[GroupController::class,'index'])->name('groups.index')->middleware('permission:students.view');
   Route::get('groups/{group}/edit',[GroupController::class,'edit'])->name('groups.edit')->middleware('permission:students.manage');
   Route::put('groups/{group}',[GroupController::class,'update'])->name('groups.update')->middleware('permission:students.manage');
