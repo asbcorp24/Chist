@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -14,6 +14,16 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/notifications',[AnnouncementController::class,'index'])->name('announcements.index');
  Route::get('/me/progress',[StudentProgressController::class,'index'])->name('student.progress');
  Route::get('/calendar',[CalendarController::class,'index'])->name('calendar.index');
+ Route::get('/me/life',[StudentLifeController::class,'index'])->name('student.life');
+ Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
+ Route::post('/me/activity/{activity}/cancel',[StudentLifeController::class,'cancel'])->name('student.activity.cancel');
+ Route::post('/me/practice/{practice}/diary',[StudentLifeController::class,'diary'])->name('student.practice.diary');
+ Route::get('/academic-office',[AcademicOfficeController::class,'index'])->name('academic.index');
+ Route::post('/academic-office/news',[AcademicOfficeController::class,'news'])->name('academic.news');
+ Route::post('/academic-office/activity',[AcademicOfficeController::class,'activity'])->name('academic.activity');
+ Route::post('/academic-office/practice',[AcademicOfficeController::class,'practice'])->name('academic.practice');
+ Route::post('/academic-office/practice/{practice}/result',[AcademicOfficeController::class,'practiceResult'])->name('academic.practice.result');
+ Route::post('/academic-office/order',[AcademicOfficeController::class,'order'])->name('academic.order');
  Route::get('/homework/teacher',[CalendarController::class,'homework'])->name('homework.teacher');
  Route::post('/notifications',[AnnouncementController::class,'store'])->name('announcements.store');
  Route::get('/documents',[OfficialDocumentController::class,'index'])->name('documents.index')->middleware('permission:reports.view');
