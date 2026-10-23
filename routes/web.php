@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
@@ -9,6 +9,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/reports',[ReportController::class,'groups'])->name('reports.groups')->middleware('permission:reports.view');
+ Route::get('/reports/group/{group}',[ReportController::class,'group'])->name('reports.group')->middleware('permission:reports.view');
+ Route::get('/reports/group/{group}/csv',[ReportController::class,'csv'])->name('reports.group.csv')->middleware('permission:reports.export');
+ Route::get('/reports/student/{student}',[ReportController::class,'student'])->name('reports.student')->middleware('permission:reports.view');
+ Route::get('/semester/{group}/{subject}',[SemesterResultController::class,'edit'])->name('semester.edit')->middleware('permission:semester.view');
+ Route::post('/semester/{group}/{subject}',[SemesterResultController::class,'save'])->name('semester.save')->middleware('permission:semester.mark');
  Route::get('/journal',[JournalController::class,'today'])->name('journal.today')->middleware('permission:schedule.view');
  Route::get('/journal/lesson/{lesson}',[JournalController::class,'show'])->name('journal.lesson');
  Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
