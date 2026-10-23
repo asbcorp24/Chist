@@ -1,0 +1,6 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{
+ Schema::create('scholarship_commissions',function(Blueprint $t){$t->id();$t->foreignId('academic_period_id')->constrained('academic_periods')->cascadeOnDelete();$t->string('protocol_number',100);$t->date('meeting_on');$t->string('status',30)->default('draft');$t->text('note')->nullable();$t->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();$t->timestamps();});
+ Schema::create('scholarship_decisions',function(Blueprint $t){$t->id();$t->foreignId('scholarship_commission_id')->constrained('scholarship_commissions')->cascadeOnDelete();$t->foreignId('student_id')->constrained('students')->cascadeOnDelete();$t->string('type',50);$t->decimal('amount',12,2)->nullable();$t->date('starts_on')->nullable();$t->date('ends_on')->nullable();$t->string('decision',30)->default('assigned');$t->text('basis')->nullable();$t->foreignId('social_status_id')->nullable()->constrained('student_social_statuses')->nullOnDelete();$t->timestamps();});
+}public function down():void{Schema::dropIfExists('scholarship_decisions');Schema::dropIfExists('scholarship_commissions');}};
