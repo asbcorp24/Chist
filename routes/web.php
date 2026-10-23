@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -12,6 +12,18 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
  Route::get('/library',[LibraryController::class,'index'])->name('library.index');
+ Route::get('/library/readers',[LibraryOperationsController::class,'readers'])->name('library.readers');
+ Route::post('/library/readers',[LibraryOperationsController::class,'reader'])->name('library.reader.store');
+ Route::get('/library/operations',[LibraryOperationsController::class,'operations'])->name('library.operations');
+ Route::post('/library/supplier',[LibraryOperationsController::class,'supplier'])->name('library.supplier');
+ Route::post('/library/receipt',[LibraryOperationsController::class,'receipt'])->name('library.receipt');
+ Route::get('/library/inventories',[LibraryOperationsController::class,'inventories'])->name('library.inventories');
+ Route::post('/library/inventories',[LibraryOperationsController::class,'inventoryStart'])->name('library.inventory.start');
+ Route::get('/library/inventory/{inventory}',[LibraryOperationsController::class,'inventoryShow'])->name('library.inventory.show');
+ Route::post('/library/inventory/{inventory}/scan',[LibraryOperationsController::class,'inventoryScan'])->name('library.inventory.scan');
+ Route::post('/library/inventory/{inventory}/close',[LibraryOperationsController::class,'inventoryClose'])->name('library.inventory.close');
+ Route::get('/library/coverage',[LibraryOperationsController::class,'coverage'])->name('library.coverage');
+ Route::post('/library/copy/{copy}/writeoff',[LibraryOperationsController::class,'writeoff'])->name('library.writeoff');
  Route::post('/library',[LibraryController::class,'store'])->name('library.store');
  Route::get('/library/desk',[LibraryController::class,'desk'])->name('library.desk');
  Route::post('/library/issue',[LibraryController::class,'issue'])->name('library.issue');
@@ -20,6 +32,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/library/{book}',[LibraryController::class,'show'])->name('library.show');
  Route::post('/library/{book}/copy',[LibraryController::class,'copy'])->name('library.copy');
  Route::post('/library/{book}/subject',[LibraryController::class,'link'])->name('library.link');
+ Route::post('/library/{book}/reserve',[LibraryOperationsController::class,'reserve'])->name('library.reserve');
  Route::get('/notifications',[AnnouncementController::class,'index'])->name('announcements.index');
  Route::get('/me/progress',[StudentProgressController::class,'index'])->name('student.progress');
  Route::get('/calendar',[CalendarController::class,'index'])->name('calendar.index');
