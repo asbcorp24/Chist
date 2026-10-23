@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller; use Illuminate\Http\Request; use Illuminate\Support\Facades\DB;
 class GroupController extends Controller {
- public function index(){return view('admin.groups.index',['groups'=>DB::table('study_groups as g')->leftJoin('teachers as t','t.id','=','g.curator_teacher_id')->select('g.*',DB::raw("trim(coalesce(t.last_name,'')||' '||coalesce(t.first_name,'')||' '||coalesce(t.middle_name,'')) as curator"))->orderByDesc('g.active')->orderBy('g.name')->get()]);}
+ public function index(){return view('admin.groups.index',['groups'=>DB::table('study_groups as g')->leftJoin('teachers as t','t.id','=','g.curator_teacher_id')->leftJoin('specialties as sp','sp.id','=','g.specialty_id')->select('g.*','sp.code as specialty_code','sp.name as specialty_name',DB::raw("trim(coalesce(t.last_name,'')||' '||coalesce(t.first_name,'')||' '||coalesce(t.middle_name,'')) as curator"))->orderByDesc('g.active')->orderBy('g.name')->get()]);}
  public function create(){return view('admin.groups.form',['group'=>null,'teachers'=>$this->teachers(),'students'=>collect(),'specialties'=>$this->specialties()]);}
  public function store(Request $r){$d=$this->validated($r,true);$id=DB::table('study_groups')->insertGetId($d+['active'=>1,'is_visible'=>1,'created_at'=>now(),'updated_at'=>now()]);return redirect()->route('admin.groups.edit',$id)->with('success','Группа создана');}
  public function edit($id){$g=DB::table('study_groups')->find($id);abort_if(!$g,404);return view('admin.groups.form',['group'=>$g,'teachers'=>$this->teachers(),'specialties'=>$this->specialties(),'students'=>DB::table('students')->where('current_group_id',$id)->where('status','active')->orderBy('last_name')->get()]);}
