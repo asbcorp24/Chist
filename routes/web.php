@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -11,6 +11,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/notifications',[AnnouncementController::class,'index'])->name('announcements.index');
+ Route::post('/notifications',[AnnouncementController::class,'store'])->name('announcements.store');
  Route::get('/reports',[ReportController::class,'groups'])->name('reports.groups')->middleware('permission:reports.view');
  Route::get('/reports/group/{group}',[ReportController::class,'group'])->name('reports.group')->middleware('permission:reports.view');
  Route::get('/reports/group/{group}/csv',[ReportController::class,'csv'])->name('reports.group.csv')->middleware('permission:reports.export');
@@ -22,6 +24,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
  Route::post('/journal/lesson/{lesson}/attendance/all-present',[JournalController::class,'allPresent'])->name('journal.attendance.all');
  Route::post('/journal/lesson/{lesson}/grade',[JournalController::class,'grade'])->name('journal.grade');
+ Route::post('/journal/lesson/{lesson}/content',[JournalController::class,'content'])->name('journal.content');
  Route::prefix('admin')->name('admin.')->group(function(){
   Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
   Route::post('schedule/import',[ScheduleImportController::class,'store'])->name('schedule.import.store')->middleware('permission:schedule.import');
