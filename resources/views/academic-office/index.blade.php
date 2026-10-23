@@ -23,7 +23,7 @@
 <a class="ao-module" href="{{route('attestation.index')}}"><i>↻</i><div><b>Пересдачи</b><span>Попытки, комиссии, закрытие долгов</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('gia.index')}}"><i>🎓</i><div><b>ГИА</b><span>Кампании, комиссии и результаты</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('graduation.index')}}"><i>🏅</i><div><b>Выпуск</b><span>Допуск, дипломы, итоговые документы</span></div><em>→</em></a>
-<a class="ao-module" href="{{route('admin.groups.index')}}"><i>⇄</i><div><b>Переводы</b><span>Группы, курс, семестр и движение студентов</span></div><em>→</em></a>
+<a class="ao-module" href="{{route('academic.movements')}}"><i>⇄</i><div><b>Переводы</b><span>Группы, курс, семестр и движение студентов</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('study-plan.index')}}"><i>📚</i><div><b>Учебные планы</b><span>Дисциплины, часы и формы контроля</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('loads.index')}}"><i>◷</i><div><b>Нагрузка</b><span>Преподаватели, группы и часы</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('regulations.index')}}"><i>📑</i><div><b>Приказы и регламенты</b><span>Движение контингента и основания</span></div><em>→</em></a>
