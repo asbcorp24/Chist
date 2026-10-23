@@ -360,15 +360,15 @@ chmod -R 770 bootstrap/cache storage
 
 ### Вариант Timeweb: проект находится прямо в public_html
 
-Для текущей схемы, когда репозиторий Chist клонирован непосредственно в:
+Если репозиторий установлен непосредственно в `~/Chist/public_html`, корневой `.htaccess` из репозитория работает как адаптер Timeweb:
 
-```text
-~/Chist/public_html
-```
+- реальные файлы `css/js/images/vendor` обслуживаются из `public/`;
+- Laravel URL `/schedule`, `/login`, `/dashboard` передаются прямо в `public/index.php`;
+- `/public/index.php` в адресной строке не требуется;
+- повторный rewrite `public/` блокируется, чтобы не возникал `AH00124`;
+- листинг каталогов и прямой доступ к чувствительным файлам корня запрещены.
 
-в репозитории есть корневой `.htaccess`. Он внутренне направляет запросы в Laravel `public/` и отдельно защищён от повторного rewrite `public/`, который вызывает ошибку Apache `AH00124 Request exceeded the limit of 10 internal redirects`.
-
-После обновления достаточно:
+После обновления:
 
 ```bash
 cd ~/Chist/public_html
@@ -376,17 +376,29 @@ git pull origin main
 /opt/php82/bin/php artisan optimize:clear
 ```
 
-Проверить наличие обоих файлов:
+Проверка:
 
 ```bash
-ls -la .htaccess public/.htaccess
+curl -I https://chist.specdpo.ru/schedule
+curl -I https://chist.specdpo.ru/login
 ```
 
-Не копируйте `public/.htaccess` поверх корневого `.htaccess`: у них разные задачи.
+Обычный адрес расписания должен быть:
 
-Более безопасная production-схема по-прежнему состоит в назначении `public/` непосредственно document root сайта. Корневой rewrite предназначен для виртуального хостинга, где текущую структуру `public_html` удобнее оставить без переноса проекта.
+```text
+https://chist.specdpo.ru/schedule
+```
 
----
+Если старый адрес `/public/index.php/schedule` работает, а `/schedule` после `git pull` всё ещё возвращает Apache 404, проверьте, что корневой файл действительно обновился:
+
+```bash
+cd ~/Chist/public_html
+git status
+cat .htaccess
+```
+
+Не копируйте `public/.htaccess` поверх корневого `.htaccess`: это два разных уровня маршрутизации.
+
 
 ## Установка на виртуальный хостинг Timeweb
 
