@@ -1,0 +1,6 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request; use Illuminate\Support\Facades\DB;
+class PublicScheduleController extends Controller {
+ public function index(Request $r){$date=$r->input('date',now()->toDateString());$group=$r->input('group');$teacher=$r->input('teacher');$q=DB::table('lesson_occurrences as l')->join('study_groups as g','g.id','=','l.study_group_id')->join('subjects as s','s.id','=','l.subject_id')->leftJoin('rooms as rm','rm.id','=','l.room_id')->leftJoin('teachers as t','t.id','=','l.teacher_id')->leftJoin('lesson_times as lt',fn($j)=>$j->on('lt.academic_period_id','=','l.academic_period_id')->on('lt.lesson_number','=','l.lesson_number'))->whereDate('l.lesson_date',$date)->where('l.status','!=','cancelled')->select('l.lesson_number','l.status','g.name as group_name','s.name as subject_name','rm.name as room_name','t.last_name','t.first_name','t.middle_name','lt.starts_at','lt.ends_at');if($group)$q->where('g.id',$group);if($teacher)$q->where('t.id',$teacher);return view('public.schedule',['date'=>$date,'lessons'=>$q->orderBy('l.lesson_number')->orderBy('g.name')->get(),'groups'=>DB::table('study_groups')->where('active',1)->orderBy('name')->get(),'teachers'=>DB::table('teachers')->where('active',1)->orderBy('last_name')->get()]);}
+}
