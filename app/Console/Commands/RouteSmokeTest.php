@@ -11,7 +11,7 @@ use Throwable;
 
 class RouteSmokeTest extends Command
 {
-    protected $signature = 'chist:smoke-routes {--show-ok : Show successful routes} {--stop-on-error : Stop on first 5xx/exception}';
+    protected $signature = 'chist:smoke-routes {--show-ok : Show successful routes} {--stop-on-error : Stop on first 5xx/exception} {--report=storage/logs/route-smoke.txt : Write text report}';
     protected $description = 'Smoke-test all safe GET/HEAD application routes as Super Admin';
 
     private array $tableMap = [
@@ -74,6 +74,15 @@ class RouteSmokeTest extends Command
         $this->table(['Status','Route','HTTP','Resolved / reason'],$rows);
         $this->newLine();
         $this->info("OK: $ok | Redirect: $redirect | Skip: $skip | Errors: $error");
+        $report=(string)$this->option('report');
+        if ($report) {
+            $path=str_starts_with($report,'/')?$report:base_path($report);
+            $dir=dirname($path); if(!is_dir($dir)) @mkdir($dir,0775,true);
+            $lines=["Chist route smoke test ".date('c'),"OK: $ok | Redirect: $redirect | Skip: $skip | Errors: $error",""];
+            foreach($rows as $row)$lines[]=implode("\t",array_map(fn($v)=>str_replace(["\r","\n"],' ',(string)$v),$row));
+            file_put_contents($path,implode(PHP_EOL,$lines).PHP_EOL);
+            $this->comment("Report: $path");
+        }
         if ($skip) $this->comment('SKIP means a required route parameter could not be resolved from the current database.');
         return $error ? self::FAILURE : self::SUCCESS;
     }
