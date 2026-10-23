@@ -22,6 +22,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/student/{student}/private/representative',[StudentProfileController::class,'representative'])->name('student.private.representative');
  Route::post('/student/{student}/private/achievement',[StudentProfileController::class,'achievement'])->name('student.private.achievement');
  Route::get('/analytics',[AnalyticsController::class,'index'])->name('analytics.index');
+ Route::get('/analytics/export.csv',[AnalyticsController::class,'csv'])->name('analytics.csv');
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
  Route::post('/me/activity/{activity}/cancel',[StudentLifeController::class,'cancel'])->name('student.activity.cancel');
  Route::post('/me/practice/{practice}/diary',[StudentLifeController::class,'diary'])->name('student.practice.diary');
