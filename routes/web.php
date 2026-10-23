@@ -261,6 +261,11 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/dormitory/asset-act/{act}/print',[DormitoryAssetController::class,'printAct'])->name('dormitory.asset.act.print');
 
 
+ Route::get('/medical',[MedicalOfficeController::class,'index'])->name('medical.index');
+ Route::get('/medical/students/{student}',[MedicalOfficeController::class,'show'])->name('medical.student');
+ Route::post('/medical/students/{student}/profile',[MedicalOfficeController::class,'profile'])->name('medical.profile');
+ Route::post('/medical/students/{student}/exams',[MedicalOfficeController::class,'exam'])->name('medical.exam');
+ Route::post('/medical/students/{student}/certificates',[MedicalOfficeController::class,'certificate'])->name('medical.certificate');
  Route::get('/upbringing',[UpbringingController::class,'index'])->name('upbringing.index');
  Route::get('/upbringing/events',[UpbringingController::class,'events'])->name('upbringing.events');
  Route::post('/upbringing/events',[UpbringingController::class,'eventStore'])->name('upbringing.event.store');
