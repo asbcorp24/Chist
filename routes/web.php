@@ -316,9 +316,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/library/inventory/{inventory}/print',[LibraryPrintController::class,'inventory'])->name('library.inventory.print');
  Route::get('/library/writeoffs/print',[LibraryPrintController::class,'writeoffs'])->name('library.writeoffs.print');
  Route::post('/library/readers',[LibraryOperationsController::class,'reader'])->name('library.reader.store');
+ Route::post('/library/readers/{reader}/status',[LibraryOperationsController::class,'readerStatus'])->name('library.reader.status');
  Route::get('/library/operations',[LibraryOperationsController::class,'operations'])->name('library.operations');
  Route::post('/library/supplier',[LibraryOperationsController::class,'supplier'])->name('library.supplier');
+ Route::put('/library/suppliers/{supplier}',[LibraryOperationsController::class,'supplierUpdate'])->name('library.supplier.update');
  Route::post('/library/receipt',[LibraryOperationsController::class,'receipt'])->name('library.receipt');
+ Route::put('/library/receipts/{receipt}',[LibraryOperationsController::class,'receiptUpdate'])->name('library.receipt.update');
  Route::get('/library/inventories',[LibraryOperationsController::class,'inventories'])->name('library.inventories');
  Route::post('/library/inventories',[LibraryOperationsController::class,'inventoryStart'])->name('library.inventory.start');
  Route::get('/library/inventory/{inventory}',[LibraryOperationsController::class,'inventoryShow'])->name('library.inventory.show');
@@ -335,8 +338,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/library/my',[LibraryController::class,'my'])->name('library.my');
  Route::get('/library/{book}',[LibraryController::class,'show'])->name('library.show');
  Route::post('/library/{book}/copy',[LibraryController::class,'copy'])->name('library.copy');
+ Route::put('/library/copies/{copy}',[LibraryController::class,'copyUpdate'])->name('library.copy.update');
  Route::post('/library/{book}/subject',[LibraryController::class,'link'])->name('library.link');
  Route::post('/library/{book}/reserve',[LibraryOperationsController::class,'reserve'])->name('library.reserve');
+ Route::post('/library/reservations/{reservation}/status',[LibraryOperationsController::class,'reservationStatus'])->name('library.reservation.status');
  Route::get('/notifications',[AnnouncementController::class,'index'])->name('announcements.index');
  Route::get('/me/progress',[StudentProgressController::class,'index'])->name('student.progress');
  Route::get('/calendar',[CalendarController::class,'index'])->name('calendar.index');
