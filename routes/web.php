@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -29,12 +29,15 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/curriculum/{plan}',[CurriculumController::class,'show'])->name('curriculum.show');
  Route::post('/curriculum/{plan}/topic',[CurriculumController::class,'topic'])->name('curriculum.topic');
  Route::post('/curriculum/lesson/{lesson}/bind',[CurriculumController::class,'bind'])->name('curriculum.bind');
+ Route::post('/curriculum/{plan}/auto-bind',[CurriculumController::class,'autoBind'])->name('curriculum.auto-bind');
  Route::get('/curriculum/{plan}/program',[WorkProgramController::class,'edit'])->name('curriculum.program');
  Route::put('/curriculum/{plan}/program',[WorkProgramController::class,'update'])->name('curriculum.program.update');
  Route::post('/curriculum/{plan}/program/approve',[WorkProgramController::class,'approve'])->name('curriculum.program.approve');
  Route::post('/curriculum/{plan}/program/copy',[WorkProgramController::class,'copy'])->name('curriculum.program.copy');
  Route::get('/curriculum/{plan}/program/print',[WorkProgramController::class,'print'])->name('curriculum.program.print');
  Route::get('/academic-office/loads',[TeachingLoadController::class,'index'])->name('loads.index');
+ Route::get('/academic-office/rector',[RectorExchangeController::class,'index'])->name('rector.index');
+ Route::post('/academic-office/rector/bind-ktp',[RectorExchangeController::class,'bind'])->name('rector.bind');
  Route::get('/academic-office/study-plans',[SpecialtyCurriculumController::class,'index'])->name('study-plan.index');
  Route::post('/academic-office/study-plans',[SpecialtyCurriculumController::class,'store'])->name('study-plan.store');
  Route::get('/academic-office/study-plans/{plan}',[SpecialtyCurriculumController::class,'show'])->name('study-plan.show');
