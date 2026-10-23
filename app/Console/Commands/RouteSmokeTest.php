@@ -17,7 +17,7 @@ class RouteSmokeTest extends Command
     private array $tableMap = [
         'student'=>'students','group'=>'study_groups','lesson'=>'schedule_entries','subject'=>'subjects',
         'teacher'=>'teachers','period'=>'academic_periods','practice'=>'practice_placements',
-        'placement'=>'practice_placements','activity'=>'student_activities','document'=>'official_documents',
+        'placement'=>'practice_placements','building'=>'dormitory_buildings','room'=>'dormitory_rooms','event'=>'upbringing_events','council'=>'upbringing_councils','reader'=>'library_readers','inventory'=>'library_inventories','act'=>'dormitory_asset_acts','activity'=>'student_activities','document'=>'official_documents',
         'book'=>'library_books','loan'=>'library_loans','user'=>'users','role'=>'roles',
         'sheet'=>'attestation_sheets','attempt'=>'attestation_attempts','gia'=>'gia_campaigns',
         'record'=>'graduation_records','submission'=>'homework_submissions','plan'=>'curriculum_plans',
@@ -113,6 +113,7 @@ class RouteSmokeTest extends Command
         $failed=null;
         $resolved=preg_replace_callback('/\{([^}]+)\}/',function($m)use(&$failed){
             $raw=$m[1]; $optional=str_ends_with($raw,'?'); $name=rtrim($raw,'?');
+            if($name==='direction') return 'incoming'; if($name==='form') return 'diary'; if($name==='token') { try { return (string)(DB::table('practice_organizations')->whereNotNull('partner_token')->value('partner_token') ?: ''); } catch(Throwable $e){ return ''; } }
             $table=$this->tableMap[$name]??null;
             if (!$table) { if($optional)return ''; $failed="no resolver for {{$name}}"; return $m[0]; }
             try { $id=DB::table($table)->orderBy('id')->value('id'); }
