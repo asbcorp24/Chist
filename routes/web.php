@@ -11,6 +11,18 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/methodical',[MethodicalOfficeController::class,'index'])->name('methodical.index');
+ Route::get('/methodical/commissions',[MethodicalOfficeController::class,'commissions'])->name('methodical.commissions');
+ Route::post('/methodical/commissions',[MethodicalOfficeController::class,'commissionStore'])->name('methodical.commission.store');
+ Route::get('/methodical/materials',[MethodicalOfficeController::class,'materials'])->name('methodical.materials');
+ Route::post('/methodical/materials',[MethodicalOfficeController::class,'materialStore'])->name('methodical.material.store');
+ Route::post('/methodical/materials/{material}/review',[MethodicalOfficeController::class,'review'])->name('methodical.material.review');
+ Route::get('/methodical/meetings',[MethodicalActivityController::class,'meetings'])->name('methodical.meetings');
+ Route::post('/methodical/meetings',[MethodicalActivityController::class,'meetingStore'])->name('methodical.meeting.store');
+ Route::get('/methodical/development',[MethodicalActivityController::class,'development'])->name('methodical.development');
+ Route::post('/methodical/development',[MethodicalActivityController::class,'developmentStore'])->name('methodical.development.store');
+ Route::get('/methodical/observations',[MethodicalActivityController::class,'observations'])->name('methodical.observations');
+ Route::post('/methodical/observations',[MethodicalActivityController::class,'observationStore'])->name('methodical.observation.store');
  Route::get('/office',[OfficeController::class,'index'])->name('office.index');
  Route::get('/office/journal/{direction}',[OfficeController::class,'journal'])->name('office.journal');
  Route::get('/office/registration',[OfficeController::class,'registration'])->name('office.registration');
