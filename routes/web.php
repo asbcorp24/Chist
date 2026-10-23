@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -20,6 +20,11 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/reports/group/{group}',[ReportController::class,'group'])->name('reports.group')->middleware('permission:reports.view');
  Route::get('/reports/group/{group}/csv',[ReportController::class,'csv'])->name('reports.group.csv')->middleware('permission:reports.export');
  Route::get('/reports/group/{group}/print',[PrintReportController::class,'group'])->name('reports.group.print')->middleware('permission:reports.view');
+ Route::get('/reports/group/{group}/cover',[FormalReportController::class,'cover'])->name('reports.cover')->middleware('permission:reports.view');
+ Route::get('/reports/group/{group}/summary',[FormalReportController::class,'summary'])->name('reports.summary')->middleware('permission:reports.view');
+ Route::get('/reports/group/{group}/attendance',[FormalReportController::class,'attendance'])->name('reports.attendance')->middleware('permission:reports.view');
+ Route::get('/reports/group/{group}/subject/{subject}/attestation',[FormalReportController::class,'attestation'])->name('reports.attestation')->middleware('permission:reports.view');
+ Route::get('/reports/student/{student}/print',[FormalReportController::class,'student'])->name('reports.student.print')->middleware('permission:reports.view');
  Route::get('/gradebook/{group}/{subject}',[GradebookController::class,'index'])->name('gradebook.index');
  Route::get('/reports/student/{student}',[ReportController::class,'student'])->name('reports.student')->middleware('permission:reports.view');
  Route::get('/semester/{group}/{subject}',[SemesterResultController::class,'edit'])->name('semester.edit')->middleware('permission:semester.view');
