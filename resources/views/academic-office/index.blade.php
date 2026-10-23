@@ -26,7 +26,8 @@
 <a class="ao-module" href="{{route('academic.movements')}}"><i>⇄</i><div><b>Переводы</b><span>Группы, курс, семестр и движение студентов</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('study-plan.index')}}"><i>📚</i><div><b>Учебные планы</b><span>Дисциплины, часы и формы контроля</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('loads.index')}}"><i>◷</i><div><b>Нагрузка</b><span>Преподаватели, группы и часы</span></div><em>→</em></a>
-<a class="ao-module" href="{{route('regulations.index')}}"><i>📑</i><div><b>Приказы и регламенты</b><span>Движение контингента и основания</span></div><em>→</em></a>
+<a class="ao-module" href="{{route('academic.orders')}}"><i>📑</i><div><b>Учебные приказы</b><span>Зачисление, перевод, отпуск, отчисление и выпуск</span></div><em>→</em></a>
+<a class="ao-module" href="{{route('regulations.index')}}"><i>§</i><div><b>Локальные регламенты</b><span>Положения, правила и нормативные документы</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('reports.groups')}}"><i>▤</i><div><b>Отчёты</b><span>Группы, студенты и печатные формы</span></div><em>→</em></a>
 </div>
 
