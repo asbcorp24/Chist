@@ -29,6 +29,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::delete('/facility/rooms/{room}',[FacilityController::class,'roomDestroy'])->name('facility.room.destroy');
  Route::get('/facility/assets',[FacilityController::class,'assets'])->name('facility.assets');
  Route::post('/facility/assets',[FacilityController::class,'assetStore'])->name('facility.asset.store');
+ Route::put('/facility/assets/{asset}',[FacilityController::class,'assetUpdate'])->name('facility.asset.update');
+ Route::delete('/facility/assets/{asset}',[FacilityController::class,'assetDestroy'])->name('facility.asset.destroy');
  Route::get('/facility/orders',[FacilityMaintenanceController::class,'orders'])->name('facility.orders');
  Route::post('/facility/orders',[FacilityMaintenanceController::class,'orderStore'])->name('facility.order.store');
  Route::post('/facility/orders/{order}',[FacilityMaintenanceController::class,'orderUpdate'])->name('facility.order.update');
@@ -59,6 +61,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/quality/indicators/{indicator}/measurement',[QualityController::class,'measurement'])->name('quality.measurement');
  Route::get('/quality/audits',[QualityAuditController::class,'audits'])->name('quality.audits');
  Route::post('/quality/audits',[QualityAuditController::class,'store'])->name('quality.audit.store');
+ Route::put('/quality/audits/{audit}',[QualityAuditController::class,'update'])->name('quality.audit.update');
+ Route::delete('/quality/audits/{audit}',[QualityAuditController::class,'destroy'])->name('quality.audit.destroy');
  Route::get('/quality/audits/{audit}',[QualityAuditController::class,'show'])->name('quality.audit.show');
  Route::post('/quality/audits/{audit}/findings',[QualityAuditController::class,'finding'])->name('quality.finding');
  Route::post('/quality/findings/{finding}/actions',[QualityAuditController::class,'action'])->name('quality.action');
@@ -85,6 +89,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::delete('/methodical/commissions/{commission}',[MethodicalOfficeController::class,'commissionDestroy'])->name('methodical.commission.destroy');
  Route::get('/methodical/materials',[MethodicalOfficeController::class,'materials'])->name('methodical.materials');
  Route::post('/methodical/materials',[MethodicalOfficeController::class,'materialStore'])->name('methodical.material.store');
+ Route::put('/methodical/materials/{material}',[MethodicalOfficeController::class,'materialUpdate'])->name('methodical.material.update');
+ Route::delete('/methodical/materials/{material}',[MethodicalOfficeController::class,'materialDestroy'])->name('methodical.material.destroy');
  Route::post('/methodical/materials/{material}/review',[MethodicalOfficeController::class,'review'])->name('methodical.material.review');
  Route::get('/methodical/meetings',[MethodicalActivityController::class,'meetings'])->name('methodical.meetings');
  Route::post('/methodical/meetings',[MethodicalActivityController::class,'meetingStore'])->name('methodical.meeting.store');
@@ -139,8 +145,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::delete('/canteen/categories/{category}',[CanteenController::class,'categoryDestroy'])->name('canteen.category.destroy');
  Route::get('/canteen/menu',[CanteenController::class,'menu'])->name('canteen.menu');
  Route::post('/canteen/menu',[CanteenController::class,'menuStore'])->name('canteen.menu.store');
+ Route::put('/canteen/menu/{menu}',[CanteenController::class,'menuUpdate'])->name('canteen.menu.update');
+ Route::delete('/canteen/menu/{menu}',[CanteenController::class,'menuDestroy'])->name('canteen.menu.destroy');
  Route::get('/canteen/assignments',[CanteenController::class,'assignments'])->name('canteen.assignments');
  Route::post('/canteen/assignments',[CanteenController::class,'assignmentStore'])->name('canteen.assignment.store');
+ Route::put('/canteen/assignments/{assignment}',[CanteenController::class,'assignmentUpdate'])->name('canteen.assignment.update');
+ Route::delete('/canteen/assignments/{assignment}',[CanteenController::class,'assignmentDestroy'])->name('canteen.assignment.destroy');
  Route::post('/canteen/students/{student}/pass',[CanteenController::class,'pass'])->name('canteen.pass');
  Route::get('/canteen/terminal',[CanteenIssueController::class,'terminal'])->name('canteen.terminal');
  Route::post('/canteen/scan',[CanteenIssueController::class,'scan'])->name('canteen.scan');
