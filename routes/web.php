@@ -11,6 +11,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/administration',[AdministrationController::class,'index'])->name('administration.index');
+ Route::get('/administration/tasks',[AdministrationController::class,'tasks'])->name('administration.tasks');
+ Route::post('/administration/tasks',[AdministrationController::class,'taskStore'])->name('administration.task.store');
+ Route::post('/administration/tasks/{task}',[AdministrationController::class,'taskUpdate'])->name('administration.task.update');
  Route::get('/facility',[FacilityController::class,'index'])->name('facility.index');
  Route::get('/facility/objects',[FacilityController::class,'objects'])->name('facility.objects');
  Route::post('/facility/buildings',[FacilityController::class,'building'])->name('facility.building');
