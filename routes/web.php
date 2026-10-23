@@ -11,6 +11,18 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/canteen/warehouse',[CanteenWarehouseController::class,'index'])->name('canteen.warehouse');
+ Route::post('/canteen/warehouse/products',[CanteenWarehouseController::class,'product'])->name('canteen.product.store');
+ Route::post('/canteen/warehouse/suppliers',[CanteenWarehouseController::class,'supplier'])->name('canteen.supplier.store');
+ Route::post('/canteen/warehouse/receipt',[CanteenWarehouseController::class,'receipt'])->name('canteen.receipt');
+ Route::post('/canteen/warehouse/writeoff',[CanteenWarehouseController::class,'writeoff'])->name('canteen.writeoff');
+ Route::get('/canteen/recipes',[CanteenRecipeController::class,'index'])->name('canteen.recipes');
+ Route::post('/canteen/recipes',[CanteenRecipeController::class,'store'])->name('canteen.recipe.store');
+ Route::post('/canteen/recipes/{recipe}/items',[CanteenRecipeController::class,'item'])->name('canteen.recipe.item');
+ Route::get('/canteen/forecast',[CanteenRecipeController::class,'forecast'])->name('canteen.forecast');
+ Route::get('/my-meals',[CanteenStudentController::class,'index'])->name('canteen.student');
+ Route::post('/my-meals/{menu}/order',[CanteenStudentController::class,'preorder'])->name('canteen.student.preorder');
+ Route::post('/my-meals/{menu}/cancel',[CanteenStudentController::class,'cancel'])->name('canteen.student.cancel');
  Route::get('/canteen',[CanteenController::class,'index'])->name('canteen.index');
  Route::get('/canteen/categories',[CanteenController::class,'categories'])->name('canteen.categories');
  Route::post('/canteen/categories',[CanteenController::class,'categoryStore'])->name('canteen.category.store');
