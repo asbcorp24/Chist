@@ -69,6 +69,19 @@ class AcademicOfficeController extends Controller
         return back()->with('success','Результат практики сохранён.');
     }
 
+    public function orders(Request $r)
+    {
+        $this->access($r); $p=$this->period($r);
+        abort_unless(Schema::hasTable('academic_orders'),503,'Таблица academic_orders ещё не создана.');
+        $q=DB::table('academic_orders as o')->leftJoin('students as s','s.id','=','o.student_id')->where('o.academic_period_id',$p->id);
+        if($r->filled('type')) $q->where('o.type',$r->string('type'));
+        if($r->filled('q')){$term='%'.$r->string('q').'%';$q->where(function($x)use($term){$x->where('o.number','like',$term)->orWhere('o.title','like',$term)->orWhere('s.last_name','like',$term)->orWhere('s.first_name','like',$term);});}
+        $orders=$q->select('o.*','s.last_name','s.first_name','s.middle_name')->orderByDesc('o.order_date')->orderByDesc('o.id')->paginate(50)->withQueryString();
+        $types=DB::table('academic_orders')->where('academic_period_id',$p->id)->whereNotNull('type')->distinct()->orderBy('type')->pluck('type');
+        $students=DB::table('students')->where('status','active')->orderBy('last_name')->orderBy('first_name')->get();
+        return view('academic-office.orders',compact('p','orders','types','students'));
+    }
+
     public function order(Request $r)
     {
         $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
