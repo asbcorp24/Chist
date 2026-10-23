@@ -19,7 +19,7 @@
 </div></main>
 </div>
 @if($currentUser) @include('layouts.partials.mobile-nav') @endif
-<script src="/vendor/jquery/jquery.min.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script><script src="/js/chist-charts.js"></script><script src="/js/chist-responsive.js"></script><script src="/js/chist-responsive.js"></script>
+<script src="/vendor/jquery/jquery.min.js"></script><script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script><script src="/js/chist-charts.js"></script><script src="/js/chist-responsive.js"></script>
 <script>
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 function net(){const e=document.getElementById('netState');if(!e)return;const on=navigator.onLine;e.textContent=on?'Онлайн':'Офлайн';e.className='badge ch-net '+(on?'bg-success-subtle text-success':'bg-danger-subtle text-danger')}addEventListener('online',net);addEventListener('offline',net);net();
