@@ -66,6 +66,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/quality/audits/{audit}',[QualityAuditController::class,'show'])->name('quality.audit.show');
  Route::post('/quality/audits/{audit}/findings',[QualityAuditController::class,'finding'])->name('quality.finding');
  Route::post('/quality/findings/{finding}/actions',[QualityAuditController::class,'action'])->name('quality.action');
+ Route::post('/quality/findings/{finding}/status',[QualityAuditController::class,'findingStatus'])->name('quality.finding.status');
+ Route::put('/quality/actions/{action}',[QualityAuditController::class,'actionUpdate'])->name('quality.action.update');
+ Route::post('/quality/actions/{action}/status',[QualityAuditController::class,'actionStatus'])->name('quality.action.status');
+ Route::post('/quality/audits/{audit}/complete',[QualityAuditController::class,'complete'])->name('quality.audit.complete');
  Route::post('/quality/audits/{audit}/edo',[QualityAuditController::class,'edo'])->name('quality.audit.edo');
  Route::get('/quality/risks',[QualityRiskSurveyController::class,'risks'])->name('quality.risks');
  Route::post('/quality/risks',[QualityRiskSurveyController::class,'riskStore'])->name('quality.risk.store');
