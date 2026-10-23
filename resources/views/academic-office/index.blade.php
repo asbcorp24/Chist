@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title','Учебная часть')
-@section('content')
+@section('content')<div class="mb-3"><a class="btn btn-primary" href="{{route('admission.index')}}">Приёмная комиссия · Абитуриенты</a></div>
 <div class="ao-head"><div><div class="text-secondary small mb-1">Учебный процесс · {{$p->year_name}} · {{$p->name}}</div><h1 class="h3 mb-1">Учебная часть</h1><p class="text-secondary mb-0">Контингент, успеваемость, контроль, аттестация, экзамены, ГИА и выпуск.</p></div><div class="ao-head-actions"><a href="{{route('academic.control')}}" class="btn btn-primary">Учебный контроль</a><a href="{{route('reports.groups')}}" class="btn btn-outline-secondary">Отчёты</a></div></div>
 
 <div class="ao-kpi">
