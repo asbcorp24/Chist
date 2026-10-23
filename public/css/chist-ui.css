@@ -18,3 +18,14 @@
 @media(max-width:991.98px){.table-responsive:has(+ .ch-auto-cards){display:none}.ch-auto-cards{display:block}.ch-auto-card{background:#fff;border:1px solid var(--ch-border);border-radius:14px;padding:13px;margin-bottom:9px;box-shadow:0 3px 14px rgba(16,24,40,.04)}.ch-auto-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ch-auto-field{min-width:0;padding:7px 9px;background:#f8f9fc;border-radius:9px}.ch-auto-field.primary{grid-column:1/-1;background:var(--ch-primary-soft)}.ch-auto-field small{display:block;color:var(--ch-muted);font-size:10px;margin-bottom:2px}.ch-auto-value{font-size:12px;overflow-wrap:anywhere}.ch-auto-field.primary .ch-auto-value{font-size:14px;font-weight:700}.ch-auto-value .btn{min-height:38px}.ch-auto-value form{margin:0}}
 
 .ch-auto-cards{display:none}@media(max-width:991.98px){.table-responsive:has(+ .ch-auto-cards){display:none}.ch-auto-cards{display:block}.ch-auto-card{background:#fff;border:1px solid var(--ch-border);border-radius:14px;padding:13px;margin-bottom:9px;box-shadow:0 3px 14px rgba(16,24,40,.04)}.ch-auto-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ch-auto-field{min-width:0;padding:7px 9px;background:#f8f9fc;border-radius:9px}.ch-auto-field.primary{grid-column:1/-1;background:var(--ch-primary-soft)}.ch-auto-field small{display:block;color:var(--ch-muted);font-size:10px;margin-bottom:2px}.ch-auto-value{font-size:12px;overflow-wrap:anywhere}.ch-auto-field.primary .ch-auto-value{font-size:14px;font-weight:700}.ch-auto-value .btn{min-height:38px}.ch-auto-value form{margin:0}}
+
+/* Universal responsive registries */
+.ch-auto-cards{display:none}
+@media(max-width:991.98px){
+ .table-responsive:has(+ .ch-auto-cards){display:none}
+ .ch-auto-cards{display:block}
+ .ch-auto-card{background:#fff;border:1px solid var(--ch-border);border-radius:14px;margin-bottom:9px;padding:13px;box-shadow:0 3px 14px rgba(16,24,40,.045)}
+ .ch-auto-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .ch-auto-field{min-width:0}.ch-auto-field small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--ch-muted);margin-bottom:2px}.ch-auto-value{font-size:12px;overflow-wrap:anywhere}.ch-auto-field.primary{grid-column:1/-1;padding-bottom:8px;border-bottom:1px solid #edf0f4}.ch-auto-field.primary .ch-auto-value{font-size:14px;font-weight:700}.ch-auto-field .btn{min-height:38px}.ch-auto-field form{margin:0}
+}
+@media(max-width:575.98px){.ch-auto-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
