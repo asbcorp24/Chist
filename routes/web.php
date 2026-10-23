@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -16,6 +16,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/calendar',[CalendarController::class,'index'])->name('calendar.index');
  Route::get('/homework/teacher',[CalendarController::class,'homework'])->name('homework.teacher');
  Route::post('/notifications',[AnnouncementController::class,'store'])->name('announcements.store');
+ Route::get('/documents',[OfficialDocumentController::class,'index'])->name('documents.index')->middleware('permission:reports.view');
+ Route::post('/documents',[OfficialDocumentController::class,'create'])->name('documents.create')->middleware('permission:reports.view');
+ Route::get('/documents/{document}',[OfficialDocumentController::class,'show'])->name('documents.show')->middleware('permission:reports.view');
+ Route::post('/documents/{document}/sign',[OfficialDocumentController::class,'sign'])->name('documents.sign')->middleware('permission:reports.view');
+ Route::post('/documents/{document}/close',[OfficialDocumentController::class,'close'])->name('documents.close')->middleware('permission:reports.view');
+ Route::get('/documents/{document}/print',[OfficialDocumentController::class,'print'])->name('documents.print')->middleware('permission:reports.view');
  Route::get('/reports',[ReportController::class,'groups'])->name('reports.groups')->middleware('permission:reports.view');
  Route::get('/reports/group/{group}',[ReportController::class,'group'])->name('reports.group')->middleware('permission:reports.view');
  Route::get('/reports/group/{group}/csv',[ReportController::class,'csv'])->name('reports.group.csv')->middleware('permission:reports.export');
