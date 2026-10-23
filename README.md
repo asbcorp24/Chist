@@ -268,6 +268,31 @@ chmod -R 770 bootstrap/cache storage
 /opt/php82/bin/php artisan view:cache
 ```
 
+### Ошибка миграции: table student_achievements already exists
+
+На чистой установке ранняя версия могла остановиться на `000029_create_upbringing_department`:
+
+```text
+SQLSTATE[HY000]: General error: 1 table "student_achievements" already exists
+```
+
+Причина: таблица уже создавалась миграцией `000014_create_student_private_profiles`, а воспитательный модуль пытался создать её повторно с дополнительными полями. Исправлено: `000029` теперь расширяет существующую таблицу и сохраняет совместимость с академическим модулем.
+
+Если ошибка возникла во время первой установки пустой базы:
+
+```bash
+cd ~/Chist/public_html
+git pull origin main
+rm -f database/database.sqlite
+touch database/database.sqlite
+chmod 660 database/database.sqlite
+/opt/php82/bin/php artisan migrate --force
+```
+
+Продолжайте к `db:seed` только после того, как все миграции завершатся `DONE`.
+
+---
+
 ### Ошибка миграции: no such table practice_placements
 
 На ранней версии проекта чистая установка могла остановиться на:
