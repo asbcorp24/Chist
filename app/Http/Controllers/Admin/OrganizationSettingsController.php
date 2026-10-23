@@ -1,0 +1,8 @@
+<?php
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;use Illuminate\Support\Facades\Storage;
+class OrganizationSettingsController extends Controller{
+ public function edit(Request $r){$this->ok($r);$settings=DB::table('organization_settings')->first();return view('admin.organization.edit',compact('settings'));}
+ public function update(Request $r){$this->ok($r);$d=$r->validate(['full_name'=>'required|string|max:500','short_name'=>'nullable|string|max:200','city'=>'nullable|string|max:120','address'=>'nullable|string|max:500','phone'=>'nullable|string|max:80','email'=>'nullable|email|max:180','director_name'=>'nullable|string|max:200','academic_head_name'=>'nullable|string|max:200','default_curator_name'=>'nullable|string|max:200','logo'=>'nullable|image|mimes:png,jpg,jpeg|max:2048']);$old=DB::table('organization_settings')->first();$logo=$old?->logo_path;if($r->hasFile('logo')){if($logo)Storage::disk('public')->delete($logo);$logo=$r->file('logo')->store('organization','public');}unset($d['logo']);$d['logo_path']=$logo;$d['updated_at']=now();if($old)DB::table('organization_settings')->where('id',$old->id)->update($d);else{ $d['created_at']=now();DB::table('organization_settings')->insert($d);}return back()->with('success','Реквизиты организации сохранены.');}
+ private function ok(Request $r){abort_unless($r->user()->isSuperAdmin()||$r->user()->hasRole('admin'),403);}
+}

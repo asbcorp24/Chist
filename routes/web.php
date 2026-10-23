@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController};
-use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController};
+use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
@@ -39,6 +39,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/homework/submission/{submission}/review',[HomeworkController::class,'review'])->name('homework.review');
  Route::get('/homework/submission/{submission}/file',[HomeworkController::class,'download'])->name('homework.download');
  Route::prefix('admin')->name('admin.')->group(function(){
+  Route::get('organization',[OrganizationSettingsController::class,'edit'])->name('organization.edit');
+  Route::put('organization',[OrganizationSettingsController::class,'update'])->name('organization.update');
   Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
   Route::post('schedule/import',[ScheduleImportController::class,'store'])->name('schedule.import.store')->middleware('permission:schedule.import');
   Route::resource('users',UserController::class)->except(['show','destroy'])->middleware('permission:users.manage');

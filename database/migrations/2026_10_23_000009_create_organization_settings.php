@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up(){Schema::create('organization_settings',function(Blueprint $t){$t->id();$t->string('full_name')->nullable();$t->string('short_name')->nullable();$t->string('city')->nullable();$t->text('address')->nullable();$t->string('phone')->nullable();$t->string('email')->nullable();$t->string('director_name')->nullable();$t->string('academic_head_name')->nullable();$t->string('default_curator_name')->nullable();$t->string('logo_path')->nullable();$t->timestamps();});}public function down(){Schema::dropIfExists('organization_settings');}};
