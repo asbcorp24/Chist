@@ -11,6 +11,11 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/my-practice',[PracticeStudentController::class,'index'])->name('practice-student.index');
+ Route::post('/my-practice/{placement}/diary',[PracticeStudentController::class,'diary'])->name('practice-student.diary');
+ Route::post('/my-practice/{placement}/photo',[PracticeStudentController::class,'photo'])->name('practice-student.photo');
+ Route::post('/my-practice/{placement}/report',[PracticeStudentController::class,'report'])->name('practice-student.report');
+ Route::post('/my-practice/notifications/{notification}/read',[PracticeStudentController::class,'read'])->name('practice-student.notification.read');
  Route::get('/practice-office',[PracticeOfficeController::class,'index'])->name('practice-office.index');
  Route::get('/practice-office/organizations',[PracticeOfficeController::class,'organizations'])->name('practice-office.organizations');
  Route::post('/practice-office/organizations',[PracticeOfficeController::class,'organizationStore'])->name('practice-office.organization.store');
