@@ -11,6 +11,17 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/canteen',[CanteenController::class,'index'])->name('canteen.index');
+ Route::get('/canteen/categories',[CanteenController::class,'categories'])->name('canteen.categories');
+ Route::post('/canteen/categories',[CanteenController::class,'categoryStore'])->name('canteen.category.store');
+ Route::get('/canteen/menu',[CanteenController::class,'menu'])->name('canteen.menu');
+ Route::post('/canteen/menu',[CanteenController::class,'menuStore'])->name('canteen.menu.store');
+ Route::get('/canteen/assignments',[CanteenController::class,'assignments'])->name('canteen.assignments');
+ Route::post('/canteen/assignments',[CanteenController::class,'assignmentStore'])->name('canteen.assignment.store');
+ Route::post('/canteen/students/{student}/pass',[CanteenController::class,'pass'])->name('canteen.pass');
+ Route::get('/canteen/terminal',[CanteenIssueController::class,'terminal'])->name('canteen.terminal');
+ Route::post('/canteen/scan',[CanteenIssueController::class,'scan'])->name('canteen.scan');
+ Route::get('/canteen/report',[CanteenIssueController::class,'report'])->name('canteen.report');
  Route::get('/my-practice',[PracticeStudentController::class,'index'])->name('practice-student.index');
  Route::post('/my-practice/{placement}/diary',[PracticeStudentController::class,'diary'])->name('practice-student.diary');
  Route::post('/my-practice/{placement}/photo',[PracticeStudentController::class,'photo'])->name('practice-student.photo');
