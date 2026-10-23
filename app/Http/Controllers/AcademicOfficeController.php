@@ -90,4 +90,21 @@ class AcademicOfficeController extends Controller
         DB::table('academic_orders')->insert(array_merge($d,['academic_period_id'=>$p->id,'created_by'=>$r->user()->id,'created_at'=>now(),'updated_at'=>now()]));
         return back()->with('success','Приказ зарегистрирован.');
     }
+    public function orderUpdate(Request $r, $order)
+    {
+        $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
+        $x=DB::table('academic_orders')->where('academic_period_id',$p->id)->where('id',$order)->first(); abort_if(!$x,404);
+        $d=$r->validate(['number'=>'required|string|max:100','order_date'=>'required|date','student_id'=>'nullable|integer','type'=>'required|string|max:100','title'=>'required|string|max:500','basis'=>'nullable|string|max:5000']);
+        DB::table('academic_orders')->where('id',$order)->update($d+['updated_at'=>now()]);
+        return back()->with('success','Приказ обновлён.');
+    }
+
+    public function orderDestroy(Request $r, $order)
+    {
+        $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
+        $x=DB::table('academic_orders')->where('academic_period_id',$p->id)->where('id',$order)->first(); abort_if(!$x,404);
+        DB::table('academic_orders')->where('id',$order)->delete();
+        return back()->with('success','Ошибочно зарегистрированный приказ удалён из реестра.');
+    }
+
 }
