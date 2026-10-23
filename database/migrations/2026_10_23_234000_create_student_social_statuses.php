@@ -1,0 +1,6 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{
+ Schema::create('student_social_categories',function(Blueprint $t){$t->id();$t->string('code',80)->unique();$t->string('name');$t->boolean('active')->default(true);$t->text('note')->nullable();$t->timestamps();});
+ Schema::create('student_social_statuses',function(Blueprint $t){$t->id();$t->foreignId('student_id')->constrained('students')->cascadeOnDelete();$t->foreignId('category_id')->constrained('student_social_categories')->restrictOnDelete();$t->date('valid_from')->nullable();$t->date('valid_until')->nullable();$t->string('document_type',150)->nullable();$t->string('document_number',150)->nullable();$t->date('document_date')->nullable();$t->string('issuer')->nullable();$t->string('status',30)->default('active');$t->text('note')->nullable();$t->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();$t->timestamps();});
+}public function down():void{Schema::dropIfExists('student_social_statuses');Schema::dropIfExists('student_social_categories');}};
