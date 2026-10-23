@@ -1,0 +1,22 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
+class CollegeBiController extends Controller{
+private function ok(Request $r){$u=$r->user();abort_unless($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('director')||$u->hasRole('deputy_director')||$u->canDo('management.view'),403);}
+private function periodStats($pid){$g=DB::table('grade_records as gr')->join('lesson_occurrences as l','l.id','=','gr.lesson_occurrence_id')->where('l.academic_period_id',$pid)->whereIn('gr.value',['2','3','4','5']);$a=DB::table('attendance_records as ar')->join('lesson_occurrences as l','l.id','=','ar.lesson_occurrence_id')->where('l.academic_period_id',$pid);$n=(clone $a)->count();return ['avg'=>round((float)$g->avg(DB::raw('CAST(gr.value AS REAL)')),2),'attendance'=>$n?round((clone $a)->whereIn('ar.status',['present','late'])->count()*100/$n,1):0,'debts'=>DB::table('semester_results')->where('academic_period_id',$pid)->whereIn(DB::raw('LOWER(value)'),['2','незачет','незачёт','не зачтено'])->count()];}
+public function index(Request $r){$this->ok($r);$p=$r->attributes->get('academic_period');$periods=DB::table('academic_periods')->orderBy('id')->get();$trend=$periods->map(function($x){$s=$this->periodStats($x->id);return (object)(['id'=>$x->id,'label'=>$x->year_name.' · '.$x->name]+$s);});
+$groups=DB::table('study_groups')->where('active',1)->orderBy('name')->get();foreach($groups as $g){$a=DB::table('attendance_records as a')->join('lesson_occurrences as l','l.id','=','a.lesson_occurrence_id')->where(['l.academic_period_id'=>$p->id,'l.study_group_id'=>$g->id]);$n=(clone $a)->count();$g->attendance=$n?round((clone $a)->whereIn('a.status',['present','late'])->count()*100/$n,1):0;$gr=DB::table('grade_records as gr')->join('lesson_occurrences as l','l.id','=','gr.lesson_occurrence_id')->where(['l.academic_period_id'=>$p->id,'l.study_group_id'=>$g->id])->whereIn('gr.value',['2','3','4','5']);$g->avg=round((float)$gr->avg(DB::raw('CAST(gr.value AS REAL)')),2);$g->debts=DB::table('semester_results')->where(['academic_period_id'=>$p->id,'study_group_id'=>$g->id])->whereIn(DB::raw('LOWER(value)'),['2','незачет','незачёт','не зачтено'])->count();$g->score=round(($g->attendance/100)*45+($g->avg/5)*45+max(0,10-$g->debts),1);}
+$ranking=$groups->sortByDesc('score')->values();$risk=$groups->sortBy('score')->values();
+$areas=collect([
+'Учебная работа'=>DB::table('semester_results')->where('academic_period_id',$p->id)->whereIn(DB::raw('LOWER(value)'),['2','незачет','незачёт','не зачтено'])->count(),
+'Качество'=>DB::table('quality_risks')->where(['academic_period_id'=>$p->id,'status'=>'open'])->whereRaw('probability*impact>=12')->count()+DB::table('quality_findings as f')->join('quality_audits as a','a.id','=','f.quality_audit_id')->where('a.academic_period_id',$p->id)->where('f.status','open')->whereIn('f.severity',['major','critical'])->count(),
+'Обращения'=>DB::table('service_requests')->whereNotIn('status',['resolved','closed','cancelled'])->where('due_at','<',now())->count(),
+'АХЧ'=>DB::table('facility_work_orders')->whereNotIn('status',['completed','cancelled'])->where(fn($q)=>$q->where('priority','urgent')->orWhere('due_at','<',now()))->count(),
+'Практика'=>DB::table('practice_placements')->where('academic_period_id',$p->id)->where('ends_on','<',date('Y-m-d'))->whereNotIn('status',['completed','failed'])->count(),
+'Документы'=>DB::table('document_tasks')->whereNotIn('status',['done','cancelled'])->where('due_on','<',date('Y-m-d'))->count(),
+'Поручения'=>DB::table('management_tasks')->whereNotIn('status',['done','cancelled'])->where('due_on','<',date('Y-m-d'))->count()
+]);
+$alerts=collect();foreach($risk->take(5) as $g)if($g->score<70)$alerts->push('Группа '.$g->name.': индекс '.$g->score.', посещаемость '.$g->attendance.'%, средний балл '.$g->avg.', задолженностей '.$g->debts.'.');foreach($areas as $name=>$value)if($value>0)$alerts->push($name.': требуется внимание — '.$value.'.');
+return view('bi.index',compact('p','trend','groups','ranking','risk','areas','alerts'));}
+public function report(Request $r){$this->ok($r);return $this->index($r);}
+}

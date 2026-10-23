@@ -14,6 +14,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/student-card/{student}',[StudentDigitalCardController::class,'show'])->name('student-card.show');
  Route::post('/student-card/{student}/notes',[StudentDigitalCardController::class,'note'])->name('student-card.note');
  Route::get('/administration',[AdministrationController::class,'index'])->name('administration.index');
+ Route::get('/administration/bi',[CollegeBiController::class,'index'])->name('bi.index');
  Route::get('/administration/tasks',[AdministrationController::class,'tasks'])->name('administration.tasks');
  Route::post('/administration/tasks',[AdministrationController::class,'taskStore'])->name('administration.task.store');
  Route::post('/administration/tasks/{task}',[AdministrationController::class,'taskUpdate'])->name('administration.task.update');
