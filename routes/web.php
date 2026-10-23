@@ -11,6 +11,15 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/requests',[ServiceRequestController::class,'index'])->name('requests.index');
+ Route::get('/requests/create',[ServiceRequestController::class,'create'])->name('requests.create');
+ Route::post('/requests',[ServiceRequestController::class,'store'])->name('requests.store');
+ Route::get('/requests/{request}',[ServiceRequestController::class,'show'])->name('requests.show');
+ Route::post('/requests/{request}/message',[ServiceRequestController::class,'message'])->name('requests.message');
+ Route::post('/requests/{request}/update',[ServiceRequestController::class,'update'])->name('requests.update');
+ Route::post('/requests/{request}/rate',[ServiceRequestController::class,'rate'])->name('requests.rate');
+ Route::get('/requests/files/{file}',[ServiceRequestController::class,'file'])->name('requests.file');
+ Route::post('/requests/{request}/edo',[ServiceRequestController::class,'edo'])->name('requests.edo');
  Route::get('/quality',[QualityController::class,'index'])->name('quality.index');
  Route::get('/quality/indicators',[QualityController::class,'indicators'])->name('quality.indicators');
  Route::post('/quality/indicators',[QualityController::class,'indicatorStore'])->name('quality.indicator.store');
