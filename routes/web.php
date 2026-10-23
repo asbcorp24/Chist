@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,DormitoryController,DormitoryOperationsController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,DormitoryController,DormitoryOperationsController,DormitoryExtendedController,DormitoryStudentController,DormitoryAssetController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -32,6 +32,22 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/dormitory/finance',[DormitoryOperationsController::class,'charge'])->name('dormitory.charge');
  Route::post('/dormitory/finance/{charge}/pay',[DormitoryOperationsController::class,'pay'])->name('dormitory.pay');
  Route::get('/dormitory/report',[DormitoryOperationsController::class,'report'])->name('dormitory.report');
+ Route::get('/dormitory/visitors',[DormitoryExtendedController::class,'visitors'])->name('dormitory.visitors');
+ Route::post('/dormitory/visitors',[DormitoryExtendedController::class,'visitorStore'])->name('dormitory.visitor.store');
+ Route::post('/dormitory/visitors/{visitor}/exit',[DormitoryExtendedController::class,'visitorExit'])->name('dormitory.visitor.exit');
+ Route::post('/dormitory/stays/{stay}/transfer',[DormitoryExtendedController::class,'transfer'])->name('dormitory.transfer');
+ Route::get('/dormitory/maintenance',[DormitoryExtendedController::class,'maintenance'])->name('dormitory.maintenance');
+ Route::post('/dormitory/maintenance',[DormitoryExtendedController::class,'maintenanceStore'])->name('dormitory.maintenance.store');
+ Route::post('/dormitory/maintenance/{request}/done',[DormitoryExtendedController::class,'maintenanceDone'])->name('dormitory.maintenance.done');
+ Route::get('/dormitory/night',[DormitoryExtendedController::class,'night'])->name('dormitory.night');
+ Route::post('/dormitory/night',[DormitoryExtendedController::class,'nightStore'])->name('dormitory.night.store');
+ Route::get('/dormitory/my',[DormitoryStudentController::class,'my'])->name('dormitory.my');
+ Route::post('/dormitory/my/request',[DormitoryStudentController::class,'request'])->name('dormitory.my.request');
+ Route::get('/dormitory/rooms/{room}/assets',[DormitoryAssetController::class,'index'])->name('dormitory.assets');
+ Route::post('/dormitory/rooms/{room}/assets',[DormitoryAssetController::class,'store'])->name('dormitory.asset.store');
+ Route::post('/dormitory/rooms/{room}/asset-act',[DormitoryAssetController::class,'act'])->name('dormitory.asset.act');
+ Route::get('/dormitory/asset-act/{act}/print',[DormitoryAssetController::class,'printAct'])->name('dormitory.asset.act.print');
+
 
  Route::get('/upbringing',[UpbringingController::class,'index'])->name('upbringing.index');
  Route::get('/upbringing/events',[UpbringingController::class,'events'])->name('upbringing.events');
