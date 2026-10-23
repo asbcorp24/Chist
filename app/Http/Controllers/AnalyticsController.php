@@ -1,0 +1,17 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
+class AnalyticsController extends Controller{
+ private function ok(Request $r){abort_unless($r->user()->isSuperAdmin()||$r->user()->hasRole('admin')||$r->user()->hasRole('academic_head')||$r->user()->canDo('reports.view'),403);}
+ public function index(Request $r){$this->ok($r);$p=$r->attributes->get('academic_period');$pid=$p->id;$groups=DB::table('study_groups')->where('active',1)->count();$students=DB::table('student_group_memberships')->where('academic_period_id',$pid)->where('status','active')->count();if(!$students)$students=DB::table('students')->where('status','active')->count();
+ $grades=DB::table('grade_records as gr')->join('lesson_occurrences as l','l.id','=','gr.lesson_occurrence_id')->where('l.academic_period_id',$pid)->whereIn('gr.value',['2','3','4','5']);$avg=round((float)$grades->avg(DB::raw('CAST(gr.value AS REAL)')),2);$gradeCount=$grades->count();
+ $att=DB::table('attendance_records as a')->join('lesson_occurrences as l','l.id','=','a.lesson_occurrence_id')->where('l.academic_period_id',$pid);$attTotal=(clone $att)->count();$present=(clone $att)->whereIn('a.status',['present','late'])->count();$attendance=$attTotal?round($present*100/$attTotal,1):0;
+ $debts=DB::table('semester_results')->where('academic_period_id',$pid)->whereIn(DB::raw('LOWER(value)'),['2','незачет','незачёт','не зачтено'])->count();
+ $practice=['total'=>DB::table('practice_placements')->where('academic_period_id',$pid)->count(),'completed'=>DB::table('practice_placements')->where('academic_period_id',$pid)->where('status','completed')->count()];
+ $activities=DB::table('activities')->where('academic_period_id',$pid)->count();$registrations=DB::table('activity_registrations as ar')->join('activities as a','a.id','=','ar.activity_id')->where('a.academic_period_id',$pid)->where('ar.status','registered')->count();
+ $homework=DB::table('homework_submissions as hs')->join('lesson_occurrences as l','l.id','=','hs.lesson_occurrence_id')->where('l.academic_period_id',$pid);$hw=['submitted'=>(clone $homework)->where('hs.status','submitted')->count(),'checked'=>(clone $homework)->where('hs.status','checked')->count(),'revision'=>(clone $homework)->where('hs.status','revision')->count()];
+ $docs=['total'=>DB::table('official_documents')->where('academic_period_id',$pid)->count(),'closed'=>DB::table('official_documents')->where('academic_period_id',$pid)->where('status','closed')->count()];
+ $movements=DB::table('student_movements')->where('academic_period_id',$pid)->select('type',DB::raw('COUNT(*) as total'))->groupBy('type')->get();
+ $groupStats=DB::table('study_groups as g')->leftJoin('lesson_occurrences as l',fn($j)=>$j->on('l.study_group_id','=','g.id')->where('l.academic_period_id','=',$pid))->leftJoin('attendance_records as a','a.lesson_occurrence_id','=','l.id')->select('g.id','g.name',DB::raw('COUNT(a.id) as marks'),DB::raw("SUM(CASE WHEN a.status IN ('present','late') THEN 1 ELSE 0 END) as present"))->groupBy('g.id','g.name')->orderBy('g.name')->get();
+ return view('analytics.index',compact('p','groups','students','avg','gradeCount','attendance','debts','practice','activities','registrations','hw','docs','movements','groupStats'));}
+}

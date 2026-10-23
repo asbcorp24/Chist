@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -17,6 +17,11 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/me/life',[StudentLifeController::class,'index'])->name('student.life');
  Route::get('/student/{student}/record',[StudentRecordController::class,'show'])->name('student.record');
  Route::get('/student/{student}/gradebook',[StudentRecordController::class,'gradebook'])->name('student.gradebook');
+ Route::get('/student/{student}/private',[StudentProfileController::class,'edit'])->name('student.private');
+ Route::put('/student/{student}/private',[StudentProfileController::class,'update'])->name('student.private.update');
+ Route::post('/student/{student}/private/representative',[StudentProfileController::class,'representative'])->name('student.private.representative');
+ Route::post('/student/{student}/private/achievement',[StudentProfileController::class,'achievement'])->name('student.private.achievement');
+ Route::get('/analytics',[AnalyticsController::class,'index'])->name('analytics.index');
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
  Route::post('/me/activity/{activity}/cancel',[StudentLifeController::class,'cancel'])->name('student.activity.cancel');
  Route::post('/me/practice/{practice}/diary',[StudentLifeController::class,'diary'])->name('student.practice.diary');
