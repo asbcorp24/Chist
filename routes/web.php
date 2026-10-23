@@ -498,6 +498,9 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::resource('departments',AcademicDepartmentController::class)->except(['show'])->middleware('permission:students.manage');
   Route::post('employees/positions',[EmployeeController::class,'position'])->name('employees.position.store');
   Route::post('employees/orders',[EmployeeController::class,'order'])->name('employees.order.store');
+  Route::post('employees/{employee}/education',[EmployeeController::class,'education'])->name('employees.education.store');
+  Route::post('employees/{employee}/training',[EmployeeController::class,'training'])->name('employees.training.store');
+  Route::post('employees/{employee}/attestation',[EmployeeController::class,'attestation'])->name('employees.attestation.store');
   Route::resource('employees',EmployeeController::class)->except(['show','destroy']);
   Route::get('organization',[OrganizationSettingsController::class,'edit'])->name('organization.edit');
   Route::put('organization',[OrganizationSettingsController::class,'update'])->name('organization.update');
