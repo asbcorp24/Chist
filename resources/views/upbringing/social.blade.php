@@ -1,1 +1,16 @@
-@extends('layouts.app') @section('title','Социальный паспорт') @section('content')<a href="{{route('upbringing.index')}}">← Воспитательный отдел</a><h1 class="h4">👥 Социальный паспорт групп</h1><div class="alert alert-secondary">Хранятся агрегированные показатели группы, без перечней чувствительных категорий студентов.</div>@foreach($groups as $g)<details class="card mb-2"><summary class="card-header"><b>{{$g->name}}</b> · студентов {{$g->student_count??0}}</summary><form method="post" action="{{url('/upbringing/social/'.$g->id)}}" class="card-body row g-2">@csrf @foreach(['student_count'=>'Всего','minors_count'=>'Несовершеннолетних','large_family_count'=>'Многодетные семьи','single_parent_count'=>'Неполные семьи','guardian_count'=>'Опека','disabled_count'=>'ОВЗ/инвалидность','social_support_count'=>'Соц. поддержка'] as $n=>$label)<div class="col-md-3"><label class="form-label">{{$label}}</label><input type="number" min="0" class="form-control" name="{{$n}}" value="{{$g->$n??0}}" required></div>@endforeach<div class="col-12"><textarea class="form-control" name="note" placeholder="Сводное примечание без лишних персональных данных">{{$g->note??''}}</textarea></div><div><button class="btn btn-primary">Сохранить</button></div></form></details>@endforeach @endsection
+@extends('layouts.app')
+@section('title','Социальный паспорт')
+@section('content')
+<div class="ch-page-head"><div><a href="{{route('upbringing.index')}}">← Воспитательный отдел</a><h1 class="h4 mb-0">Социальный паспорт групп</h1><p>Автоматически рассчитывается по действующим социальным статусам студентов.</p></div><a class="btn btn-primary" href="{{route('upbringing.social-statuses')}}">Социальные статусы</a></div>
+<div class="alert alert-info">Показатели не вводятся вручную. Измените социальный статус конкретного студента — сводка группы пересчитается автоматически.</div>
+<div class="row g-3">
+@foreach($groups as $g)
+<div class="col-12 col-xl-6"><div class="card h-100"><div class="card-header d-flex justify-content-between"><b>{{$g->name}}</b><span class="badge text-bg-secondary">{{$g->student_count}} студентов</span></div><div class="card-body">
+<div class="d-flex justify-content-between border-bottom pb-2 mb-2"><span>Получают социальную поддержку</span><b>{{$g->social_support_count}}</b></div>
+@if($g->categories->isEmpty())<div class="text-secondary">Действующих социальных категорий нет.</div>@else
+@foreach($g->categories as $x)<div class="d-flex justify-content-between py-2 border-bottom"><span>{{$x->name}}</span><b>{{$x->total}}</b></div>@endforeach
+@endif
+</div></div></div>
+@endforeach
+</div>
+@endsection
