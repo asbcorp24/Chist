@@ -384,6 +384,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/academic-office/attestation/attempt/{attempt}',[AttestationController::class,'attempt'])->name('attestation.attempt');
  Route::post('/academic-office/attestation/attempt/{attempt}/member',[AttestationController::class,'member'])->name('attestation.member');
  Route::get('/academic-office/attestation/{sheet}/print',[AttestationController::class,'print'])->name('attestation.print');
+ Route::get('/academic-office/movements',[StudentMovementController::class,'index'])->name('academic.movements');
  Route::get('/academic-office/student/{student}/movement',[StudentMovementController::class,'create'])->name('academic.movement.create');
  Route::post('/academic-office/student/{student}/movement',[StudentMovementController::class,'store'])->name('academic.movement.store');
  Route::post('/academic-office/student/{student}/plan',[StudentMovementController::class,'plan'])->name('academic.plan');
