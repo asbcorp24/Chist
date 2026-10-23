@@ -424,9 +424,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::post('visibility/teacher/{id}',[VisibilityController::class,'teacher'])->name('visibility.teacher');
   Route::post('visibility/student/{id}',[VisibilityController::class,'student'])->name('visibility.student');
   Route::get('groups',[GroupController::class,'index'])->name('groups.index')->middleware('permission:students.view');
+  Route::get('groups/create',[GroupController::class,'create'])->name('groups.create')->middleware('permission:students.manage');
+  Route::post('groups',[GroupController::class,'store'])->name('groups.store')->middleware('permission:students.manage');
   Route::get('groups/{group}/edit',[GroupController::class,'edit'])->name('groups.edit')->middleware('permission:students.manage');
   Route::put('groups/{group}',[GroupController::class,'update'])->name('groups.update')->middleware('permission:students.manage');
-  Route::resource('students',StudentController::class)->except(['show','destroy'])->middleware('permission:students.manage');
+  Route::delete('groups/{group}',[GroupController::class,'destroy'])->name('groups.destroy')->middleware('permission:students.manage');
+  Route::resource('students',StudentController::class)->except(['show'])->middleware('permission:students.manage');
  });
 Route::get('/practice-partner/{token}',[PracticePartnerController::class,'index'])->name('practice.partner');
 Route::post('/practice-partner/{token}/{placement}',[PracticePartnerController::class,'save'])->name('practice.partner.save');
