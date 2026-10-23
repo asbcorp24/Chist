@@ -1,0 +1,17 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Services\PeriodGuard;
+class StudentLifeController extends Controller{
+ private function student(Request $r){$sid=$r->user()->student_id;abort_unless($sid,403);$s=DB::table('students')->find($sid);abort_unless($s,404);return $s;}
+ public function index(Request $r){$student=$this->student($r);$p=$r->attributes->get('academic_period');$gid=$student->current_group_id;
+  $news=DB::table('announcements')->where(function($q)use($gid){$q->whereNull('study_group_id')->orWhere('study_group_id',$gid);})->where(function($q)use($p){$q->whereNull('academic_period_id')->orWhere('academic_period_id',$p->id);})->orderByDesc('is_important')->orderByDesc('created_at')->limit(30)->get()->map(function($x){$x->pinned=$x->is_important;$x->published_at=$x->starts_at?:$x->created_at;return $x;});
+  $activities=DB::table('student_activities as a')->leftJoin('student_activity_registrations as r',function($j)use($student){$j->on('r.student_activity_id','=','a.id')->where('r.student_id','=',$student->id);})->where('a.academic_period_id',$p->id)->where(function($q)use($gid){$q->whereNull('a.study_group_id')->orWhere('a.study_group_id',$gid);})->where('a.starts_at','>=',now()->subDay())->select('a.*','r.status as registration_status')->orderBy('a.starts_at')->get();
+  $practice=DB::table('practice_placements')->where(['academic_period_id'=>$p->id,'student_id'=>$student->id])->select('*',DB::raw('coalesce(attestation_grade, final_grade) as result'))->orderByDesc('starts_on')->get();
+  return view('student.life',compact('student','p','news','activities','practice'));
+ }
+ public function register(Request $r,$activity){$student=$this->student($r);$p=$r->attributes->get('academic_period');PeriodGuard::writable($p->id);$a=DB::table('student_activities')->where(['id'=>$activity,'academic_period_id'=>$p->id])->first();abort_unless($a,404);abort_if($a->registration_until&&now()->gt($a->registration_until),422,'Запись завершена.');if($a->capacity){$n=DB::table('student_activity_registrations')->where(['student_activity_id'=>$activity,'status'=>'registered'])->count();abort_if($n>=$a->capacity,422,'Свободных мест нет.');}DB::table('student_activity_registrations')->updateOrInsert(['student_activity_id'=>$activity,'student_id'=>$student->id],['status'=>'registered','created_at'=>now(),'updated_at'=>now()]);return back()->with('success','Вы записаны.');}
+ public function cancel(Request $r,$activity){$student=$this->student($r);DB::table('student_activity_registrations')->where(['student_activity_id'=>$activity,'student_id'=>$student->id])->update(['status'=>'cancelled','updated_at'=>now()]);return back()->with('success','Запись отменена.');}
+ public function diary(Request $r,$practice){$student=$this->student($r);$p=$r->attributes->get('academic_period');PeriodGuard::writable($p->id);abort_unless(DB::table('practice_placements')->where(['id'=>$practice,'student_id'=>$student->id,'academic_period_id'=>$p->id])->exists(),404);$d=$r->validate(['work_date'=>'required|date','hours'=>'nullable|numeric|min:0|max:24','work_description'=>'required|string|max:10000']);DB::table('practice_diary_entries')->updateOrInsert(['practice_placement_id'=>$practice,'work_date'=>$d['work_date']],['hours'=>$d['hours']??null,'work_description'=>$d['work_description'],'status'=>'draft','created_at'=>now(),'updated_at'=>now()]);return back()->with('success','Дневник сохранён.');}
+}
