@@ -17,7 +17,7 @@
 <h2 class="ao-section-title">Основные процессы</h2>
 <div class="ao-modules">
 <a class="ao-module" href="{{route('admin.students.index')}}"><i>👥</i><div><b>Контингент</b><span>Студенты, карточки, статусы и движение</span></div><em>→</em></a>
-<a class="ao-module" href="{{route('reports.groups')}}"><i>📊</i><div><b>Успеваемость</b><span>Оценки, средний балл, задолженности</span></div><em>→</em></a>
+<a class="ao-module" href="{{route('academic.progress')}}"><i>📊</i><div><b>Успеваемость</b><span>Оценки, средний балл, задолженности</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('academic.control')}}"><i>✓</i><div><b>Учебный контроль</b><span>Допуски, задолженности, выполнение</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('attestation.index')}}"><i>📝</i><div><b>Аттестация и экзамены</b><span>Ведомости, зачёты, экзамены</span></div><em>→</em></a>
 <a class="ao-module" href="{{route('attestation.index')}}"><i>↻</i><div><b>Пересдачи</b><span>Попытки, комиссии, закрытие долгов</span></div><em>→</em></a>
