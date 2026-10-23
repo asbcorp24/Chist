@@ -60,6 +60,30 @@
     @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('academic_head'))
       <div class="col-6"><a class="menu-tile" href="{{ route('management.index') }}"><span class="ico">🏛</span><span>Руководитель</span></a></div>
     @endif
+    @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('upbringing_head') || $u->hasRole('curator'))
+      <div class="col-6"><a class="menu-tile" href="{{route('upbringing.index')}}"><span class="ico">🤝</span><span>Воспитательная</span></a></div>
+    @endif
+    @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('medical_worker') || $u->hasRole('academic_head'))
+      <div class="col-6"><a class="menu-tile" href="{{route('medical.index')}}"><span class="ico">⚕</span><span>Медкабинет</span></a></div>
+    @endif
+    @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('academic_head') || $u->canDo('students.manage'))
+      <div class="col-6"><a class="menu-tile" href="{{route('employment.index')}}"><span class="ico">💼</span><span>Трудоустройство</span></a></div>
+    @endif
+    @if($u->isSuperAdmin() || $u->hasRole('admin'))
+      <div class="col-6"><a class="menu-tile" href="{{route('admin.hr.index')}}"><span class="ico">👔</span><span>Кадры</span></a></div>
+    @endif
+    @if($u->canDo('practice.view'))
+      <div class="col-6"><a class="menu-tile" href="{{ route('practice-office.index') }}"><span class="ico">🧰</span><span>Практика</span></a></div>
+    @endif
+    @if($u->canDo('library.view'))
+      <div class="col-6"><a class="menu-tile" href="{{ route('library.index') }}"><span class="ico">📚</span><span>Библиотека</span></a></div>
+    @endif
+    @if($u->canDo('dormitory.view'))
+      <div class="col-6"><a class="menu-tile" href="{{ route('dormitory.index') }}"><span class="ico">🏠</span><span>Общежитие</span></a></div>
+    @endif
+    @if($u->canDo('canteen.view'))
+      <div class="col-6"><a class="menu-tile" href="{{ route('canteen.index') }}"><span class="ico">🍽</span><span>Столовая</span></a></div>
+    @endif
     @if($u->canDo('facility.view'))
       <div class="col-6"><a class="menu-tile" href="{{ route('facility.index') }}"><span class="ico">🛠</span><span>АХЧ</span></a></div>
     @endif

@@ -15,6 +15,10 @@
 @if($u->canDo('reports.view'))<a class="nav-link" href="{{route('analytics.index')}}">📈 <span>Аналитика</span></a><a class="nav-link" href="{{route('reports.groups')}}">📊 <span>Отчёты</span></a>@endif
 </nav>@endif
 <div class="small text-uppercase px-2 mt-4 mb-2" style="color:#667085;font-size:10px;letter-spacing:.08em">Подразделения</div><nav class="nav flex-column">
+@if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('upbringing_head')||$u->hasRole('curator'))<a class="nav-link" href="{{route('upbringing.index')}}">🤝 <span>Воспитательная работа</span></a>@endif
+@if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('medical_worker')||$u->hasRole('academic_head'))<a class="nav-link" href="{{route('medical.index')}}">⚕ <span>Медицинский кабинет</span></a>@endif
+@if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('academic_head')||$u->canDo('students.manage'))<a class="nav-link" href="{{route('employment.index')}}">💼 <span>Трудоустройство</span></a>@endif
+@if($u->isSuperAdmin()||$u->hasRole('admin'))<a class="nav-link" href="{{route('admin.hr.index')}}">👔 <span>Кадры</span></a>@endif
 @if($u->canDo('library.view'))<a class="nav-link" href="{{route('library.index')}}">📚 <span>Библиотека</span></a>@endif
 @if($u->canDo('dormitory.view'))<a class="nav-link" href="{{route('dormitory.index')}}">🏠 <span>Общежитие</span></a>@endif
 @if($u->canDo('practice.view'))<a class="nav-link" href="{{route('practice-office.index')}}">🧰 <span>Практика</span></a>@endif

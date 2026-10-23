@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{Schema::create('staffing_positions',function(Blueprint $t){$t->id();$t->foreignId('position_id')->constrained('staff_positions')->restrictOnDelete();$t->foreignId('academic_department_id')->nullable()->constrained('academic_departments')->nullOnDelete();$t->decimal('planned_rates',6,2)->default(1);$t->date('valid_from')->nullable();$t->date('valid_until')->nullable();$t->boolean('active')->default(true);$t->text('note')->nullable();$t->timestamps();});}public function down():void{Schema::dropIfExists('staffing_positions');}};

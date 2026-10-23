@@ -1,0 +1,13 @@
+<?php
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
+class SpecialtyController extends Controller{
+ public function index(Request $r){$q=DB::table('specialties');if($r->filled('q')){$s='%'.$r->q.'%';$q->where(fn($x)=>$x->where('code','like',$s)->orWhere('name','like',$s)->orWhere('qualification','like',$s));}if($r->filled('state'))$q->where('active',$r->state==='active');return view('admin.specialties.index',['rows'=>$q->orderByDesc('active')->orderBy('code')->get()]);}
+ public function create(){return view('admin.specialties.form',['specialty'=>null]);}
+ public function store(Request $r){$d=$this->data($r);$id=DB::table('specialties')->insertGetId($d+['active'=>1,'created_at'=>now(),'updated_at'=>now()]);return redirect()->route('admin.specialties.edit',$id)->with('success','Специальность создана');}
+ public function edit($id){$x=DB::table('specialties')->find($id);abort_if(!$x,404);return view('admin.specialties.form',['specialty'=>$x]);}
+ public function update(Request $r,$id){abort_unless(DB::table('specialties')->where('id',$id)->exists(),404);DB::table('specialties')->where('id',$id)->update($this->data($r)+['updated_at'=>now()]);return back()->with('success','Специальность сохранена');}
+ public function destroy($id){$x=DB::table('specialties')->find($id);abort_if(!$x,404);$used=DB::table('study_groups')->where('specialty_id',$id)->exists()||DB::table('specialty_curricula')->where('specialty_id',$id)->exists()||DB::table('admission_targets')->where('specialty_id',$id)->exists();abort_if($used,422,'Специальность используется. Её можно только архивировать.');DB::table('specialties')->where('id',$id)->update(['active'=>0,'updated_at'=>now()]);return back()->with('success','Специальность архивирована');}
+ public function archive($id){abort_unless(DB::table('specialties')->where('id',$id)->exists(),404);DB::table('specialties')->where('id',$id)->update(['active'=>0,'updated_at'=>now()]);return back()->with('success','Специальность архивирована');}
+ private function data(Request $r){return $r->validate(['code'=>'required|string|max:50','name'=>'required|string|max:255','qualification'=>'nullable|string|max:255','education_level'=>'required|string|max:50','study_form'=>'required|string|max:50','education_base'=>'nullable|string|max:50','duration_months'=>'nullable|integer|min:1|max:120','fgos_code'=>'nullable|string|max:100','fgos_version'=>'nullable|string|max:100','valid_from'=>'nullable|date','valid_until'=>'nullable|date|after_or_equal:valid_from','note'=>'nullable|string|max:5000']);}
+}

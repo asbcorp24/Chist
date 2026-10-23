@@ -51,24 +51,6 @@ class AcademicOfficeController extends Controller
         return back()->with('success','Активность создана.');
     }
 
-    public function practice(Request $r)
-    {
-        $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
-        abort_unless(Schema::hasTable('practice_placements'),503,'Таблица practice_placements ещё не создана.');
-        $d=$r->validate(['student_id'=>'required|integer','practice_type'=>'required|string|max:255','organization_name'=>'required|string|max:255','organization_address'=>'nullable|string|max:255','supervisor_org'=>'nullable|string|max:255','starts_on'=>'required|date','ends_on'=>'required|date|after_or_equal:starts_on','order_number'=>'nullable|string|max:100','order_date'=>'nullable|date']);
-        DB::table('practice_placements')->insert(['academic_period_id'=>$p->id,'student_id'=>$d['student_id'],'practice_type'=>$d['practice_type'],'organization_name'=>$d['organization_name'],'organization_address'=>$d['organization_address']??null,'organization_supervisor'=>$d['supervisor_org']??null,'starts_on'=>$d['starts_on'],'ends_on'=>$d['ends_on'],'status'=>'planned','note'=>trim('Приказ: '.($d['order_number']??'').' '.($d['order_date']??'')),'created_at'=>now(),'updated_at'=>now()]);
-        return back()->with('success','Практика назначена.');
-    }
-
-    public function practiceResult(Request $r, $practice)
-    {
-        $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
-        abort_unless(Schema::hasTable('practice_placements'),404);
-        $d=$r->validate(['status'=>'required|string|max:50','result'=>'nullable|string|max:255','grade'=>'nullable|string|max:20']);
-        DB::table('practice_placements')->where('id',$practice)->update(['status'=>$d['status'],'final_grade'=>$d['grade']??$d['result']??null,'note'=>$d['result']??null,'updated_at'=>now()]);
-        return back()->with('success','Результат практики сохранён.');
-    }
-
     public function order(Request $r)
     {
         $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
@@ -77,4 +59,21 @@ class AcademicOfficeController extends Controller
         DB::table('academic_orders')->insert(array_merge($d,['academic_period_id'=>$p->id,'created_by'=>$r->user()->id,'created_at'=>now(),'updated_at'=>now()]));
         return back()->with('success','Приказ зарегистрирован.');
     }
+    public function orderUpdate(Request $r, $order)
+    {
+        $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
+        $x=DB::table('academic_orders')->where('academic_period_id',$p->id)->where('id',$order)->first(); abort_if(!$x,404);
+        $d=$r->validate(['number'=>'required|string|max:100','order_date'=>'required|date','student_id'=>'nullable|integer','type'=>'required|string|max:100','title'=>'required|string|max:500','basis'=>'nullable|string|max:5000']);
+        DB::table('academic_orders')->where('id',$order)->update($d+['updated_at'=>now()]);
+        return back()->with('success','Приказ обновлён.');
+    }
+
+    public function orderDestroy(Request $r, $order)
+    {
+        $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
+        $x=DB::table('academic_orders')->where('academic_period_id',$p->id)->where('id',$order)->first(); abort_if(!$x,404);
+        DB::table('academic_orders')->where('id',$order)->delete();
+        return back()->with('success','Ошибочно зарегистрированный приказ удалён из реестра.');
+    }
+
 }
