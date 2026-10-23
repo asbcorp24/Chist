@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,DormitoryController,DormitoryOperationsController,DormitoryExtendedController,DormitoryStudentController,DormitoryAssetController};
-use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
+use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController,CredentialController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
@@ -410,6 +410,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::put('organization',[OrganizationSettingsController::class,'update'])->name('organization.update');
   Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
   Route::post('schedule/import',[ScheduleImportController::class,'store'])->name('schedule.import.store')->middleware('permission:schedule.import');
+  Route::get('credentials',[CredentialController::class,'index'])->name('credentials.index');
+  Route::post('credentials/generate',[CredentialController::class,'generate'])->name('credentials.generate');
+  Route::get('credentials/print',[CredentialController::class,'print'])->name('credentials.print');
+  Route::get('credentials/{user}/reveal',[CredentialController::class,'reveal'])->name('credentials.reveal');
   Route::resource('users',UserController::class)->except(['show','destroy'])->middleware('permission:users.manage');
   Route::get('roles',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.manage');
   Route::get('roles/{role}/edit',[RoleController::class,'edit'])->name('roles.edit')->middleware('permission:roles.manage');
