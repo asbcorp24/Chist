@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -24,6 +24,11 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/analytics',[AnalyticsController::class,'index'])->name('analytics.index');
  Route::get('/management',[ManagementDashboardController::class,'index'])->name('management.index');
  Route::get('/teacher/workspace',[TeacherWorkspaceController::class,'index'])->name('teacher.workspace');
+ Route::get('/curriculum',[CurriculumController::class,'index'])->name('curriculum.index');
+ Route::post('/curriculum',[CurriculumController::class,'store'])->name('curriculum.store');
+ Route::get('/curriculum/{plan}',[CurriculumController::class,'show'])->name('curriculum.show');
+ Route::post('/curriculum/{plan}/topic',[CurriculumController::class,'topic'])->name('curriculum.topic');
+ Route::post('/curriculum/lesson/{lesson}/bind',[CurriculumController::class,'bind'])->name('curriculum.bind');
  Route::get('/management/teacher/{teacher}',[TeacherWorkspaceController::class,'index'])->name('management.teacher');
  Route::get('/analytics/export.csv',[AnalyticsController::class,'csv'])->name('analytics.csv');
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
