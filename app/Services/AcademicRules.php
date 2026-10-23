@@ -1,0 +1,3 @@
+<?php
+namespace App\Services;use Illuminate\Support\Facades\DB;
+class AcademicRules{public static function get(string $key,$default=null){$x=DB::table('academic_rules')->where(['key'=>$key,'enabled'=>1])->first();if(!$x)return $default;return match($x->value_type){'integer'=>(int)$x->value,'decimal'=>(float)$x->value,'boolean'=>in_array(mb_strtolower($x->value),['1','true','yes','да'],true),default=>$x->value};}public static function source(string $key):?object{return DB::table('academic_rules as ar')->leftJoin('local_regulations as lr','lr.id','=','ar.local_regulation_id')->where('ar.key',$key)->select('ar.*','lr.title regulation_title','lr.document_number')->first();}}

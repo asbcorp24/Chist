@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -64,6 +64,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/academic-office',[AcademicOfficeController::class,'index'])->name('academic.index');
  Route::get('/academic-office/control',[AcademicControlController::class,'index'])->name('academic.control');
  Route::get('/academic-office/compliance',[ComplianceController::class,'index'])->name('compliance.index');
+ Route::get('/academic-office/regulations',[LocalRegulationController::class,'index'])->name('regulations.index');
+ Route::post('/academic-office/regulations',[LocalRegulationController::class,'store'])->name('regulations.store');
+ Route::post('/academic-office/regulations/rule',[LocalRegulationController::class,'rule'])->name('regulations.rule');
+ Route::post('/academic-office/regulations/rule/{rule}',[LocalRegulationController::class,'updateRule'])->name('regulations.rule.update');
  Route::get('/academic-office/attestation',[AttestationController::class,'index'])->name('attestation.index');
  Route::get('/academic-office/gia',[GiaController::class,'index'])->name('gia.index');
  Route::get('/academic-office/graduation',[GraduationController::class,'index'])->name('graduation.index');
