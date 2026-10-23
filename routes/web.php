@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -35,6 +35,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/curriculum/{plan}/program/copy',[WorkProgramController::class,'copy'])->name('curriculum.program.copy');
  Route::get('/curriculum/{plan}/program/print',[WorkProgramController::class,'print'])->name('curriculum.program.print');
  Route::get('/academic-office/loads',[TeachingLoadController::class,'index'])->name('loads.index');
+ Route::get('/academic-office/tarification',[TarificationController::class,'index'])->name('tarification.index');
+ Route::post('/academic-office/tarification/generate',[TarificationController::class,'generate'])->name('tarification.generate');
+ Route::post('/academic-office/tarification/allocate',[TarificationController::class,'allocate'])->name('tarification.allocate');
+ Route::get('/academic-office/tarification/print',[TarificationController::class,'print'])->name('tarification.print');
  Route::post('/academic-office/loads',[TeachingLoadController::class,'store'])->name('loads.store');
  Route::delete('/academic-office/loads/{load}',[TeachingLoadController::class,'destroy'])->name('loads.destroy');
  Route::get('/academic-office/loads/export/rector',[TeachingLoadController::class,'export'])->name('loads.export');
