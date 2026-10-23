@@ -153,6 +153,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/practice-office',[PracticeOfficeController::class,'index'])->name('practice-office.index');
  Route::get('/practice-office/organizations',[PracticeOfficeController::class,'organizations'])->name('practice-office.organizations');
  Route::post('/practice-office/organizations',[PracticeOfficeController::class,'organizationStore'])->name('practice-office.organization.store');
+ Route::put('/practice-office/organizations/{organization}',[PracticeOfficeController::class,'organizationUpdate'])->name('practice-office.organization.update');
+ Route::delete('/practice-office/organizations/{organization}',[PracticeOfficeController::class,'organizationDestroy'])->name('practice-office.organization.destroy');
  Route::get('/practice-office/agreements',[PracticeOfficeController::class,'agreements'])->name('practice-office.agreements');
  Route::post('/practice-office/agreements',[PracticeOfficeController::class,'agreementStore'])->name('practice-office.agreement.store');
  Route::get('/practice-office/campaigns',[PracticeOfficeController::class,'campaigns'])->name('practice-office.campaigns');
@@ -185,6 +187,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/dormitory',[DormitoryController::class,'index'])->name('dormitory.index');
  Route::get('/dormitory/buildings',[DormitoryController::class,'buildings'])->name('dormitory.buildings');
  Route::post('/dormitory/buildings',[DormitoryController::class,'buildingStore'])->name('dormitory.building.store');
+ Route::put('/dormitory/buildings/{building}',[DormitoryController::class,'buildingUpdate'])->name('dormitory.building.update');
+ Route::delete('/dormitory/buildings/{building}',[DormitoryController::class,'buildingDestroy'])->name('dormitory.building.destroy');
  Route::get('/dormitory/buildings/{building}/rooms',[DormitoryController::class,'rooms'])->name('dormitory.rooms');
  Route::post('/dormitory/buildings/{building}/rooms',[DormitoryController::class,'roomStore'])->name('dormitory.room.store');
  Route::get('/dormitory/rooms/{room}',[DormitoryController::class,'roomCard'])->name('dormitory.room');
@@ -287,6 +291,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/library/coverage',[LibraryOperationsController::class,'coverage'])->name('library.coverage');
  Route::post('/library/copy/{copy}/writeoff',[LibraryOperationsController::class,'writeoff'])->name('library.writeoff');
  Route::post('/library',[LibraryController::class,'store'])->name('library.store');
+ Route::put('/library/{book}',[LibraryController::class,'update'])->name('library.update');
+ Route::delete('/library/{book}',[LibraryController::class,'destroy'])->name('library.destroy');
  Route::get('/library/desk',[LibraryController::class,'desk'])->name('library.desk');
  Route::post('/library/issue',[LibraryController::class,'issue'])->name('library.issue');
  Route::post('/library/loan/{loan}/return',[LibraryController::class,'returnBook'])->name('library.return');
