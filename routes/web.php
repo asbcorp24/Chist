@@ -11,6 +11,15 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/methodical/program-control',[MethodicalControlController::class,'programs'])->name('methodical.programs');
+ Route::get('/methodical/teacher-plans',[MethodicalControlController::class,'plans'])->name('methodical.plans');
+ Route::post('/methodical/teacher-plans',[MethodicalControlController::class,'planStore'])->name('methodical.plan.store');
+ Route::get('/methodical/portfolio',[MethodicalControlController::class,'portfolio'])->name('methodical.portfolio');
+ Route::post('/methodical/portfolio',[MethodicalControlController::class,'portfolioStore'])->name('methodical.portfolio.store');
+ Route::get('/methodical/attestation',[MethodicalControlController::class,'attestation'])->name('methodical.attestation');
+ Route::post('/methodical/attestation',[MethodicalControlController::class,'attestationStore'])->name('methodical.attestation.store');
+ Route::get('/methodical/annual-report',[MethodicalReportController::class,'annual'])->name('methodical.annual');
+ Route::post('/methodical/meetings/{meeting}/edo',[MethodicalReportController::class,'meetingEdo'])->name('methodical.meeting.edo');
  Route::get('/methodical',[MethodicalOfficeController::class,'index'])->name('methodical.index');
  Route::get('/methodical/commissions',[MethodicalOfficeController::class,'commissions'])->name('methodical.commissions');
  Route::post('/methodical/commissions',[MethodicalOfficeController::class,'commissionStore'])->name('methodical.commission.store');
