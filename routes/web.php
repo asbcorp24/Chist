@@ -73,8 +73,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/quality/audits/{audit}/edo',[QualityAuditController::class,'edo'])->name('quality.audit.edo');
  Route::get('/quality/risks',[QualityRiskSurveyController::class,'risks'])->name('quality.risks');
  Route::post('/quality/risks',[QualityRiskSurveyController::class,'riskStore'])->name('quality.risk.store');
+ Route::put('/quality/risks/{risk}',[QualityRiskSurveyController::class,'riskUpdate'])->name('quality.risk.update');
+ Route::post('/quality/risks/{risk}/status',[QualityRiskSurveyController::class,'riskStatus'])->name('quality.risk.status');
  Route::get('/quality/surveys',[QualityRiskSurveyController::class,'surveys'])->name('quality.surveys');
  Route::post('/quality/surveys',[QualityRiskSurveyController::class,'surveyStore'])->name('quality.survey.store');
+ Route::put('/quality/surveys/{survey}',[QualityRiskSurveyController::class,'surveyUpdate'])->name('quality.survey.update');
+ Route::post('/quality/surveys/{survey}/status',[QualityRiskSurveyController::class,'surveyStatus'])->name('quality.survey.status');
  Route::post('/quality/surveys/{survey}/questions',[QualityRiskSurveyController::class,'question'])->name('quality.survey.question');
  Route::get('/quality/report',[QualityRiskSurveyController::class,'report'])->name('quality.report');
  Route::get('/methodical/program-control',[MethodicalControlController::class,'programs'])->name('methodical.programs');
