@@ -372,6 +372,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/academic-office/graduation/document/{document}/receive',[GraduationController::class,'receive'])->name('graduation.receive');
  Route::post('/academic-office/gia',[GiaController::class,'store'])->name('gia.store');
  Route::get('/academic-office/gia/{gia}',[GiaController::class,'show'])->name('gia.show');
+ Route::put('/academic-office/gia/{gia}',[GiaController::class,'update'])->name('gia.update');
+ Route::post('/academic-office/gia/{gia}/status',[GiaController::class,'status'])->name('gia.status');
  Route::post('/academic-office/gia/{gia}/check',[GiaController::class,'check'])->name('gia.check');
  Route::post('/academic-office/gia/{gia}/event',[GiaController::class,'event'])->name('gia.event');
  Route::post('/academic-office/gia/{gia}/member',[GiaController::class,'member'])->name('gia.member');
@@ -380,6 +382,9 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/academic-office/gia/{gia}/print',[GiaController::class,'print'])->name('gia.print');
  Route::post('/academic-office/attestation',[AttestationController::class,'store'])->name('attestation.store');
  Route::get('/academic-office/attestation/{sheet}',[AttestationController::class,'show'])->name('attestation.show');
+ Route::put('/academic-office/attestation/{sheet}',[AttestationController::class,'update'])->name('attestation.update');
+ Route::post('/academic-office/attestation/{sheet}/close',[AttestationController::class,'close'])->name('attestation.close');
+ Route::post('/academic-office/attestation/{sheet}/reopen',[AttestationController::class,'reopen'])->name('attestation.reopen');
  Route::post('/academic-office/attestation/attempt/{attempt}/result',[AttestationController::class,'result'])->name('attestation.result');
  Route::post('/academic-office/attestation/attempt/{attempt}/retake',[AttestationController::class,'retake'])->name('attestation.retake');
  Route::get('/academic-office/attestation/attempt/{attempt}',[AttestationController::class,'attempt'])->name('attestation.attempt');
