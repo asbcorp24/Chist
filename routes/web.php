@@ -11,6 +11,21 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/practice-office',[PracticeOfficeController::class,'index'])->name('practice-office.index');
+ Route::get('/practice-office/organizations',[PracticeOfficeController::class,'organizations'])->name('practice-office.organizations');
+ Route::post('/practice-office/organizations',[PracticeOfficeController::class,'organizationStore'])->name('practice-office.organization.store');
+ Route::get('/practice-office/agreements',[PracticeOfficeController::class,'agreements'])->name('practice-office.agreements');
+ Route::post('/practice-office/agreements',[PracticeOfficeController::class,'agreementStore'])->name('practice-office.agreement.store');
+ Route::get('/practice-office/campaigns',[PracticeOfficeController::class,'campaigns'])->name('practice-office.campaigns');
+ Route::post('/practice-office/campaigns',[PracticeOfficeController::class,'campaignStore'])->name('practice-office.campaign.store');
+ Route::get('/practice-office/campaigns/{campaign}',[PracticeDistributionController::class,'show'])->name('practice-office.distribution');
+ Route::post('/practice-office/campaigns/{campaign}/organization',[PracticeDistributionController::class,'attachOrg'])->name('practice-office.attach-org');
+ Route::post('/practice-office/campaigns/{campaign}/distribute',[PracticeDistributionController::class,'distribute'])->name('practice-office.distribute');
+ Route::post('/practice-office/placements/{placement}/control',[PracticeDistributionController::class,'control'])->name('practice-office.control');
+ Route::post('/practice-office/placements/{placement}/briefing',[PracticeDistributionController::class,'briefing'])->name('practice-office.briefing');
+ Route::post('/practice-office/placements/{placement}/document',[PracticeDistributionController::class,'document'])->name('practice-office.document');
+ Route::get('/practice-office/debts',[PracticeDistributionController::class,'debts'])->name('practice-office.debts');
+
  Route::get('/dormitory',[DormitoryController::class,'index'])->name('dormitory.index');
  Route::get('/dormitory/buildings',[DormitoryController::class,'buildings'])->name('dormitory.buildings');
  Route::post('/dormitory/buildings',[DormitoryController::class,'buildingStore'])->name('dormitory.building.store');
