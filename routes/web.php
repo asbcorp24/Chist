@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -11,6 +11,15 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/library',[LibraryController::class,'index'])->name('library.index');
+ Route::post('/library',[LibraryController::class,'store'])->name('library.store');
+ Route::get('/library/desk',[LibraryController::class,'desk'])->name('library.desk');
+ Route::post('/library/issue',[LibraryController::class,'issue'])->name('library.issue');
+ Route::post('/library/loan/{loan}/return',[LibraryController::class,'returnBook'])->name('library.return');
+ Route::get('/library/my',[LibraryController::class,'my'])->name('library.my');
+ Route::get('/library/{book}',[LibraryController::class,'show'])->name('library.show');
+ Route::post('/library/{book}/copy',[LibraryController::class,'copy'])->name('library.copy');
+ Route::post('/library/{book}/subject',[LibraryController::class,'link'])->name('library.link');
  Route::get('/notifications',[AnnouncementController::class,'index'])->name('announcements.index');
  Route::get('/me/progress',[StudentProgressController::class,'index'])->name('student.progress');
  Route::get('/calendar',[CalendarController::class,'index'])->name('calendar.index');
