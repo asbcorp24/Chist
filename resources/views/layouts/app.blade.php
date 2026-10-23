@@ -14,7 +14,7 @@
         body{background:#f4f6f9;padding-bottom:82px}
         .card{border:0;border-radius:18px;box-shadow:0 2px 12px #0000000d}
         .topbar{background:var(--app)}
-        .desktop-side{width:250px}
+        .desktop-side{width:280px;flex:0 0 280px;max-height:calc(100vh - 56px);overflow-y:auto;position:sticky;top:56px;align-self:flex-start}
         .app-shell{max-width:1200px}
         .mobile-nav{position:fixed;z-index:1040;left:0;right:0;bottom:0;padding-bottom:env(safe-area-inset-bottom);background:#fff;border-top:1px solid #e7e9ed;box-shadow:0 -4px 20px #00000012}
         .mobile-nav .navitem{height:66px;min-width:58px;color:#6c757d;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72rem;gap:2px}.mobile-nav .navitem.active{color:var(--accent);font-weight:700}.mobile-nav .ico{font-size:1.35rem;line-height:1}.mobile-nav .quick{transform:translateY(-12px);width:66px;height:66px;border-radius:50%;background:var(--accent);color:#fff!important;box-shadow:0 5px 16px #0d6efd55}.more-sheet{border-radius:24px 24px 0 0}.menu-tile{min-height:78px;border-radius:16px;background:#f5f7fa;text-decoration:none;color:#212529;display:flex;align-items:center;padding:14px;gap:12px}.menu-tile .ico{font-size:1.45rem}
@@ -38,15 +38,8 @@
 
 @if($currentUser)
 <div class="desktop-layout app-shell mx-auto">
-    <aside class="desktop-side p-3">
-        <div class="nav flex-column nav-pills gap-1">
-            <a class="nav-link" href="{{ route('dashboard') }}">⌂ Главная</a>
-            @if($currentUser->canDo('schedule.view'))
-                <a class="nav-link" href="{{ route('journal.today') }}">▣ Журнал</a>
-            @endif
-            <a class="nav-link" href="{{ route('public.schedule') }}">📅 Расписание</a>
-        </div>
-    </aside>
+    @include('layouts.partials.desktop-nav')
+
 @endif
 
 <main class="container-fluid app-main py-3" style="max-width:950px">
