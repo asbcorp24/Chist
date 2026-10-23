@@ -1,11 +1,15 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController};
 Route::middleware('guest')->group(function(){Route::get('/login',[AuthController::class,'form'])->name('login');Route::post('/login',[AuthController::class,'login'])->name('login.store');});
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
 Route::middleware('auth')->group(function(){
  Route::get('/',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/journal',[JournalController::class,'today'])->name('journal.today')->middleware('permission:schedule.view');
+ Route::get('/journal/lesson/{lesson}',[JournalController::class,'show'])->name('journal.lesson');
+ Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
+ Route::post('/journal/lesson/{lesson}/grade',[JournalController::class,'grade'])->name('journal.grade');
  Route::prefix('admin')->name('admin.')->group(function(){
   Route::resource('users',UserController::class)->except(['show','destroy'])->middleware('permission:users.manage');
   Route::get('roles',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.manage');
