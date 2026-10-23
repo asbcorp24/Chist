@@ -11,6 +11,17 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+ Route::get('/office',[OfficeController::class,'index'])->name('office.index');
+ Route::get('/office/journal/{direction}',[OfficeController::class,'journal'])->name('office.journal');
+ Route::get('/office/registration',[OfficeController::class,'registration'])->name('office.registration');
+ Route::post('/office/register/{document}',[OfficeController::class,'register'])->name('office.register');
+ Route::post('/office/correspondents',[OfficeController::class,'correspondent'])->name('office.correspondent');
+ Route::get('/office/control',[OfficeController::class,'control'])->name('office.control');
+ Route::get('/office/cases',[OfficeArchiveController::class,'cases'])->name('office.cases');
+ Route::post('/office/cases',[OfficeArchiveController::class,'caseStore'])->name('office.case.store');
+ Route::post('/office/cases/{case}/documents/{document}',[OfficeArchiveController::class,'put'])->name('office.case.put');
+ Route::post('/office/cases/{case}/close',[OfficeArchiveController::class,'close'])->name('office.case.close');
+ Route::post('/office/documents/{document}/dispatch',[OfficeArchiveController::class,'dispatch'])->name('office.dispatch');
  Route::post('/edo/from/{module}/{type}/{id}',[DocumentIntegrationController::class,'create'])->name('edo.integration.create');
  Route::get('/edo',[DocumentWorkflowController::class,'index'])->name('edo.index');
  Route::get('/edo/create',[DocumentWorkflowController::class,'create'])->name('edo.create');
