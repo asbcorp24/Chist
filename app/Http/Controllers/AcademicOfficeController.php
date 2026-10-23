@@ -20,18 +20,17 @@ class AcademicOfficeController extends Controller
 
     public function index(Request $r)
     {
-        $this->access($r);
-        $p = $this->period($r);
-        $groups = Schema::hasTable('study_groups') ? DB::table('study_groups')->where('active',1)->orderBy('name')->get() : collect();
-        $students = Schema::hasTable('students') ? DB::table('students')->where('status','active')->orderBy('last_name')->orderBy('first_name')->get() : collect();
-        $practices = collect();
-        if (Schema::hasTable('practice_placements')) {
-            $practices = DB::table('practice_placements as pp')->leftJoin('students as s','s.id','=','pp.student_id')
-                ->select('pp.*',DB::raw("trim(coalesce(s.last_name,'') || ' ' || coalesce(s.first_name,'')) as student_name"))
-                ->where('pp.academic_period_id',$p->id)->orderByDesc('pp.id')->limit(100)->get();
-        }
-        $orders = Schema::hasTable('academic_orders') ? DB::table('academic_orders')->orderByDesc('order_date')->orderByDesc('id')->limit(100)->get() : collect();
-        return view('academic-office.index',compact('p','groups','students','practices','orders'));
+        $this->access($r); $p=$this->period($r);
+        $groups=Schema::hasTable('study_groups')?DB::table('study_groups')->where('active',1)->orderBy('name')->get():collect();
+        $students=Schema::hasTable('students')?DB::table('students')->where('status','active')->orderBy('last_name')->orderBy('first_name')->get():collect();
+        $orders=Schema::hasTable('academic_orders')?DB::table('academic_orders')->orderByDesc('order_date')->orderByDesc('id')->limit(8)->get():collect();
+        $studentCount=$students->count(); $groupCount=$groups->count();
+        $debts=Schema::hasTable('attestation_attempts')&&Schema::hasTable('attestation_sheets')?DB::table('attestation_attempts as a')->join('attestation_sheets as sh','sh.id','=','a.attestation_sheet_id')->where('sh.academic_period_id',$p->id)->where('a.passed',0)->count():0;
+        $openSheets=Schema::hasTable('attestation_sheets')?DB::table('attestation_sheets')->where('academic_period_id',$p->id)->where('status','open')->count():0;
+        $giaCount=Schema::hasTable('gia_campaigns')?DB::table('gia_campaigns')->where('academic_period_id',$p->id)->count():0;
+        $movementCount=Schema::hasTable('student_movements')?DB::table('student_movements')->where('academic_period_id',$p->id)->count():0;
+        $stats=compact('studentCount','groupCount','debts','openSheets','giaCount','movementCount');
+        return view('academic-office.index',compact('p','groups','students','orders','stats'));
     }
 
     public function news(Request $r)
