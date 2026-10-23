@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -29,6 +29,15 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/curriculum/{plan}',[CurriculumController::class,'show'])->name('curriculum.show');
  Route::post('/curriculum/{plan}/topic',[CurriculumController::class,'topic'])->name('curriculum.topic');
  Route::post('/curriculum/lesson/{lesson}/bind',[CurriculumController::class,'bind'])->name('curriculum.bind');
+ Route::get('/curriculum/{plan}/program',[WorkProgramController::class,'edit'])->name('curriculum.program');
+ Route::put('/curriculum/{plan}/program',[WorkProgramController::class,'update'])->name('curriculum.program.update');
+ Route::post('/curriculum/{plan}/program/approve',[WorkProgramController::class,'approve'])->name('curriculum.program.approve');
+ Route::post('/curriculum/{plan}/program/copy',[WorkProgramController::class,'copy'])->name('curriculum.program.copy');
+ Route::get('/curriculum/{plan}/program/print',[WorkProgramController::class,'print'])->name('curriculum.program.print');
+ Route::get('/academic-office/loads',[TeachingLoadController::class,'index'])->name('loads.index');
+ Route::post('/academic-office/loads',[TeachingLoadController::class,'store'])->name('loads.store');
+ Route::delete('/academic-office/loads/{load}',[TeachingLoadController::class,'destroy'])->name('loads.destroy');
+ Route::get('/academic-office/loads/export/rector',[TeachingLoadController::class,'export'])->name('loads.export');
  Route::get('/management/teacher/{teacher}',[TeacherWorkspaceController::class,'index'])->name('management.teacher');
  Route::get('/analytics/export.csv',[AnalyticsController::class,'csv'])->name('analytics.csv');
  Route::post('/me/activity/{activity}/register',[StudentLifeController::class,'register'])->name('student.activity.register');
