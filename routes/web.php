@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController};
+use App\Http\Controllers\{AuthController,DashboardController,JournalController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController};
 use App\Http\Controllers\Admin\{UserController,RoleController,GroupController,StudentController,ScheduleImportController,OrganizationSettingsController};
 Route::get('/schedule',[PublicScheduleController::class,'index'])->name('public.schedule');
 Route::get('/',function(){return auth()->check()?redirect()->route('dashboard'):redirect()->route('public.schedule');})->name('home');
@@ -63,6 +63,14 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/practice/{practice}/print/{form}',[PracticeController::class,'print'])->name('practice.print');
  Route::get('/academic-office',[AcademicOfficeController::class,'index'])->name('academic.index');
  Route::get('/academic-office/control',[AcademicControlController::class,'index'])->name('academic.control');
+ Route::get('/academic-office/attestation',[AttestationController::class,'index'])->name('attestation.index');
+ Route::post('/academic-office/attestation',[AttestationController::class,'store'])->name('attestation.store');
+ Route::get('/academic-office/attestation/{sheet}',[AttestationController::class,'show'])->name('attestation.show');
+ Route::post('/academic-office/attestation/attempt/{attempt}/result',[AttestationController::class,'result'])->name('attestation.result');
+ Route::post('/academic-office/attestation/attempt/{attempt}/retake',[AttestationController::class,'retake'])->name('attestation.retake');
+ Route::get('/academic-office/attestation/attempt/{attempt}',[AttestationController::class,'attempt'])->name('attestation.attempt');
+ Route::post('/academic-office/attestation/attempt/{attempt}/member',[AttestationController::class,'member'])->name('attestation.member');
+ Route::get('/academic-office/attestation/{sheet}/print',[AttestationController::class,'print'])->name('attestation.print');
  Route::get('/academic-office/student/{student}/movement',[StudentMovementController::class,'create'])->name('academic.movement.create');
  Route::post('/academic-office/student/{student}/movement',[StudentMovementController::class,'store'])->name('academic.movement.store');
  Route::post('/academic-office/student/{student}/plan',[StudentMovementController::class,'plan'])->name('academic.plan');
