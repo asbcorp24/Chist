@@ -25,6 +25,14 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/practice-office/placements/{placement}/briefing',[PracticeDistributionController::class,'briefing'])->name('practice-office.briefing');
  Route::post('/practice-office/placements/{placement}/document',[PracticeDistributionController::class,'document'])->name('practice-office.document');
  Route::get('/practice-office/debts',[PracticeDistributionController::class,'debts'])->name('practice-office.debts');
+ Route::get('/practice-office/annual',[PracticePlanningController::class,'annual'])->name('practice-office.annual');
+ Route::get('/practice-office/visits',[PracticePlanningController::class,'visits'])->name('practice-office.visits');
+ Route::get('/practice-office/results',[PracticePlanningController::class,'results'])->name('practice-office.results');
+ Route::post('/practice-office/placements/{placement}/employment',[PracticePlanningController::class,'employment'])->name('practice-office.employment');
+ Route::post('/practice-office/organizations/{organization}/partner-access',[PracticePlanningController::class,'partnerAccess'])->name('practice-office.partner-access');
+ Route::post('/practice-office/campaigns/{campaign}/mass-document',[PracticePlanningController::class,'massDocument'])->name('practice-office.mass-document');
+ Route::get('/practice-office/mass-documents/{document}/print',[PracticePlanningController::class,'massPrint'])->name('practice-office.mass.print');
+
 
  Route::get('/dormitory',[DormitoryController::class,'index'])->name('dormitory.index');
  Route::get('/dormitory/buildings',[DormitoryController::class,'buildings'])->name('dormitory.buildings');
@@ -274,4 +282,6 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::put('groups/{group}',[GroupController::class,'update'])->name('groups.update')->middleware('permission:students.manage');
   Route::resource('students',StudentController::class)->except(['show','destroy'])->middleware('permission:students.manage');
  });
+Route::get('/practice-partner/{token}',[PracticePartnerController::class,'index'])->name('practice.partner');
+Route::post('/practice-partner/{token}/{placement}',[PracticePartnerController::class,'save'])->name('practice.partner.save');
 });

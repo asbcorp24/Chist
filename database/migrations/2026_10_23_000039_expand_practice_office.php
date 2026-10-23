@@ -1,0 +1,7 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up(){
+Schema::create('practice_partner_access',function(Blueprint $t){$t->id();$t->foreignId('practice_organization_id')->constrained()->cascadeOnDelete();$t->string('token',80)->unique();$t->string('contact_name')->nullable();$t->dateTime('expires_at')->nullable();$t->dateTime('last_used_at')->nullable();$t->boolean('active')->default(true);$t->foreignId('created_by')->constrained('users')->restrictOnDelete();$t->timestamps();});
+Schema::create('practice_employment_results',function(Blueprint $t){$t->id();$t->foreignId('practice_placement_id')->constrained()->cascadeOnDelete();$t->string('status');$t->string('position')->nullable();$t->date('employment_on')->nullable();$t->text('note')->nullable();$t->foreignId('recorded_by')->nullable()->constrained('users')->nullOnDelete();$t->timestamps();$t->unique('practice_placement_id');});
+Schema::create('practice_mass_documents',function(Blueprint $t){$t->id();$t->foreignId('practice_campaign_id')->constrained()->cascadeOnDelete();$t->string('type');$t->string('number');$t->date('document_on');$t->longText('snapshot_json');$t->foreignId('created_by')->constrained('users')->restrictOnDelete();$t->timestamps();});
+}public function down(){Schema::dropIfExists('practice_mass_documents');Schema::dropIfExists('practice_employment_results');Schema::dropIfExists('practice_partner_access');}};
