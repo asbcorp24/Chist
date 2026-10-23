@@ -398,7 +398,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/admission',[AdmissionController::class,'store'])->name('admission.store');
  Route::post('/admission/campaigns',[AdmissionController::class,'campaignStore'])->name('admission.campaign.store');
  Route::post('/admission/targets',[AdmissionController::class,'targetStore'])->name('admission.target.store');
- Route::post('/admission/{applicant}/status',[AdmissionController::class,'status'])->name('admission.status');
+ Route::post('/admission/applicants/{applicant}/applications',[AdmissionController::class,'applicationStore'])->name('admission.application.store');
+ Route::post('/admission/applications/{application}/status',[AdmissionController::class,'status'])->name('admission.status');
  Route::put('/admission/{applicant}',[AdmissionController::class,'update'])->name('admission.update');
  Route::post('/admission/enroll',[AdmissionController::class,'enroll'])->name('admission.enroll');
  Route::get('/academic-office/orders',[AcademicOfficeController::class,'orders'])->name('academic.orders');
