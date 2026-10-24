@@ -2,4 +2,4 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-class ParentMeeting extends Model{protected $guarded=[];protected $table='parent_meetings'; public function group(){return $this->belongsTo(StudyGroup::class,'study_group_id');} protected static function booted():void{static::addGlobalScope('period',function(Builder $q){$p=request()->attributes->get('academic_period');if($p)$q->where('academic_period_id',$p->id);});}}
+class ParentMeeting extends Model{protected $guarded=[]; protected static function boot(){parent::boot();static::creating(function($x){$x->created_by=auth()->id();});}protected $table='parent_meetings'; public function group(){return $this->belongsTo(StudyGroup::class,'study_group_id');} protected static function booted():void{static::addGlobalScope('period',function(Builder $q){$p=request()->attributes->get('academic_period');if($p)$q->where('academic_period_id',$p->id);});}}
