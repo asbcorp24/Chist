@@ -35,8 +35,10 @@
       <div class="col-6"><a class="menu-tile" href="{{ route('canteen.student') }}"><span class="ico">🍽</span><span>Питание</span></a></div>
     @endif
     @if($u->teacher_id)
-      <div class="col-6"><a class="menu-tile" href="{{ route('teacher.workspace') }}"><span class="ico">👨‍🏫</span><span>Преподаватель</span></a></div>
-      <div class="col-6"><a class="menu-tile" href="{{ route('curriculum.index') }}"><span class="ico">📘</span><span>КТП</span></a></div>
+      <div class="col-6"><a class="menu-tile" href="{{ route('teacher.workspace') }}"><span class="ico">👨‍🏫</span><span>Кабинет</span></a></div>
+      <div class="col-6"><a class="menu-tile" href="{{ route('curriculum.index') }}#programs"><span class="ico">📘</span><span>Рабочие программы</span></a></div>
+      <div class="col-6"><a class="menu-tile" href="{{ route('curriculum.index') }}"><span class="ico">🗒</span><span>КТП</span></a></div>
+      <div class="col-6"><a class="menu-tile" href="{{ route('teacher.curator.index') }}"><span class="ico">👥</span><span>Кураторство</span></a></div>
       <div class="col-6"><a class="menu-tile" href="{{ route('homework.teacher') }}"><span class="ico">✓</span><span>Домашние задания</span></a></div>
     @endif
     @if($u->canDo('reports.view'))
