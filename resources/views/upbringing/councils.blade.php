@@ -7,7 +7,7 @@
     <div>
       <a class="up-breadcrumb" href="{{ route('upbringing.index') }}">← Воспитательный отдел</a>
       <h1>Совет профилактики</h1>
-      <div class="up-sub">Заседания, решения и контроль исполнения</div>
+      <div class="up-sub">Заседания, решения и контроль исполнения</div><div class="mt-2"><a class="btn btn-sm btn-primary" href="/admin/prevention-councils">Открыть новый интерфейс Filament</a></div>
     </div>
   </div>
 
