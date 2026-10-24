@@ -1,9 +1,10 @@
 @php($u = auth()->user())
+@php($psychOnly=$u&&$u->hasRole('psychologist')&&!$u->isSuperAdmin()&&!$u->hasRole('admin')&&!$u->hasRole('head_academic')&&!$u->hasRole('academic_head')&&!$u->hasRole('teacher')&&!$u->hasRole('curator')&&!$u->hasRole('upbringing_head'))
 @if($u)
 <div class="mobile-nav d-lg-none">
   <div class="d-flex justify-content-around align-items-center">
     <a class="navitem {{ ($u->teacher_id?request()->routeIs('teacher.workspace'):request()->routeIs('dashboard')) ? 'active' : '' }}" href="{{ $u->teacher_id?route('teacher.workspace'):route('dashboard') }}"><span class="ico">⌂</span><span>{{$u->teacher_id?'Кабинет':'Главная'}}</span></a>
-    @if($u->canDo('schedule.view'))
+    @if(!$psychOnly&&$u->canDo('schedule.view'))
       <a class="navitem {{ request()->routeIs('journal.*') ? 'active' : '' }}" href="{{ route('journal.today') }}"><span class="ico">▣</span><span>Журнал</span></a>
     @else
       <a class="navitem {{ request()->routeIs('public.schedule') ? 'active' : '' }}" href="{{ ($u->teacher_id||$u->student_id) ? route('my.schedule') : route('public.schedule') }}"><span class="ico">📅</span><span>{{($u->teacher_id||$u->student_id)?'Моё расписание':'Расписание'}}</span></a>
@@ -41,14 +42,14 @@
       <div class="col-6"><a class="menu-tile" href="{{ route('teacher.curator.index') }}"><span class="ico">👥</span><span>Кураторство</span></a></div>
       <div class="col-6"><a class="menu-tile" href="{{ route('homework.teacher') }}"><span class="ico">✓</span><span>Домашние задания</span></a></div>
     @endif
-    @if($u->canDo('reports.view'))
+    @if(!$psychOnly&&$u->canDo('reports.view'))
       <div class="col-6"><a class="menu-tile" href="{{ route('analytics.index') }}"><span class="ico">📈</span><span>Аналитика</span></a></div>
       <div class="col-6"><a class="menu-tile" href="{{ route('documents.index') }}"><span class="ico">📄</span><span>Документы</span></a></div>
     @endif
-    @if($u->canDo('students.view'))
+    @if(!$psychOnly&&$u->canDo('students.view'))
       <div class="col-6"><a class="menu-tile" href="{{ route('admin.groups.index') }}"><span class="ico">👥</span><span>Группы</span></a></div>
     @endif
-    @if($u->canDo('students.manage'))
+    @if(!$psychOnly&&$u->canDo('students.manage'))
       <div class="col-6"><a class="menu-tile" href="{{ route('admin.students.index') }}"><span class="ico">🎓</span><span>Студенты</span></a></div>
       <div class="col-6"><a class="menu-tile" href="{{ route('academic.index') }}"><span class="ico">🏛</span><span>Учебная часть</span></a></div>
     @endif
@@ -65,13 +66,13 @@
     @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('psychologist') || $u->canDo('psychology.view'))
       <div class="col-6"><a class="menu-tile" href="{{route('psychologist.index')}}"><span class="ico">🧠</span><span>Психолог</span></a></div>
     @endif
-    @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('upbringing_head') || $u->hasRole('curator'))
+    @if(!$psychOnly&&($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('upbringing_head') || $u->hasRole('curator')))
       <div class="col-6"><a class="menu-tile" href="{{route('upbringing.index')}}"><span class="ico">🤝</span><span>Воспитательная</span></a></div>
     @endif
     @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('medical_worker') || $u->hasRole('academic_head'))
       <div class="col-6"><a class="menu-tile" href="{{route('medical.index')}}"><span class="ico">⚕</span><span>Медкабинет</span></a></div>
     @endif
-    @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('academic_head') || $u->canDo('students.manage'))
+    @if(!$psychOnly&&($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('academic_head') || $u->canDo('students.manage')))
       <div class="col-6"><a class="menu-tile" href="{{route('employment.index')}}"><span class="ico">💼</span><span>Трудоустройство</span></a></div>
     @endif
     @if($u->isSuperAdmin() || $u->hasRole('admin'))
