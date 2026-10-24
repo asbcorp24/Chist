@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\StudentSocialPassportResource\Pages;use App\Filament\Resources\StudentSocialPassportResource;use Filament\Resources\Pages\ListRecords;class ListStudentSocialPassports extends ListRecords{protected static string $resource=StudentSocialPassportResource::class;}
