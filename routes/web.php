@@ -558,7 +558,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::post('credentials/generate',[CredentialController::class,'generate'])->name('credentials.generate');
   Route::get('credentials/print',[CredentialController::class,'print'])->name('credentials.print');
   Route::get('credentials/{user}/reveal',[CredentialController::class,'reveal'])->name('credentials.reveal');
-  Route::post('credentials/{user}/reset',[CredentialController::class,'reset'])->name('credentials.reset')->middleware('permission:users.manage');
+  Route::post('credentials/{user}/reset',[CredentialController::class,'reset'])->name('credentials.reset');
   Route::resource('users',UserController::class)->except(['show','destroy'])->middleware('permission:users.manage');
   Route::get('roles',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.manage');
   Route::get('roles/{role}/edit',[RoleController::class,'edit'])->name('roles.edit')->middleware('permission:roles.manage');
