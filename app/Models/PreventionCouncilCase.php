@@ -1,0 +1,1 @@
+<?php namespace App\Models;use Illuminate\Database\Eloquent\Model;class PreventionCouncilCase extends Model{protected $table='prevention_council_cases';protected $guarded=[];}
