@@ -11,6 +11,7 @@
 @if($u->canDo('students.manage')||$u->canDo('reports.view')||$u->isSuperAdmin())
 <div class="small text-uppercase px-2 mt-4 mb-2" style="color:#667085;font-size:10px;letter-spacing:.08em">Учебный процесс</div><nav class="nav flex-column">
 @if($u->canDo('students.manage'))<a class="nav-link" href="{{route('academic.index')}}">🏛 <span>Учебная часть</span></a><a class="nav-link" href="{{route('admin.groups.index')}}">👥 <span>Группы</span></a><a class="nav-link" href="{{route('admin.students.index')}}">🎓 <span>Студенты</span></a>@endif
+@if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('academic_head')||$u->hasRole('head_academic'))<a class="nav-link" href="{{route('admin.teachers.index')}}">👨‍🏫 <span>Преподаватели</span></a>@endif
 @if($u->isSuperAdmin())<a class="nav-link" href="{{route('teacher.workspace')}}">👨‍🏫 <span>Преподаватель</span></a><a class="nav-link" href="{{route('management.index')}}">◫ <span>Управление</span></a>@endif
 @if($u->canDo('reports.view'))<a class="nav-link" href="{{route('analytics.index')}}">📈 <span>Аналитика</span></a><a class="nav-link" href="{{route('reports.groups')}}">📊 <span>Отчёты</span></a>@endif
 </nav>@endif
