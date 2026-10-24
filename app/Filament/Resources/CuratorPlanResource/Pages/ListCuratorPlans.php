@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\CuratorPlanResource\Pages;use App\Filament\Resources\CuratorPlanResource;use Filament\Resources\Pages\ListRecords;class ListCuratorPlans extends ListRecords{protected static string $resource=CuratorPlanResource::class;protected function getActions():array{return[\Filament\Pages\Actions\CreateAction::make()->label('Добавить')];}}
