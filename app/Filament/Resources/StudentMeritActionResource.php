@@ -6,7 +6,7 @@ use Filament\Forms;use Filament\Resources\Form;use Filament\Resources\Resource;u
 class StudentMeritActionResource extends Resource{
 protected static ?string $model=StudentMeritAction::class;protected static bool $shouldRegisterNavigation=false;protected static ?string $navigationIcon='heroicon-o-star';protected static ?string $navigationLabel='Поощрения и взыскания';protected static ?string $navigationGroup='Воспитательная работа';protected static ?string $modelLabel='запись';protected static ?string $pluralModelLabel='Поощрения и взыскания';
 public static function form(Form $form):Form{return $form->schema([
-Forms\Components\Select::make('student_id')->label('Студент')->options(fn()=>Student::query()->where('status','active')->orderBy('last_name')->get()->mapWithKeys(fn($s)=>[$s->id=>$s->last_name.' '.$s->first_name]))->searchable()->required(),
+Forms\Components\Select::make('student_id')->label('Студент')->options(fn()=>DB::table('students')->where('status','active')->orderBy('last_name')->get()->mapWithKeys(fn($s)=>[$s->id=>$s->last_name.' '.$s->first_name]))->searchable()->required(),
 Forms\Components\Select::make('type')->label('Тип')->options(['reward'=>'Поощрение','discipline'=>'Взыскание'])->required(),
 Forms\Components\DatePicker::make('action_on')->label('Дата')->required(),Forms\Components\TextInput::make('kind')->label('Вид')->required(),
 Forms\Components\Textarea::make('reason')->label('Основание')->required()->columnSpan('full'),Forms\Components\TextInput::make('order_number')->label('Приказ №'),Forms\Components\DatePicker::make('order_on')->label('Дата приказа'),Forms\Components\TextInput::make('rating_points')->label('Баллы рейтинга')->numeric()->required()
