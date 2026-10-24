@@ -122,14 +122,41 @@ class RectorXmlImporter
                 ]);
             }
 
-            $n=1;
+            // Rector хранит время отдельных уроков. В режиме пар два соседних урока
+            // образуют одну пару: 1+2 => пара 1, 3+4 => пара 2 и т.д.
+            $sourceTimes=[];
             foreach ($xml->times->time as $tm) {
-                $timeText = trim((string)$tm);
+                $timeText=trim((string)$tm);
                 if (!preg_match('/(\\d{1,2}:\\d{2})\\s*-\\s*(\\d{1,2}:\\d{2})/', $timeText, $m)) continue;
-                DB::table('lesson_times')->updateOrInsert(
-                    ['academic_period_id'=>$periodId,'lesson_number'=>$n++],
-                    ['starts_at'=>$m[1].':00','ends_at'=>$m[2].':00','created_at'=>now(),'updated_at'=>now()]
-                );
+                $sourceTimes[]=['starts_at'=>$m[1].':00','ends_at'=>$m[2].':00'];
+            }
+
+            // Удаляем старые интервалы периода: после переключения lesson/pair не должны
+            // оставаться лишние номера и старые времена.
+            DB::table('lesson_times')->where('academic_period_id',$periodId)->delete();
+
+            if ($lessonUnitMode === 'pair') {
+                foreach (array_chunk($sourceTimes,2) as $i=>$pairTimes) {
+                    $first=$pairTimes[0];
+                    $last=$pairTimes[count($pairTimes)-1];
+                    DB::table('lesson_times')->insert([
+                        'academic_period_id'=>$periodId,
+                        'lesson_number'=>$i+1,
+                        'starts_at'=>$first['starts_at'],
+                        'ends_at'=>$last['ends_at'],
+                        'created_at'=>now(),'updated_at'=>now()
+                    ]);
+                }
+            } else {
+                foreach ($sourceTimes as $i=>$lessonTime) {
+                    DB::table('lesson_times')->insert([
+                        'academic_period_id'=>$periodId,
+                        'lesson_number'=>$i+1,
+                        'starts_at'=>$lessonTime['starts_at'],
+                        'ends_at'=>$lessonTime['ends_at'],
+                        'created_at'=>now(),'updated_at'=>now()
+                    ]);
+                }
             }
 
             // Новый импорт деактивирует только старую версию расписания. Журнал не трогаем.
