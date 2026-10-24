@@ -6,7 +6,7 @@ use RuntimeException;
 
 class RectorXmlImporter
 {
-    public function import(string $path, string $filename, ?int $userId = null, string $lessonUnitMode = 'lesson'): array
+    public function import(string $path, string $filename, ?int $userId = null, ?string $lessonUnitMode = null): array
     {
         $raw = file_get_contents($path);
         if ($raw === false) throw new RuntimeException('Не удалось прочитать XML.');
@@ -47,6 +47,12 @@ class RectorXmlImporter
 
             $periodNo = (int)substr($begin,5,2) >= 7 ? 1 : 2;
             $periodId = DB::table('academic_periods')->where(['academic_year_id'=>$yearId,'number'=>$periodNo])->value('id');
+            if ($periodId) {
+                $storedMode=DB::table('academic_periods')->where('id',$periodId)->value('lesson_unit_mode') ?: 'lesson';
+                $lessonUnitMode=$lessonUnitMode ?: $storedMode;
+            } else {
+                $lessonUnitMode=$lessonUnitMode ?: 'pair';
+            }
             $periodData = ['name'=>$periodNo===1?'I полугодие':'II полугодие','starts_on'=>$begin,'ends_on'=>$end,'lesson_unit_mode'=>$lessonUnitMode,'updated_at'=>now()];
             if ($periodId) DB::table('academic_periods')->where('id',$periodId)->update($periodData);
             else $periodId = DB::table('academic_periods')->insertGetId($periodData + ['academic_year_id'=>$yearId,'number'=>$periodNo,'is_current'=>0,'is_closed'=>0,'created_at'=>now()]);
