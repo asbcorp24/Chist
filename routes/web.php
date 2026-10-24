@@ -22,6 +22,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/period/{period}/open',[AcademicPeriodController::class,'open'])->name('period.open');
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
  Route::get('/journal/gradebook/{group}/{subject}',[JournalController::class,'gradebook'])->name('journal.gradebook');
+ Route::post('/journal/lesson/{lesson}/cell',[JournalController::class,'gradebookCell'])->name('journal.gradebook.cell');
  Route::get('/journal/control',[JournalControlController::class,'index'])->name('journal.control');
  Route::get('/journal/control-teachers',[JournalControlController::class,'teachers'])->name('journal.control.teachers');
  Route::get('/journal/control/{group}/{subject}',[JournalControlController::class,'details'])->name('journal.control.details');
