@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;use App\Models\{User,Role};use App\Services\CredentialService;use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;
 class TeacherController extends Controller{
  public function index(Request $r){
   $p=$r->attributes->get('academic_period');
@@ -26,7 +26,7 @@ class TeacherController extends Controller{
   return view('admin.teachers.index',compact('teachers','p','canManage'));
  }
  public function create(){return view('admin.teachers.form',['teacher'=>null,'account'=>null,'loads'=>collect(),'groups'=>collect(),'methodical'=>null]);}
- public function store(Request $r){$d=$this->validated($r);$id=DB::table('teachers')->insertGetId($d+['active'=>1,'created_at'=>now(),'updated_at'=>now()]);return redirect()->route('admin.teachers.edit',$id)->with('success','Преподаватель добавлен');}
+ public function store(Request $r,CredentialService $c){$d=$this->validated($r);$credentials=null;$id=null;DB::transaction(function()use($d,$c,&$credentials,&$id){$id=DB::table('teachers')->insertGetId($d+['active'=>1,'created_at'=>now(),'updated_at'=>now()]);$role=Role::where('code','teacher')->firstOrFail();$plain=$c->password();$login=$c->login($d['last_name'],$d['first_name'],$id);$u=User::create($c->pack($plain)+['name'=>trim($d['last_name'].' '.$d['first_name'].' '.($d['middle_name']??'')),'login'=>$login,'email'=>$login.'@teachers.local','teacher_id'=>$id,'is_active'=>true]);$u->roles()->syncWithoutDetaching([$role->id]);$credentials=['name'=>$u->name,'login'=>$login,'password'=>$plain,'type'=>'Преподаватель'];});return redirect()->route('admin.teachers.edit',$id)->with('success','Преподаватель и учётная запись созданы автоматически.')->with('created_credentials',$credentials);}
  public function edit(Request $r,$id){
   $t=DB::table('teachers')->find($id);abort_if(!$t,404);$account=DB::table('users')->where('teacher_id',$id)->first();
   $p=$r->attributes->get('academic_period')?:DB::table('academic_periods')->where('is_current',1)->first()?:DB::table('academic_periods')->orderByDesc('starts_on')->first();
