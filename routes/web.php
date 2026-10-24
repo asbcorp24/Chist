@@ -535,6 +535,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
  Route::post('/journal/lesson/{lesson}/attendance/all-present',[JournalController::class,'allPresent'])->name('journal.attendance.all');
  Route::post('/journal/lesson/{lesson}/grade',[JournalController::class,'grade'])->name('journal.grade');
+Route::post('/journal/lesson/{lesson}/grade-type',[JournalController::class,'lessonGradeType'])->name('journal.lesson.grade-type');
  Route::post('/journal/lesson/{lesson}/content',[JournalController::class,'content'])->name('journal.content');
  Route::post('/homework/{lesson}/submit',[HomeworkController::class,'submit'])->name('homework.submit');
  Route::post('/homework/submission/{submission}/review',[HomeworkController::class,'review'])->name('homework.review');
