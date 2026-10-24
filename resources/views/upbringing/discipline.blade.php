@@ -1,4 +1,64 @@
-@extends('layouts.app') @section('title','Дисциплина') @section('content')
-<div class="ch-page-head"><div><a href="{{route('upbringing.index')}}">← Воспитательный отдел</a><h1 class="h4 mb-0">Поведение и дисциплина</h1><p>Инциденты на занятиях и контроль принятых мер</p></div></div>
-<div class="card ch-data-desktop"><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Дата</th><th>Студент</th><th>Занятие</th><th>Нарушение</th><th>Важность</th><th>Статус</th><th>Меры</th></tr></thead><tbody>@foreach($rows as $x)<tr><td>{{$x->lesson_date?:date('d.m.Y',strtotime($x->created_at))}}</td><td><b>{{$x->last_name}} {{$x->first_name}}</b><br><small>{{$x->group_name}}</small></td><td>{{$x->subject_name?:'—'}}</td><td>{{$x->type}}<br><small>{{$x->description}}</small></td><td>{{$x->severity}}</td><td>{{$x->status}}</td><td>@if($x->status!=='resolved')<form method="post" action="{{route('discipline.resolve',$x->id)}}">@csrf<textarea name="action_taken" class="form-control form-control-sm mb-1" placeholder="Принятые меры">{{$x->action_taken}}</textarea><button name="status" value="in_work" class="btn btn-sm btn-outline-primary">В работу</button><button name="status" value="resolved" class="btn btn-sm btn-success">Закрыть</button></form>@else{{$x->action_taken}}@endif</td></tr>@endforeach</tbody></table></div></div>
-<div class="ch-data-mobile">@foreach($rows as $x)<div class="ch-data-card"><div class="ch-data-card-title">{{$x->last_name}} {{$x->first_name}}</div><div class="ch-data-card-sub">{{$x->group_name}} · {{$x->type}} · {{$x->severity}}</div><div>{{$x->description}}</div><small>{{$x->status}}</small></div>@endforeach</div>@endsection
+@extends('layouts.app')
+@section('title','Дисциплина')
+@section('content')
+
+<div class="ch-page-head">
+<div>
+<a href="{{route('upbringing.index')}}">← Воспитательный отдел</a>
+<h1 class="h4 mb-0">Поведение и дисциплина</h1>
+<p>Инциденты на занятиях и контроль принятых мер</p>
+</div>
+</div>
+<div class="card ch-data-desktop">
+<div class="table-responsive">
+<table class="table align-middle mb-0">
+<thead>
+<tr>
+<th>Дата</th>
+<th>Студент</th>
+<th>Занятие</th>
+<th>Нарушение</th>
+<th>Важность</th>
+<th>Статус</th>
+<th>Меры</th>
+</tr>
+</thead>
+<tbody>
+@foreach($rows as $x)<tr>
+<td>{{$x->lesson_date?:date('d.m.Y',strtotime($x->created_at))}}</td>
+<td>
+<b>{{$x->last_name}} {{$x->first_name}}</b>
+<br>
+<small>{{$x->group_name}}</small>
+</td>
+<td>{{$x->subject_name?:'—'}}</td>
+<td>{{$x->type}}<br>
+<small>{{$x->description}}</small>
+</td>
+<td>{{$x->severity}}</td>
+<td>{{$x->status}}</td>
+<td>
+@if($x->status!=='resolved')<form method="post" action="{{route('discipline.resolve',$x->id)}}">@csrf<textarea name="action_taken" class="form-control form-control-sm mb-1" placeholder="Принятые меры">{{$x->action_taken}}</textarea>
+<button name="status" value="in_work" class="btn btn-sm btn-outline-primary">В работу</button>
+<button name="status" value="resolved" class="btn btn-sm btn-success">Закрыть</button>
+</form>
+@else
+{{$x->action_taken}}
+@endif
+</td>
+</tr>
+@endforeach
+</tbody>
+</table>
+</div>
+</div>
+<div class="ch-data-mobile">
+@foreach($rows as $x)<div class="ch-data-card">
+<div class="ch-data-card-title">{{$x->last_name}} {{$x->first_name}}</div>
+<div class="ch-data-card-sub">{{$x->group_name}} · {{$x->type}} · {{$x->severity}}</div>
+<div>{{$x->description}}</div>
+<small>{{$x->status}}</small>
+</div>
+@endforeach
+</div>
+@endsection
