@@ -4,7 +4,7 @@ use App\Filament\Resources\StudentMeritActionResource\Pages;
 use App\Models\StudentMeritAction;use App\Models\Student;
 use Filament\Forms;use Filament\Resources\Form;use Filament\Resources\Resource;use Filament\Resources\Table;use Filament\Tables;
 class StudentMeritActionResource extends Resource{
-protected static ?string $model=StudentMeritAction::class;protected static ?string $navigationIcon='heroicon-o-star';protected static ?string $navigationLabel='Поощрения и взыскания';protected static ?string $navigationGroup='Воспитательная работа';protected static ?string $modelLabel='запись';protected static ?string $pluralModelLabel='Поощрения и взыскания';
+protected static ?string $model=StudentMeritAction::class;protected static bool $shouldRegisterNavigation=false;protected static ?string $navigationIcon='heroicon-o-star';protected static ?string $navigationLabel='Поощрения и взыскания';protected static ?string $navigationGroup='Воспитательная работа';protected static ?string $modelLabel='запись';protected static ?string $pluralModelLabel='Поощрения и взыскания';
 public static function form(Form $form):Form{return $form->schema([
 Forms\Components\Select::make('student_id')->label('Студент')->options(fn()=>Student::query()->where('status','active')->orderBy('last_name')->get()->mapWithKeys(fn($s)=>[$s->id=>$s->last_name.' '.$s->first_name]))->searchable()->required(),
 Forms\Components\Select::make('type')->label('Тип')->options(['reward'=>'Поощрение','discipline'=>'Взыскание'])->required(),

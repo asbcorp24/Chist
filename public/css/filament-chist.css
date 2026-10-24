@@ -5,3 +5,8 @@
 .filament-main-topbar{border-bottom-color:#dbeafe!important}
 .filament-button.bg-primary-600,.filament-button.bg-primary-500{background:#2563eb!important}
 .filament-tables-container,.filament-forms-card-component{border-radius:14px!important}
+
+/* Chist unified shell: Filament is a CRUD engine, not a second application */
+.filament-sidebar{display:none!important}.filament-main{padding-left:0!important}.filament-main-topbar{left:0!important}
+.chist-filament-return{position:fixed;left:18px;top:13px;z-index:60;background:#1d4ed8;color:white!important;padding:8px 13px;border-radius:9px;text-decoration:none;font-weight:600;box-shadow:0 4px 14px rgba(29,78,216,.25)}
+@media(max-width:640px){.chist-filament-return{left:8px;top:8px;padding:7px 10px;font-size:13px}}
