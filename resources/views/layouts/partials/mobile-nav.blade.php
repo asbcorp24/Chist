@@ -62,6 +62,9 @@
     @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('academic_head'))
       <div class="col-6"><a class="menu-tile" href="{{ route('management.index') }}"><span class="ico">🏛</span><span>Руководитель</span></a></div>
     @endif
+    @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('psychologist'))
+      <div class="col-6"><a class="menu-tile" href="{{route('psychologist.index')}}"><span class="ico">🧠</span><span>Психолог</span></a></div>
+    @endif
     @if($u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('upbringing_head') || $u->hasRole('curator'))
       <div class="col-6"><a class="menu-tile" href="{{route('upbringing.index')}}"><span class="ico">🤝</span><span>Воспитательная</span></a></div>
     @endif

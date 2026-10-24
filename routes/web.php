@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\PsychologistController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AdmissionDossierController,AdmissionExamController,ApplicantPortalController,AuthController,ProfileController,DashboardController,JournalController,JournalControlController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,TeacherCuratorController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,StudentDisciplineController,DormitoryController,DormitoryOperationsController,DormitoryExtendedController,DormitoryStudentController,DormitoryAssetController};
 use App\Http\Controllers\{AdministrationController,CanteenController,CanteenIssueController,CanteenRecipeController,CanteenStudentController,CanteenWarehouseController,CollegeBiController,DocumentIntegrationController,DocumentRouteController,DocumentWorkflowController,FacilityController,FacilityMaintenanceController,FacilityResourceController,MethodicalActivityController,MethodicalControlController,MethodicalOfficeController,MethodicalReportController,OfficeArchiveController,OfficeController,PracticeControlController,PracticeDistributionController,PracticeOfficeController,PracticePartnerController,PracticePlanningController,PracticeStudentController,QualityAuditController,QualityController,QualityRiskSurveyController,ServiceRequestController,StudentDigitalCardController,AdmissionController,DepartmentWorkspaceController,SocialSupportController,ScholarshipController};
@@ -16,6 +17,21 @@ Route::middleware('guest')->group(function(){Route::get('/login',[AuthController
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
 Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/profile',[ProfileController::class,'edit'])->name('profile.edit');
+ Route::get('/psychologist',[PsychologistController::class,'index'])->name('psychologist.index');
+ Route::post('/psychologist/cases',[PsychologistController::class,'caseStore'])->name('psychologist.cases.store');
+ Route::get('/psychologist/cases/{id}',[PsychologistController::class,'caseShow'])->name('psychologist.cases.show');
+ Route::put('/psychologist/cases/{id}',[PsychologistController::class,'caseUpdate'])->name('psychologist.cases.update');
+ Route::delete('/psychologist/cases/{id}',[PsychologistController::class,'caseDelete'])->name('psychologist.cases.delete');
+ Route::post('/psychologist/cases/{id}/sessions',[PsychologistController::class,'sessionStore'])->name('psychologist.sessions.store');
+ Route::delete('/psychologist/sessions/{id}',[PsychologistController::class,'sessionDelete'])->name('psychologist.sessions.delete');
+ Route::post('/psychologist/student/{student}/consents',[PsychologistController::class,'consentStore'])->name('psychologist.consents.store');
+ Route::delete('/psychologist/consents/{id}',[PsychologistController::class,'consentDelete'])->name('psychologist.consents.delete');
+ Route::post('/psychologist/methods',[PsychologistController::class,'methodStore'])->name('psychologist.methods.store');
+ Route::delete('/psychologist/methods/{id}',[PsychologistController::class,'methodDelete'])->name('psychologist.methods.delete');
+ Route::post('/psychologist/student/{student}/assessments',[PsychologistController::class,'assessmentStore'])->name('psychologist.assessments.store');
+ Route::delete('/psychologist/assessments/{id}',[PsychologistController::class,'assessmentDelete'])->name('psychologist.assessments.delete');
+ Route::post('/psychologist/plans',[PsychologistController::class,'planStore'])->name('psychologist.plans.store');
+ Route::delete('/psychologist/plans/{id}',[PsychologistController::class,'planDelete'])->name('psychologist.plans.delete');
  Route::get('/my-schedule',[PublicScheduleController::class,'mine'])->name('my.schedule');
  Route::put('/profile/password',[ProfileController::class,'password'])->name('profile.password');
  Route::post('/period/select',[AcademicPeriodController::class,'select'])->name('period.select');
