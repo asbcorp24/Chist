@@ -1,12 +1,8 @@
 :root{--ch-blue:#1d4ed8;--ch-blue-dark:#1e3a8a;--ch-blue-soft:#eff6ff}
-.filament-sidebar{background:linear-gradient(180deg,#0f2f68 0%,#153f86 100%)!important}
-.filament-sidebar-nav a,.filament-sidebar-nav button{color:#dbeafe!important}
-.filament-sidebar-nav a:hover,.filament-sidebar-nav .bg-primary-500\/10{background:rgba(255,255,255,.10)!important}
-.filament-main-topbar{border-bottom-color:#dbeafe!important}
+.filament-sidebar,.filament-main-topbar{display:none!important}
+.filament-main{padding-left:280px!important;padding-top:72px!important}
+.ch-filament-shell .ch-topbar{position:fixed!important;left:0;right:0;top:0;z-index:70;background:#fff;height:72px;border-bottom:1px solid #eaecf0}
+.ch-filament-shell .ch-filament-side>.desktop-side{position:fixed!important;display:block!important;left:0;top:72px;bottom:0;width:280px;z-index:65;overflow-y:auto}
 .filament-button.bg-primary-600,.filament-button.bg-primary-500{background:#2563eb!important}
 .filament-tables-container,.filament-forms-card-component{border-radius:14px!important}
-
-/* Chist unified shell: Filament is a CRUD engine, not a second application */
-.filament-sidebar{display:none!important}.filament-main{padding-left:0!important}.filament-main-topbar{left:0!important}
-.chist-filament-return{position:fixed;left:18px;top:13px;z-index:60;background:#1d4ed8;color:white!important;padding:8px 13px;border-radius:9px;text-decoration:none;font-weight:600;box-shadow:0 4px 14px rgba(29,78,216,.25)}
-@media(max-width:640px){.chist-filament-return{left:8px;top:8px;padding:7px 10px;font-size:13px}}
+@media(max-width:991.98px){.ch-filament-shell .ch-filament-side{display:none}.filament-main{padding-left:0!important;padding-top:72px!important}}
