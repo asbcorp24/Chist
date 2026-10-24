@@ -15,8 +15,8 @@
 @if($mySubmission)<div class="mb-2"><span class="badge {{$mySubmission->status==='checked'?'text-bg-success':($mySubmission->status==='revision'?'text-bg-danger':'text-bg-primary')}}">{{$mySubmission->status==='checked'?'Проверено':($mySubmission->status==='revision'?'На доработку':'Сдано')}}</span></div>
 @if($mySubmission->teacher_comment)<div class="alert alert-light py-2">Комментарий: {{$mySubmission->teacher_comment}}</div>@endif
 @endif
-<form method="post" enctype="multipart/form-data" action="{{route('homework.submit',$l->id)}}">@csrf<textarea class="form-control mb-2" name="answer_text" rows="3" placeholder="Ответ">{{$mySubmission?->answer_text}}</textarea><input class="form-control mb-2" type="file" name="file">
-@if($mySubmission?->file_path)<a class="btn btn-outline-secondary w-100 mb-2" href="{{route('homework.download',$mySubmission->id)}}">📎 {{$mySubmission->original_name}}</a>@endif
+<form method="post" enctype="multipart/form-data" action="{{route('homework.submit',$l->id)}}">@csrf<textarea class="form-control mb-2" name="answer_text" rows="3" placeholder="Ответ">{{$mySubmission ? $mySubmission->answer_text : ''}}</textarea><input class="form-control mb-2" type="file" name="file">
+@if($mySubmission && $mySubmission->file_path)<a class="btn btn-outline-secondary w-100 mb-2" href="{{route('homework.download',$mySubmission->id)}}">📎 {{$mySubmission->original_name}}</a>@endif
 <button class="btn btn-primary w-100">Отправить работу</button></form></div></div>@endif
  
 @if(auth()->user()->canDo('grades.mark')&&$submissions->count())<div class="card mb-3"><div class="card-body"><h2 class="h6">Сданные работы · {{$submissions->count()}}</h2>
