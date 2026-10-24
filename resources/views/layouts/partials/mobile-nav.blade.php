@@ -2,7 +2,7 @@
 @if($u)
 <div class="mobile-nav d-lg-none">
   <div class="d-flex justify-content-around align-items-center">
-    <a class="navitem {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><span class="ico">⌂</span><span>Главная</span></a>
+    <a class="navitem {{ ($u->teacher_id?request()->routeIs('teacher.workspace'):request()->routeIs('dashboard')) ? 'active' : '' }}" href="{{ $u->teacher_id?route('teacher.workspace'):route('dashboard') }}"><span class="ico">⌂</span><span>{{$u->teacher_id?'Кабинет':'Главная'}}</span></a>
     @if($u->canDo('schedule.view'))
       <a class="navitem {{ request()->routeIs('journal.*') ? 'active' : '' }}" href="{{ route('journal.today') }}"><span class="ico">▣</span><span>Журнал</span></a>
     @else
@@ -23,7 +23,7 @@
  <div class="offcanvas-header"><h5 class="offcanvas-title">Разделы Chist</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button></div>
  <div class="offcanvas-body pt-0">
   <div class="row g-2">
-    <div class="col-6"><a class="menu-tile" href="{{ route('public.schedule') }}"><span class="ico">📅</span><span>Расписание</span></a></div>
+    <div class="col-6"><a class="menu-tile" href="{{ ($u->teacher_id||$u->student_id)?route('my.schedule'):route('public.schedule') }}"><span class="ico">📅</span><span>{{($u->teacher_id||$u->student_id)?'Моё расписание':'Расписание'}}</span></a></div>
     <div class="col-6"><a class="menu-tile" href="{{ route('calendar.index') }}"><span class="ico">🗓</span><span>Календарь</span></a></div>
     <div class="col-6"><a class="menu-tile" href="{{ route('announcements.index') }}"><span class="ico">🔔</span><span>Объявления</span></a></div>
     <div class="col-6"><a class="menu-tile" href="{{ route('requests.index') }}"><span class="ico">🎫</span><span>Обращения</span></a></div>

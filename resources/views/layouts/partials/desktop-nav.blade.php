@@ -2,7 +2,7 @@
 @if($u)<aside class="desktop-side">
 <div class="small text-uppercase px-2 mb-2" style="color:#667085;font-size:10px;letter-spacing:.08em">Рабочее пространство</div>
 <nav class="nav flex-column">
-<a class="nav-link" href="{{route('dashboard')}}">⌂ <span>Главная</span></a>
+<a class="nav-link" href="{{$u->teacher_id?route('teacher.workspace'):route('dashboard')}}">⌂ <span>{{$u->teacher_id?'Кабинет':'Главная'}}</span></a>
 <a class="nav-link" href="{{($u->teacher_id||$u->student_id)?route('my.schedule'):route('public.schedule')}}">📅 <span>{{($u->teacher_id||$u->student_id)?'Моё расписание':'Расписание'}}</span></a>
 @if($u->canDo('schedule.view'))<a class="nav-link" href="{{route('journal.today')}}">▣ <span>Журнал</span></a>@endif
 @if($u->teacher_id)
