@@ -5,14 +5,14 @@
 <div class="card"><div class="card-body"><div class="d-flex gap-2 flex-wrap">
 <a class="btn btn-outline-primary" href="{{route('admin.students.index',['group_id'=>$group->id])}}">Студенты</a>
 <a class="btn btn-outline-primary" href="{{route('journal.today',['group'=>$group->id])}}">Журнал</a>
-<a class="btn btn-outline-primary" href="{{route('student.movements',['group'=>$group->id])}}">Переводы и движение</a>
+<a class="btn btn-outline-primary" href="{{route('academic.movements',['group'=>$group->id])}}">Переводы и движение</a>
 <a class="btn btn-outline-primary" href="{{route('practice-office.index',['group'=>$group->id])}}">Практика <span class="badge text-bg-secondary">{{$practice}}</span></a>
 <a class="btn btn-outline-primary" href="{{route('gia.index',['group'=>$group->id])}}">ГИА <span class="badge text-bg-secondary">{{$gia->count()}}</span></a>
 <a class="btn btn-outline-primary" href="{{route('academic.orders',['group'=>$group->id])}}">Приказы</a>
 <a class="btn btn-outline-primary" href="{{route('upbringing.social-statuses',['group'=>$group->id])}}">Социальный кабинет</a>
 <a class="btn btn-outline-primary" href="{{route('upbringing.scholarships',['group'=>$group->id])}}">Стипендии</a>
 </div></div></div>
-<div class="card mt-3"><div class="card-body"><div class="d-flex justify-content-between align-items-center"><div><h2 class="h6 mb-1">История движения группы</h2><div class="small text-secondary">Последние зачисления, переводы, отпуска, отчисления и выпуск.</div></div><a href="{{route('student.movements',['group'=>$group->id])}}">Открыть модуль →</a></div>@forelse($movements->take(8) as $m)<div class="border-top py-2 mt-2"><b>{{$m->effective_on}}</b> · {{$m->type}} @if($m->order_number) · приказ №{{$m->order_number}} @endif</div>@empty<div class="text-secondary mt-2">Движений пока нет.</div>@endforelse</div></div>
+<div class="card mt-3"><div class="card-body"><div class="d-flex justify-content-between align-items-center"><div><h2 class="h6 mb-1">История движения группы</h2><div class="small text-secondary">Последние зачисления, переводы, отпуска, отчисления и выпуск.</div></div><a href="{{route('academic.movements',['group'=>$group->id])}}">Открыть модуль →</a></div>@forelse($movements->take(8) as $m)<div class="border-top py-2 mt-2"><b>{{$m->effective_on}}</b> · {{$m->type}} @if($m->order_number) · приказ №{{$m->order_number}} @endif</div>@empty<div class="text-secondary mt-2">Движений пока нет.</div>@endforelse</div></div>
 </div>
 @endif
 
