@@ -10,10 +10,28 @@ class RectorXmlImporter
     {
         $raw = file_get_contents($path);
         if ($raw === false) throw new RuntimeException('Не удалось прочитать XML.');
-        $utf8 = mb_convert_encoding($raw, 'UTF-8', 'Windows-1251');
+        // Rector-College 1.7 exports Windows-1251. After conversion the XML declaration
+        // must also be changed, otherwise libxml interprets UTF-8 bytes as Windows-1251.
+        $encoding = 'Windows-1251';
+        if (preg_match('/<\\?xml[^>]+encoding=["\\']([^"\\']+)["\\']/i', substr($raw, 0, 256), $m)) {
+            $encoding = $m[1];
+        } elseif (str_starts_with($raw, "\xEF\xBB\xBF") || mb_check_encoding($raw, 'UTF-8')) {
+            $encoding = 'UTF-8';
+        }
+        $utf8 = mb_convert_encoding($raw, 'UTF-8', $encoding);
+        $utf8 = preg_replace('/(<\\?xml[^>]+encoding=["\\'])[^"\\']+(["\\'])/i', '$1UTF-8$2', $utf8, 1) ?? $utf8;
+
         libxml_use_internal_errors(true);
+        libxml_clear_errors();
         $xml = simplexml_load_string($utf8, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NONET);
-        if (!$xml) throw new RuntimeException('Некорректный XML Rector-College.');
+        if (!$xml) {
+            $errors = array_map(fn($e) => trim($e->message).' (строка '.$e->line.')', libxml_get_errors());
+            libxml_clear_errors();
+            throw new RuntimeException('Некорректный XML Rector-College: '.implode('; ', array_slice($errors, 0, 3)));
+        }
+        if ($xml->getName() !== 'timetable' || (string)($xml->format['name'] ?? '') !== 'Rector-College') {
+            throw new RuntimeException('Файл не является выгрузкой Rector-College.');
+        }
 
         return DB::transaction(function () use ($xml, $raw, $filename, $userId) {
             $begin = $this->date((string)$xml->term->begin_date);
@@ -67,7 +85,7 @@ class RectorXmlImporter
 
             // Rector class_id у преподавателя — закреплённая группа (классное руководство).
             foreach ($xml->teachers->teacher as $t) {
-                $p=$t->person; $classSource=(int)$p->class_id;
+                $p=$t->person; $classSource=(int)$t->class_id;
                 if ($classSource >= 0) {
                     $teacherId=DB::table('teachers')->where('source_id',(int)$p->id)->value('id');
                     DB::table('study_groups')->where('source_id',$classSource)->update(['curator_teacher_id'=>$teacherId,'updated_at'=>now()]);
@@ -75,8 +93,8 @@ class RectorXmlImporter
             }
 
             // Праздники храним отдельно и исключаем из генерации занятий.
-            foreach ($xml->holidays->holiday as $h) {
-                $dateText = trim((string)($h->date ?? $h));
+            foreach ($xml->holidays->day as $h) {
+                $dateText = trim((string)$h);
                 if ($dateText === '') continue;
                 DB::table('calendar_exceptions')->updateOrInsert(
                     ['academic_period_id'=>$periodId,'exception_date'=>$this->date($dateText),'type'=>'holiday'],
@@ -100,9 +118,11 @@ class RectorXmlImporter
 
             $n=1;
             foreach ($xml->times->time as $tm) {
+                $timeText = trim((string)$tm);
+                if (!preg_match('/(\\d{1,2}:\\d{2})\\s*-\\s*(\\d{1,2}:\\d{2})/', $timeText, $m)) continue;
                 DB::table('lesson_times')->updateOrInsert(
                     ['academic_period_id'=>$periodId,'lesson_number'=>$n++],
-                    ['starts_at'=>(string)$tm->begin,'ends_at'=>(string)$tm->end,'created_at'=>now(),'updated_at'=>now()]
+                    ['starts_at'=>$m[1].':00','ends_at'=>$m[2].':00','created_at'=>now(),'updated_at'=>now()]
                 );
             }
 
@@ -119,29 +139,33 @@ class RectorXmlImporter
                 ];
                 $loads[(int)$load->id]=['class'=>$classSource,'details'=>$details];
                 $groupId=$classSource===null?null:DB::table('study_groups')->where('source_id',$classSource)->value('id');
-                foreach($details as $d){$teacherId=DB::table('teachers')->where('source_id',$d['teacher'])->value('id');$subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');$studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');DB::table('teaching_load_plans')->updateOrInsert(['academic_period_id'=>$periodId,'source_load_id'=>(int)$load->id,'teacher_id'=>$teacherId,'subject_id'=>$subjectId],['study_group_id'=>$groupId,'study_type_id'=>$studyTypeId,'hours_total'=>$this->nullableDecimal($load->hours_total),'hours_week'=>$this->nullableDecimal($load->hours_week),'created_at'=>now(),'updated_at'=>now()]);}
+                foreach($details as $subgroup=>$d){$g=$load->groups->group[$subgroup];$teacherId=DB::table('teachers')->where('source_id',$d['teacher'])->value('id');$subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');$studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');DB::table('teaching_load_plans')->updateOrInsert(['academic_period_id'=>$periodId,'source_load_id'=>(int)$load->id,'teacher_id'=>$teacherId,'subject_id'=>$subjectId],['study_group_id'=>$groupId,'study_type_id'=>$studyTypeId,'hours_total'=>$this->nullableDecimal($g->hours_total),'hours_week'=>$this->nullableDecimal($g->hours_per_week),'created_at'=>now(),'updated_at'=>now()]);}
             }
 
             $count=0;
-            foreach ($xml->scheds->sched as $s) {
+            foreach ($xml->scheds->sched as $scheduleIndex=>$s) {
                 $loadId=(int)$s->load_id; $load=$loads[$loadId]??null;
                 if (!$load || $load['class']===null) continue;
                 $groupId=DB::table('study_groups')->where('source_id',$load['class'])->value('id');
                 if (!$groupId) continue;
-                foreach ($load['details'] as $subgroup=>$d) {
-                    $teacherId=DB::table('teachers')->where('source_id',$d['teacher'])->value('id');
-                    $subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');
-                    $studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');
-                    $roomId=DB::table('rooms')->where('source_id',(int)$s->room_id)->value('id');
-                    DB::table('schedule_entries')->updateOrInsert(
-                        ['academic_period_id'=>$periodId,'source_id'=>(int)$s->id,'subgroup'=>$subgroup],
-                        ['source_load_id'=>$loadId,'study_group_id'=>$groupId,'teacher_id'=>$teacherId,'subject_id'=>$subjectId,
-                         'room_id'=>$roomId,'study_type_id'=>$studyTypeId,'weekday'=>(int)$s->day,'lesson_number'=>(int)$s->hour,
-                         'starts_on'=>$this->date((string)$s->begin_date),'ends_on'=>$this->date((string)$s->end_date),
-                         'active'=>1,'import_run_id'=>$runId,'created_at'=>now(),'updated_at'=>now()]
-                    );
-                    $count++;
-                }
+
+                // Rector 1.7 stores the load subgroup index in <sched><group>.
+                // A sched node has no own <id>, so use its stable file position as source_id.
+                $subgroup=(int)$s->group;
+                $d=$load['details'][$subgroup]??null;
+                if (!$d) continue;
+                $teacherId=DB::table('teachers')->where('source_id',$d['teacher'])->value('id');
+                $subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');
+                $studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');
+                $roomId=DB::table('rooms')->where('source_id',(int)$s->room_id)->value('id');
+                DB::table('schedule_entries')->updateOrInsert(
+                    ['academic_period_id'=>$periodId,'source_id'=>$scheduleIndex + 1],
+                    ['subgroup'=>$subgroup,'source_load_id'=>$loadId,'study_group_id'=>$groupId,'teacher_id'=>$teacherId,'subject_id'=>$subjectId,
+                     'room_id'=>$roomId,'study_type_id'=>$studyTypeId,'weekday'=>(int)$s->day,'lesson_number'=>(int)$s->hour,
+                     'starts_on'=>$this->date((string)$s->begin_date),'ends_on'=>$this->date((string)$s->end_date),
+                     'active'=>1,'import_run_id'=>$runId,'created_at'=>now(),'updated_at'=>now()]
+                );
+                $count++;
             }
 
             DB::table('import_runs')->where('id',$runId)->update([
