@@ -23,11 +23,10 @@ return new class extends Migration {
    });
   }
 
-  foreach (['target_id','campaign_id','target_group_id','student_id','specialty','education_base','average_score','status','priority','original_document','entrance_score'] as $column) {
-   if (Schema::hasColumn('admission_applicants',$column)) {
-    Schema::table('admission_applicants', fn (Blueprint $t) => $t->dropColumn($column));
-   }
-  }
+  // Keep legacy applicant columns in place. Older SQLite versions used by some
+  // production hosts cannot ALTER TABLE ... DROP COLUMN. The normalized
+  // application workflow uses admission_applications, so retaining these
+  // unused columns is harmless and makes this migration portable.
  }
  public function down(): void {}
 };
