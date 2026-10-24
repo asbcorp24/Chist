@@ -1,0 +1,5 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+class CuratorPlan extends Model{protected $guarded=[];protected $table='curator_plans'; public function group(){return $this->belongsTo(StudyGroup::class,'study_group_id');} protected static function booted():void{static::addGlobalScope('period',function(Builder $q){$p=request()->attributes->get('academic_period');if($p)$q->where('academic_period_id',$p->id);});}}
