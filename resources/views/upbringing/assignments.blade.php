@@ -1,1 +1,47 @@
-@extends('layouts.app') @section('title','Общественные поручения') @section('content')@include('upbringing._ui')<div class="up-shell"><a href="{{route('upbringing.index')}}">← Воспитательный отдел</a><h1 class="h4">🤝 Общественные поручения студентов</h1><form method="post" action="{{route('upbringing.assignments.store')}}" class="up-create row g-2 mb-3">@csrf<div class="col-md-4"><select name="student_id" class="form-select" required>@foreach($students as $s)<option value="{{$s->id}}">{{$s->last_name}} {{$s->first_name}}</option>@endforeach</select></div><div class="col-md-4"><input name="title" class="form-control" placeholder="Поручение / роль" required></div><div class="col-md-2"><input type="date" name="starts_on" class="form-control"></div><div class="col-md-2"><button class="btn btn-primary w-100">Назначить</button></div></form><div class="table up-table-responsive"><table class="table up-table"><thead><tr><th>Студент</th><th>Группа</th><th>Поручение</th><th>Период</th><th>Статус</th></tr></thead><tbody>@foreach($rows as $x)<tr><td>{{$x->last_name}} {{$x->first_name}}</td><td>{{$x->group_name}}</td><td>{{$x->title}}</td><td>{{$x->starts_on}} — {{$x->ends_on}}</td><td>{{$x->status}}</td></tr>@endforeach</tbody></table></div></div>@endsection
+@extends('layouts.app')
+@section('title','Общественные поручения')
+@section('content')
+@include('upbringing._ui')<div class="up-shell">
+<a href="{{route('upbringing.index')}}">← Воспитательный отдел</a>
+<h1 class="h4">🤝 Общественные поручения студентов</h1>
+<form method="post" action="{{route('upbringing.assignments.store')}}" class="up-create row g-2 mb-3">@csrf<div class="col-md-4">
+<select name="student_id" class="form-select" required>
+@foreach($students as $s)<option value="{{$s->id}}">{{$s->last_name}} {{$s->first_name}}</option>
+@endforeach
+</select>
+</div>
+<div class="col-md-4">
+<input name="title" class="form-control" placeholder="Поручение / роль" required>
+</div>
+<div class="col-md-2">
+<input type="date" name="starts_on" class="form-control">
+</div>
+<div class="col-md-2">
+<button class="btn btn-primary w-100">Назначить</button>
+</div>
+</form>
+<div class="table up-table-responsive">
+<table class="table up-table">
+<thead>
+<tr>
+<th>Студент</th>
+<th>Группа</th>
+<th>Поручение</th>
+<th>Период</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+@foreach($rows as $x)<tr>
+<td>{{$x->last_name}} {{$x->first_name}}</td>
+<td>{{$x->group_name}}</td>
+<td>{{$x->title}}</td>
+<td>{{$x->starts_on}} — {{$x->ends_on}}</td>
+<td>{{$x->status}}</td>
+</tr>
+@endforeach
+</tbody>
+</table>
+</div>
+</div>
+@endsection
