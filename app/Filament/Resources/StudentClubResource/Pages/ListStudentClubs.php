@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\StudentClubResource\Pages;use App\Filament\Resources\StudentClubResource;use Filament\Resources\Pages\ListRecords;class ListStudentClubs extends ListRecords{protected static string $resource=StudentClubResource::class;protected function getActions():array{return[\Filament\Pages\Actions\CreateAction::make()->label('Добавить')];}}
