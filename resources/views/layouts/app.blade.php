@@ -8,12 +8,13 @@
 <header class="navbar ch-topbar sticky-top"><div class="container-fluid px-3 px-lg-4">
 <a class="ch-brand" href="{{route('dashboard')}}"><span class="ch-logo">C</span><span><b>Chist</b><small>Колледж · единая система</small></span></a>
 <div class="ms-auto ch-user"><span id="netState" class="badge bg-success-subtle text-success ch-net">Онлайн</span>
-@if($currentUser)<div class="ch-avatar">{{mb_strtoupper(mb_substr($currentUser->name??'U',0,1))}}</div><span class="ch-user-name fw-semibold">{{$currentUser->name}}</span>@endif
+@if($currentUser)<div class="dropdown"><button class="btn p-0 border-0 bg-transparent d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><div class="ch-avatar">{{mb_strtoupper(mb_substr($currentUser->name??'U',0,1))}}</div><span class="ch-user-name fw-semibold">{{$currentUser->name}}</span></button><div class="dropdown-menu dropdown-menu-end shadow"><a class="dropdown-item" href="{{route('profile.edit')}}">Профиль и безопасность</a><div class="dropdown-divider"></div><form method="post" action="{{route('logout')}}">@csrf<button class="dropdown-item text-danger" type="submit">Выйти из системы</button></form></div></div>@endif
 </div></div></header>
 <div class="ch-shell">
 @if($currentUser) @include('layouts.partials.desktop-nav') @endif
 <main class="ch-main"><div class="ch-content">
 @if(session('success'))<div class="alert alert-success shadow-sm">{{session('success')}}</div>@endif
+@if(session('created_credentials'))@php($credentialRows=is_array(session('created_credentials'))&&isset(session('created_credentials')[0])?session('created_credentials'):[session('created_credentials')])<div class="alert alert-warning shadow-sm"><b>Сохраните временные учётные данные — пароль показывается после создания:</b><div class="table-responsive mt-2"><table class="table table-sm mb-0"><thead><tr><th>ФИО</th><th>Тип</th><th>Логин</th><th>Временный пароль</th></tr></thead><tbody>@foreach($credentialRows as $cr)<tr><td>{{$cr['name']}}</td><td>{{$cr['type']}}</td><td><code>{{$cr['login']}}</code></td><td><code>{{$cr['password']}}</code></td></tr>@endforeach</tbody></table></div></div>@endif
 @if($errors->any())<div class="alert alert-danger shadow-sm">{{$errors->first()}}</div>@endif
 @yield('content')
 </div></main>
