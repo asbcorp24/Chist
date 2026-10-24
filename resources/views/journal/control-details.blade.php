@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title','Анализ журнала')
 @section('content')
-<div class="ch-page-head"><div><a href="{{ route('journal.control') }}">← Контроль журналов</a><h1 class="h4 mb-0">{{ $g->name }} · {{ $sub->name }}</h1><p>Заполнение журнала и сводка студентов</p></div></div>
+<div class="ch-page-head"><div><a href="{{ route('journal.control') }}">← Контроль журналов</a><h1 class="h4 mb-0">{{ $g->name }} · {{ $sub->name }}</h1><p>Заполнение журнала и сводка студентов</p></div><form method="get" class="d-flex gap-2"><select name="month" class="form-select"><option value="">Весь период</option>@foreach($months as $m)<option value="{{$m}}" @selected($month===$m)>{{date('m.Y',strtotime($m.'-01'))}}</option>@endforeach</select><button class="btn btn-primary">Показать</button></form></div>
 <div class="card mb-4"><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Дата</th><th>Пара</th><th>Подгруппа</th><th>Тема</th><th>Посещ.</th><th>Оценок</th><th>Проверка</th></tr></thead><tbody>
 @foreach($lessons as $x)<tr><td>{{ date('d.m.Y',strtotime($x->lesson_date)) }}</td><td>{{ $x->lesson_number }}</td><td>{{ $x->subgroup===null?'Вся группа':'№'.($x->subgroup+1) }}</td><td>{{ $x->topic ?: '—' }}</td><td>{{ $x->attendance }}</td><td>{{ $x->grades }}</td><td>{{ count($x->missing)?implode(', ',$x->missing):'✓' }}</td></tr>@endforeach
 </tbody></table></div></div>
