@@ -318,6 +318,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/upbringing/social-statuses',[SocialSupportController::class,'index'])->name('upbringing.social-statuses');
  Route::get('/upbringing/social-passport/{student}',[SocialSupportController::class,'passport'])->name('upbringing.social-passport');
  Route::put('/upbringing/social-passport/{student}',[SocialSupportController::class,'passportUpdate'])->name('upbringing.social-passport.update');
+ Route::post('/upbringing/social-passport/{student}/support',[SocialSupportController::class,'supportStore'])->name('upbringing.social-support.store');
+ Route::delete('/upbringing/social-support/{id}',[SocialSupportController::class,'supportDelete'])->name('upbringing.social-support.delete');
+ Route::post('/upbringing/social-passport/{student}/followup',[SocialSupportController::class,'followupStore'])->name('upbringing.social-followup.store');
+ Route::put('/upbringing/social-followup/{id}/close',[SocialSupportController::class,'followupClose'])->name('upbringing.social-followup.close');
+ Route::get('/upbringing/social-group/{group}',[SocialSupportController::class,'groupPassport'])->name('upbringing.social-group');
+ Route::get('/upbringing/social-college',[SocialSupportController::class,'collegePassport'])->name('upbringing.social-college');
  Route::post('/upbringing/social-categories',[SocialSupportController::class,'category'])->name('upbringing.social-category.store');
  Route::post('/upbringing/social-statuses',[SocialSupportController::class,'store'])->name('upbringing.social-status.store');
  Route::post('/upbringing/social-statuses/{status}/close',[SocialSupportController::class,'close'])->name('upbringing.social-status.close');
@@ -404,6 +410,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/teacher/workspace',[TeacherWorkspaceController::class,'index'])->name('teacher.workspace');
  Route::get('/teacher/curator',[TeacherCuratorController::class,'index'])->name('teacher.curator.index');
  Route::get('/teacher/curator/{group}',[TeacherCuratorController::class,'show'])->name('teacher.curator.show');
+Route::get('/teacher/curator/{group}/plan',[TeacherCuratorController::class,'plan'])->name('teacher.curator.plan');
+Route::put('/teacher/curator/{group}/plan',[TeacherCuratorController::class,'planSave'])->name('teacher.curator.plan.save');
+Route::get('/teacher/curator/{group}/student/{student}/characteristic',[TeacherCuratorController::class,'characteristic'])->name('teacher.curator.characteristic');
+Route::post('/teacher/curator/{group}/student/{student}/characteristic',[TeacherCuratorController::class,'characteristicStore'])->name('teacher.curator.characteristic.store');
  Route::get('/curriculum',[CurriculumController::class,'index'])->name('curriculum.index');
  Route::post('/curriculum',[CurriculumController::class,'store'])->name('curriculum.store');
  Route::get('/curriculum/{plan}',[CurriculumController::class,'show'])->name('curriculum.show');
