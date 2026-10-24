@@ -1,0 +1,5 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{
+Schema::create('social_teacher_activities',function(Blueprint $t){$t->id();$t->date('planned_on');$t->date('completed_on')->nullable();$t->string('activity_type',120);$t->string('title');$t->unsignedBigInteger('study_group_id')->nullable()->index();$t->unsignedBigInteger('student_id')->nullable()->index();$t->string('status',30)->default('planned');$t->unsignedSmallInteger('duration_minutes')->nullable();$t->text('content')->nullable();$t->text('result')->nullable();$t->unsignedBigInteger('user_id')->index();$t->timestamps();});
+}public function down():void{Schema::dropIfExists('social_teacher_activities');}};

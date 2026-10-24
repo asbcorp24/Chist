@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\SocialTeacherController;
 use App\Http\Controllers\PsychologistController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AdmissionDossierController,AdmissionExamController,ApplicantPortalController,AuthController,ProfileController,DashboardController,JournalController,JournalControlController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,TeacherCuratorController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,StudentDisciplineController,DormitoryController,DormitoryOperationsController,DormitoryExtendedController,DormitoryStudentController,DormitoryAssetController};
@@ -38,6 +39,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::put('/psychologist/screenings/{id}/result/{assignment}',[PsychologistController::class,'screeningResult'])->name('psychologist.screenings.result');
  Route::delete('/psychologist/screenings/{id}',[PsychologistController::class,'screeningDelete'])->name('psychologist.screenings.delete');
  Route::get('/psychologist/reports',[PsychologistController::class,'reports'])->name('psychologist.reports');
+ Route::get('/social-teacher',[SocialTeacherController::class,'index'])->name('social-teacher.index');
+ Route::get('/social-teacher/students',[SocialTeacherController::class,'students'])->name('social-teacher.students');
+ Route::post('/social-teacher/activities',[SocialTeacherController::class,'activityStore'])->name('social-teacher.activities.store');
+ Route::put('/social-teacher/activities/{id}',[SocialTeacherController::class,'activityUpdate'])->name('social-teacher.activities.update');
+ Route::delete('/social-teacher/activities/{id}',[SocialTeacherController::class,'activityDelete'])->name('social-teacher.activities.delete');
+ Route::get('/social-teacher/report',[SocialTeacherController::class,'report'])->name('social-teacher.report');
  Route::get('/my-schedule',[PublicScheduleController::class,'mine'])->name('my.schedule');
  Route::put('/profile/password',[ProfileController::class,'password'])->name('profile.password');
  Route::post('/period/select',[AcademicPeriodController::class,'select'])->name('period.select');

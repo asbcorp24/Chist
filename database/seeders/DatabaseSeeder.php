@@ -9,6 +9,7 @@ class DatabaseSeeder extends Seeder {
    'head_academic'=>['Заведующий учебной частью',80],
    'schedule_member'=>['Участник расписания',60],
    'psychologist'=>['Педагог-психолог',55],
+   'social_teacher'=>['Социальный педагог',54],
    'curator'=>['Классный руководитель',50],
    'teacher'=>['Преподаватель',40],
    'starosta'=>['Староста',20],
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder {
    'semester.view'=>['Просмотр семестровых результатов','Журнал'],'semester.mark'=>['Выставление семестровых результатов','Журнал'],
    'reports.view'=>['Просмотр отчётов','Отчёты'],'reports.export'=>['Экспорт отчётов','Отчёты'],
    'psychology.view'=>['Просмотр кабинета психолога','Психолог'],'psychology.manage'=>['Ведение психологического сопровождения','Психолог'],'psychology.reports'=>['Отчётность психолога','Психолог'],
+   'socialwork.view'=>['Просмотр кабинета социального педагога','Социальный педагог'],'socialwork.manage'=>['Ведение социальной работы','Социальный педагог'],'socialwork.reports'=>['Отчётность социального педагога','Социальный педагог'],
    'audit.view'=>['Просмотр аудита','Система'],'settings.manage'=>['Системные настройки','Система']
   ];
   foreach($p as $code=>$x)DB::table('permissions')->updateOrInsert(['code'=>$code],['name'=>$x[0],'group'=>$x[1],'created_at'=>now(),'updated_at'=>now()]);
@@ -34,6 +36,7 @@ class DatabaseSeeder extends Seeder {
    'head_academic'=>['users.view','periods.manage','periods.close','schedule.view','schedule.import','schedule.manage','students.view','attendance.view','grades.view','semester.view','semester.mark','reports.view','reports.export','audit.view'],
    'schedule_member'=>['schedule.view','schedule.import','schedule.manage','students.view'],
    'psychologist'=>['schedule.view','students.view','psychology.view','psychology.manage','psychology.reports'],
+   'social_teacher'=>['schedule.view','students.view','socialwork.view','socialwork.manage','socialwork.reports'],
    'curator'=>['schedule.view','students.view','students.manage','attendance.view','grades.view','semester.view','reports.view','reports.export'],
    'teacher'=>['schedule.view','students.view','attendance.view','attendance.mark','grades.view','grades.mark','semester.view','semester.mark','reports.view'],
    'starosta'=>['schedule.view','students.view','attendance.view','attendance.mark'],
