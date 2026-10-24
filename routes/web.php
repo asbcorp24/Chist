@@ -14,6 +14,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
  Route::get('/journal/gradebook/{group}/{subject}',[JournalController::class,'gradebook'])->name('journal.gradebook');
  Route::get('/journal/control',[JournalControlController::class,'index'])->name('journal.control');
+ Route::get('/journal/control/{group}/{subject}',[JournalControlController::class,'details'])->name('journal.control.details');
  Route::post('/journal/control/notes',[JournalControlController::class,'note'])->name('journal.control.note');
  Route::get('/journal/review-notes',[JournalControlController::class,'myNotes'])->name('journal.notes');
  Route::post('/journal/review-notes/{note}/ack',[JournalControlController::class,'acknowledge'])->name('journal.notes.ack');
