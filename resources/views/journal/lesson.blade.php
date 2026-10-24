@@ -42,6 +42,7 @@
 @foreach(['2','3','4','5'] as $v)<button type="button" class="btn btn-sm btn-outline-success" data-value="{{$v}}">{{$v}}</button>@endforeach
 </div>@endif
 </div>
+@if(isset($behavior[$s->id])&&$behavior[$s->id]->count())<div class="mt-2">@foreach($behavior[$s->id] as $bi)<div class="small border-start border-danger border-3 ps-2 mb-1"><span class="badge {{$bi->severity==='critical'?'text-bg-danger':($bi->severity==='high'?'text-bg-warning':'text-bg-light')}}">{{$bi->type}}</span> {{$bi->description}} <span class="text-secondary">· {{$bi->status}}</span></div>@endforeach</div>@endif
 @if(isset($grades[$s->id]))<div class="small mt-2">Оценки: 
 @foreach($grades[$s->id] as $g)<span class="badge text-bg-success">{{$g->value}} · {{$g->grade_type}}</span> 
 @if(auth()->user()->canDo('grades.mark'))<form method="post" action="{{route('journal.grade.delete',$g->id)}}" class="d-inline" onsubmit="return confirm('Удалить ошибочную оценку?')">@csrf @method('DELETE')<button class="btn btn-link btn-sm text-danger p-0">×</button></form>@endif
