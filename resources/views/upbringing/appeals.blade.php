@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Обращения')
 @section('content')
+
 @include('upbringing._ui')<div class="up-shell">@include('upbringing._ui')<div class="up-shell">
 <a href="{{route('upbringing.index')}}">← Воспитательный отдел</a>
 <h1 class="h4">📨 Обращения</h1>
@@ -16,8 +17,11 @@
 <div class="col-md-3">
 <select name="student_id" class="form-select">
 <option value="">Не привязано к студенту</option>
+
 @foreach($students as $s)<option value="{{$s->id}}">{{$s->last_name}} {{$s->first_name}} · {{$s->group_name}}</option>
+
 @endforeach
+
 </select>
 </div>
 <div class="col-md-2">
@@ -36,19 +40,27 @@
 <button class="btn btn-primary">Зарегистрировать</button>
 </div>
 </form>
+
 @foreach($rows as $x)<div class="up-mobile-card">
 <div class="card-body">
 <b>{{$x->source_type}} · {{$x->contact_name}} · {{$x->category}}</b>
 <p>{{$x->message}}</p>
+
 @if($x->status!=='closed')<form method="post" action="{{route('upbringing.appeal.resolve',$x->id)}}" class="d-flex gap-2">@csrf<input name="resolution" class="form-control" required placeholder="Результат рассмотрения">
 <button class="btn btn-success">Закрыть</button>
 </form>
 @else
 <div class="text-success">Решено: {{$x->resolution}}</div>
+
 @endif
+
 </div>
 </div>
+
 @endforeach
+
  </div>
 </div>
+
 @endsection
+
