@@ -1,0 +1,10 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{
+ public function up():void{
+  Schema::create('admission_exams',function(Blueprint $t){$t->id();$t->foreignId('campaign_id')->constrained('admission_campaigns')->cascadeOnDelete();$t->foreignId('target_id')->nullable()->constrained('admission_targets')->cascadeOnDelete();$t->string('name');$t->decimal('max_score',8,2)->default(100);$t->decimal('min_score',8,2)->default(0);$t->dateTime('scheduled_at')->nullable();$t->string('room',100)->nullable();$t->string('status',30)->default('planned');$t->timestamps();});
+  Schema::create('admission_exam_results',function(Blueprint $t){$t->id();$t->foreignId('exam_id')->constrained('admission_exams')->cascadeOnDelete();$t->foreignId('application_id')->constrained('admission_applications')->cascadeOnDelete();$t->decimal('score',8,2)->nullable();$t->string('status',30)->default('admitted');$t->text('note')->nullable();$t->foreignId('recorded_by')->nullable()->constrained('users')->nullOnDelete();$t->timestamp('recorded_at')->nullable();$t->timestamps();$t->unique(['exam_id','application_id'],'admission_exam_application_uq');});
+  Schema::create('admission_appeals',function(Blueprint $t){$t->id();$t->foreignId('exam_result_id')->constrained('admission_exam_results')->cascadeOnDelete();$t->text('reason');$t->string('status',30)->default('submitted');$t->text('decision')->nullable();$t->decimal('score_after',8,2)->nullable();$t->foreignId('decided_by')->nullable()->constrained('users')->nullOnDelete();$t->timestamp('decided_at')->nullable();$t->timestamps();});
+ }
+ public function down():void{Schema::dropIfExists('admission_appeals');Schema::dropIfExists('admission_exam_results');Schema::dropIfExists('admission_exams');}
+};
