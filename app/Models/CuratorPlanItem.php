@@ -1,0 +1,1 @@
+<?php namespace App\Models;use Illuminate\Database\Eloquent\Model;class CuratorPlanItem extends Model{protected $table='curator_plan_items';protected $guarded=[];}
