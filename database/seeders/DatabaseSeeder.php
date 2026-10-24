@@ -8,6 +8,7 @@ class DatabaseSeeder extends Seeder {
    'admin'=>['Администратор',90],
    'head_academic'=>['Заведующий учебной частью',80],
    'schedule_member'=>['Участник расписания',60],
+   'psychologist'=>['Педагог-психолог',55],
    'curator'=>['Классный руководитель',50],
    'teacher'=>['Преподаватель',40],
    'starosta'=>['Староста',20],
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder {
    'grades.view'=>['Просмотр оценок','Журнал'],'grades.mark'=>['Выставление оценок','Журнал'],
    'semester.view'=>['Просмотр семестровых результатов','Журнал'],'semester.mark'=>['Выставление семестровых результатов','Журнал'],
    'reports.view'=>['Просмотр отчётов','Отчёты'],'reports.export'=>['Экспорт отчётов','Отчёты'],
+   'psychology.view'=>['Просмотр кабинета психолога','Психолог'],'psychology.manage'=>['Ведение психологического сопровождения','Психолог'],'psychology.reports'=>['Отчётность психолога','Психолог'],
    'audit.view'=>['Просмотр аудита','Система'],'settings.manage'=>['Системные настройки','Система']
   ];
   foreach($p as $code=>$x)DB::table('permissions')->updateOrInsert(['code'=>$code],['name'=>$x[0],'group'=>$x[1],'created_at'=>now(),'updated_at'=>now()]);
@@ -31,6 +33,7 @@ class DatabaseSeeder extends Seeder {
    'admin'=>array_keys($p),
    'head_academic'=>['users.view','periods.manage','periods.close','schedule.view','schedule.import','schedule.manage','students.view','attendance.view','grades.view','semester.view','semester.mark','reports.view','reports.export','audit.view'],
    'schedule_member'=>['schedule.view','schedule.import','schedule.manage','students.view'],
+   'psychologist'=>['schedule.view','students.view','psychology.view','psychology.manage','psychology.reports'],
    'curator'=>['schedule.view','students.view','students.manage','attendance.view','grades.view','semester.view','reports.view','reports.export'],
    'teacher'=>['schedule.view','students.view','attendance.view','attendance.mark','grades.view','grades.mark','semester.view','semester.mark','reports.view'],
    'starosta'=>['schedule.view','students.view','attendance.view','attendance.mark'],
