@@ -19,7 +19,7 @@ return new class extends Migration {
     $t->foreignId('student_id')->nullable()->constrained('students')->nullOnDelete();
     $t->text('note')->nullable();
     $t->timestamps();
-    $t->unique(['applicant_id','campaign_id','target_id']);
+    $t->unique(['applicant_id','campaign_id','target_id'],'admission_applicant_campaign_target_uq');
    });
   }
 
