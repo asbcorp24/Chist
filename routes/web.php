@@ -316,6 +316,8 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/upbringing/councils/{council}/case',[UpbringingExtendedController::class,'councilCase'])->name('upbringing.council.case');
  Route::get('/upbringing/social',[UpbringingExtendedController::class,'social'])->name('upbringing.social');
  Route::get('/upbringing/social-statuses',[SocialSupportController::class,'index'])->name('upbringing.social-statuses');
+ Route::get('/upbringing/social-passport/{student}',[SocialSupportController::class,'passport'])->name('upbringing.social-passport');
+ Route::put('/upbringing/social-passport/{student}',[SocialSupportController::class,'passportUpdate'])->name('upbringing.social-passport.update');
  Route::post('/upbringing/social-categories',[SocialSupportController::class,'category'])->name('upbringing.social-category.store');
  Route::post('/upbringing/social-statuses',[SocialSupportController::class,'store'])->name('upbringing.social-status.store');
  Route::post('/upbringing/social-statuses/{status}/close',[SocialSupportController::class,'close'])->name('upbringing.social-status.close');
