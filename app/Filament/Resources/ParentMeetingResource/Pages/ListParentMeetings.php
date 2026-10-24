@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\ParentMeetingResource\Pages;use App\Filament\Resources\ParentMeetingResource;use Filament\Resources\Pages\ListRecords;class ListParentMeetings extends ListRecords{protected static string $resource=ParentMeetingResource::class;protected function getActions():array{return[\Filament\Pages\Actions\CreateAction::make()->label('Добавить')];}}
