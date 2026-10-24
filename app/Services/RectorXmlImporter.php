@@ -74,6 +74,11 @@ class RectorXmlImporter
             foreach ($xml->study_types->study_type as $s) $this->upsert('study_types',(int)$s->id,[
                 'name'=>(string)$s->full_name
             ]);
+            // Rector XML is authoritative for the Rector teacher directory. Mark only
+            // previously imported Rector teachers inactive first; teachers present in this XML
+            // are reactivated by the upsert below. Internal/manual teachers without source_id
+            // and linked HR employee records are not touched.
+            DB::table('teachers')->whereNotNull('source_id')->update(['active'=>0,'updated_at'=>now()]);
             foreach ($xml->teachers->teacher as $t) {
                 $p=$t->person;
                 $this->upsert('teachers',(int)$p->id,[
