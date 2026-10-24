@@ -33,6 +33,23 @@ class AcademicOfficeController extends Controller
         return view('academic-office.index',compact('p','groups','students','orders','stats'));
     }
 
+    public function orders(Request $r)
+    {
+        $this->access($r); $p=$this->period($r);
+        abort_unless(Schema::hasTable('academic_orders'),503,'Таблица academic_orders ещё не создана.');
+        $q=DB::table('academic_orders as o')->leftJoin('students as s','s.id','=','o.student_id')
+            ->where('o.academic_period_id',$p->id)
+            ->select('o.*','s.last_name','s.first_name','s.middle_name');
+        if($r->filled('type')) $q->where('o.type',$r->type);
+        if($r->filled('student')) $q->where('o.student_id',(int)$r->student);
+        if($r->filled('group')) $q->whereIn('o.student_id',DB::table('students')->where('current_group_id',(int)$r->group)->pluck('id'));
+        if($r->filled('q')){$term='%'.$r->q.'%';$q->where(function($x)use($term){$x->where('o.number','like',$term)->orWhere('o.title','like',$term)->orWhere('s.last_name','like',$term)->orWhere('s.first_name','like',$term);});}
+        $orders=$q->orderByDesc('o.order_date')->orderByDesc('o.id')->paginate(30)->withQueryString();
+        $types=DB::table('academic_orders')->where('academic_period_id',$p->id)->whereNotNull('type')->distinct()->orderBy('type')->pluck('type');
+        $students=DB::table('students')->where('status','active')->orderBy('last_name')->orderBy('first_name')->get();
+        return view('academic-office.orders',compact('p','orders','types','students'));
+    }
+
     public function news(Request $r)
     {
         $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
