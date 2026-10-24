@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Сводный отчёт воспитательной работы')
 @section('content')
+
 @include('upbringing._ui')<div class="up-shell">
 <div class="d-print-none">
 <a href="{{route('upbringing.index')}}">← Воспитательный отдел</a>
@@ -9,13 +10,16 @@
 <h1 class="h4 text-center mt-3">Сводный отчёт о воспитательной работе</h1>
 <p class="text-center">Учебный период: {{$p->name??$p->number}}</p>
 <div class="row g-2 mb-4">
+
 @foreach(['events'=>'Мероприятий','completed'=>'Проведено','participants'=>'Участий','achievements'=>'Достижений','cases'=>'Сопровождений','cases_closed'=>'Закрыто сопровождений','meetings'=>'Родительских собраний','councils'=>'Советов профилактики','clubs'=>'Объединений','appeals'=>'Обращений'] as $k=>$n)<div class="col-md-3">
 <div class="up-panel">
 <small>{{$n}}</small>
 <b class="h3">{{$stats[$k]}}</b>
 </div>
 </div>
+
 @endforeach
+
 </div>
 <h2 class="h6">По направлениям</h2>
 <table class="table up-table table-bordered">
@@ -25,14 +29,19 @@
 <th>Проведено</th>
 <th>Участий</th>
 </tr>
+
 @foreach($events as $x)<tr>
 <td>{{$x->direction}}</td>
 <td>{{$x->total}}</td>
 <td>{{$x->completed}}</td>
 <td>{{$x->participants}}</td>
 </tr>
+
 @endforeach
+
 </table>
 <div class="mt-5">Заместитель директора по воспитательной работе __________________ / __________________</div>
 </div>
+
 @endsection
+
