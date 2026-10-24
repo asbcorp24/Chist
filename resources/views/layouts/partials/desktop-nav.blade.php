@@ -5,6 +5,12 @@
 <a class="nav-link" href="{{route('dashboard')}}">⌂ <span>Главная</span></a>
 <a class="nav-link" href="{{route('public.schedule')}}">📅 <span>Расписание</span></a>
 @if($u->canDo('schedule.view'))<a class="nav-link" href="{{route('journal.today')}}">▣ <span>Журнал</span></a>@endif
+@if($u->teacher_id)
+<a class="nav-link" href="{{route('teacher.workspace')}}">👨‍🏫 <span>Кабинет преподавателя</span></a>
+<a class="nav-link" href="{{route('curriculum.index')}}#programs">📘 <span>Рабочие программы</span></a>
+<a class="nav-link" href="{{route('curriculum.index')}}">🗒 <span>КТП</span></a>
+<a class="nav-link" href="{{route('teacher.curator.index')}}">👥 <span>Кураторство</span></a>
+@endif
 <a class="nav-link" href="{{route('calendar.index')}}">🗓 <span>Календарь</span></a>
 <a class="nav-link" href="{{route('requests.index')}}">🎫 <span>Обращения</span></a>
 </nav>
