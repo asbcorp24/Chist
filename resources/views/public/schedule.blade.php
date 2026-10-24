@@ -49,18 +49,32 @@
     </div>
     <div class="card-body p-3 p-lg-4">
         @if($mode==='week')
-        <div class="row g-3">
+        <div class="d-none d-lg-block">
         @foreach($days as $dayDate=>$day)
             @php $items=$sg->days->get($dayDate,collect()); @endphp
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="schedule-day h-100 border rounded-3 p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3"><strong>{{$day['name']}}</strong><span class="text-secondary small">{{$day['date']}}</span></div>
-                    @forelse($items->groupBy('lesson_number') as $pairNo=>$pairItems)
-                        @include('public.partials.schedule-pair',['pairNo'=>$pairNo,'items'=>$pairItems])
-                    @empty
-                        <div class="text-secondary small py-2">Занятий нет</div>
-                    @endforelse
+            <div class="schedule-desktop-day border rounded-3 overflow-hidden mb-3">
+                <div class="schedule-desktop-day-head d-flex justify-content-between align-items-center px-3 py-2">
+                    <strong class="fs-5">{{$day['name']}}</strong><span class="text-secondary">{{$day['date']}}</span>
                 </div>
+                @if($items->isNotEmpty())
+                <div class="table-responsive"><table class="table schedule-table align-middle mb-0">
+                    <thead><tr><th style="width:145px">Пара</th><th>Занятие</th></tr></thead>
+                    <tbody>@foreach($items->groupBy('lesson_number') as $pairNo=>$pairItems)
+                        @include('public.partials.schedule-table-row',['pairNo'=>$pairNo,'items'=>$pairItems])
+                    @endforeach</tbody>
+                </table></div>
+                @else<div class="text-secondary px-3 py-3">Занятий нет</div>@endif
+            </div>
+        @endforeach
+        </div>
+        <div class="d-lg-none">
+        @foreach($days as $dayDate=>$day)
+            @php $items=$sg->days->get($dayDate,collect()); @endphp
+            <div class="schedule-day border rounded-3 p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3"><strong>{{$day['name']}}</strong><span class="text-secondary small">{{$day['date']}}</span></div>
+                @forelse($items->groupBy('lesson_number') as $pairNo=>$pairItems)
+                    @include('public.partials.schedule-pair',['pairNo'=>$pairNo,'items'=>$pairItems])
+                @empty<div class="text-secondary small py-2">Занятий нет</div>@endforelse
             </div>
         @endforeach
         </div>
@@ -78,6 +92,7 @@
 <style>
 .schedule-page{max-width:1500px;margin:0 auto}.schedule-day{background:var(--bs-tertiary-bg)}.schedule-days-strip{-webkit-overflow-scrolling:touch}
 .schedule-pair{background:var(--bs-body-bg);transition:.15s ease}.schedule-pair:hover{box-shadow:0 .25rem .75rem rgba(0,0,0,.06)}.schedule-pair-head{background:var(--bs-primary-bg-subtle);border-bottom:1px solid var(--bs-border-color)}.schedule-subgroups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.schedule-subgroup+.schedule-subgroup{border-left:1px solid var(--bs-border-color)}
+.schedule-desktop-day{background:var(--bs-body-bg)}.schedule-desktop-day-head{background:var(--bs-tertiary-bg);border-bottom:1px solid var(--bs-border-color)}.schedule-table th{background:var(--bs-tertiary-bg);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--bs-secondary-color)}.schedule-table-number{vertical-align:top!important;padding:1rem!important;background:var(--bs-primary-bg-subtle)!important}.schedule-table-subgroups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.schedule-table-lesson+.schedule-table-lesson{border-left:1px solid var(--bs-border-color)}
 .schedule-pair-no{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:var(--bs-primary-bg-subtle);color:var(--bs-primary-text-emphasis);font-weight:800;flex:0 0 48px}
 @media(max-width:575.98px){.schedule-subgroups{grid-template-columns:1fr}.schedule-subgroup+.schedule-subgroup{border-left:0;border-top:1px solid var(--bs-border-color)}.card-body{padding-left:.75rem!important;padding-right:.75rem!important}.schedule-pair-no{width:42px;height:42px;flex-basis:42px;border-radius:12px}}
 </style>
