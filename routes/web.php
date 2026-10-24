@@ -557,7 +557,14 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::post('students/bulk',[StudentController::class,'bulkStore'])->name('students.bulk.store')->middleware('permission:students.manage');
   Route::post('students/bulk-action',[StudentController::class,'bulkAction'])->name('students.bulk.action')->middleware('permission:students.manage');
   Route::resource('students',StudentController::class)->except(['show'])->middleware('permission:students.manage');
-  Route::resource('teachers',TeacherController::class)->except(['show'])->middleware('permission:users.manage');
+  Route::get('teachers',[TeacherController::class,'index'])->name('teachers.index');
+  Route::middleware('permission:users.manage')->group(function(){
+   Route::get('teachers/create',[TeacherController::class,'create'])->name('teachers.create');
+   Route::post('teachers',[TeacherController::class,'store'])->name('teachers.store');
+   Route::get('teachers/{teacher}/edit',[TeacherController::class,'edit'])->name('teachers.edit');
+   Route::put('teachers/{teacher}',[TeacherController::class,'update'])->name('teachers.update');
+   Route::delete('teachers/{teacher}',[TeacherController::class,'destroy'])->name('teachers.destroy');
+  });
  });
 Route::get('/practice-partner/{token}',[PracticePartnerController::class,'index'])->name('practice.partner');
 Route::post('/practice-partner/{token}/{placement}',[PracticePartnerController::class,'save'])->name('practice.partner.save');
