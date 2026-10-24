@@ -16,6 +16,7 @@ Route::middleware('guest')->group(function(){Route::get('/login',[AuthController
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth')->name('logout');
 Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/profile',[ProfileController::class,'edit'])->name('profile.edit');
+ Route::get('/my-schedule',[PublicScheduleController::class,'mine'])->name('my.schedule');
  Route::put('/profile/password',[ProfileController::class,'password'])->name('profile.password');
  Route::post('/period/select',[AcademicPeriodController::class,'select'])->name('period.select');
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');

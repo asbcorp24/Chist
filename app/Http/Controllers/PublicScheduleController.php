@@ -7,6 +7,22 @@ use Illuminate\Support\Facades\DB;
 
 class PublicScheduleController extends Controller
 {
+    public function mine(Request $r)
+    {
+        $u=$r->user();
+        if($u->teacher_id){
+            $r->merge(['teacher'=>(int)$u->teacher_id,'group'=>null]);
+            return $this->index($r);
+        }
+        if($u->student_id){
+            $groupId=DB::table('students')->where('id',$u->student_id)->value('current_group_id');
+            abort_unless($groupId,404,'У студента не назначена учебная группа.');
+            $r->merge(['group'=>(int)$groupId,'teacher'=>null]);
+            return $this->index($r);
+        }
+        return redirect()->route('public.schedule');
+    }
+
     public function index(Request $r)
     {
         $mode=$r->input('mode','day');

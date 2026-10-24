@@ -6,7 +6,7 @@
     @if($u->canDo('schedule.view'))
       <a class="navitem {{ request()->routeIs('journal.*') ? 'active' : '' }}" href="{{ route('journal.today') }}"><span class="ico">▣</span><span>Журнал</span></a>
     @else
-      <a class="navitem {{ request()->routeIs('public.schedule') ? 'active' : '' }}" href="{{ route('public.schedule') }}"><span class="ico">📅</span><span>Расписание</span></a>
+      <a class="navitem {{ request()->routeIs('public.schedule') ? 'active' : '' }}" href="{{ ($u->teacher_id||$u->student_id) ? route('my.schedule') : route('public.schedule') }}"><span class="ico">📅</span><span>{{($u->teacher_id||$u->student_id)?'Моё расписание':'Расписание'}}</span></a>
     @endif
     @if($u->student_id)
       <a class="navitem quick {{ request()->routeIs('student.progress') ? 'active' : '' }}" href="{{ route('student.progress') }}"><span class="ico">🎓</span><span>Успеваемость</span></a>
