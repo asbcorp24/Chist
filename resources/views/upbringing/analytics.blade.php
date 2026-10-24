@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title','Аналитика воспитательной работы')
 @section('content')
+
 @include('upbringing._ui')<div class="up-shell">
 <a href="{{route('upbringing.index')}}">← Воспитательный отдел</a>
 <h1 class="h4">📈 Аналитика по группам</h1>
@@ -14,6 +15,7 @@
 <th>Достижения</th>
 <th>Открытые сопровождения</th>
 </tr>
+
 @foreach($groups as $g)<tr>
 <td>
 <b>{{$g->name}}</b>
@@ -24,8 +26,12 @@
 <td>{{$g->achievements}}</td>
 <td>{{$g->open_cases}}</td>
 </tr>
+
 @endforeach
+
 </table>
 </div>
 </div>
+
 @endsection
+
