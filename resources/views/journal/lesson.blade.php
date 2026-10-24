@@ -48,7 +48,7 @@
 @if(auth()->user()->canDo('grades.mark'))<form method="post" action="{{route('journal.grade.delete',$g->id)}}" class="d-inline" onsubmit="return confirm('Удалить ошибочную оценку?')">@csrf @method('DELETE')<button class="btn btn-link btn-sm text-danger p-0">×</button></form>@endif
  @endforeach
 </div>@endif
-</div>@endforeach
+</div></div>@endforeach
 </div></div>
 @endsection
 
