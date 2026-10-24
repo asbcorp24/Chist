@@ -409,6 +409,10 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/teacher/workspace',[TeacherWorkspaceController::class,'index'])->name('teacher.workspace');
  Route::get('/teacher/curator',[TeacherCuratorController::class,'index'])->name('teacher.curator.index');
  Route::get('/teacher/curator/{group}',[TeacherCuratorController::class,'show'])->name('teacher.curator.show');
+Route::get('/teacher/curator/{group}/plan',[TeacherCuratorController::class,'plan'])->name('teacher.curator.plan');
+Route::put('/teacher/curator/{group}/plan',[TeacherCuratorController::class,'planSave'])->name('teacher.curator.plan.save');
+Route::get('/teacher/curator/{group}/student/{student}/characteristic',[TeacherCuratorController::class,'characteristic'])->name('teacher.curator.characteristic');
+Route::post('/teacher/curator/{group}/student/{student}/characteristic',[TeacherCuratorController::class,'characteristicStore'])->name('teacher.curator.characteristic.store');
  Route::get('/curriculum',[CurriculumController::class,'index'])->name('curriculum.index');
  Route::post('/curriculum',[CurriculumController::class,'store'])->name('curriculum.store');
  Route::get('/curriculum/{plan}',[CurriculumController::class,'show'])->name('curriculum.show');
