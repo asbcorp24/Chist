@@ -20,15 +20,15 @@ class AcademicOfficeController extends Controller
 
     public function index(Request $r)
     {
-        $this->access($r); $p=$this->period($r);
+        $this->access($r); $p=$this->period($r); $periodId=$p?->id;
         $groups=Schema::hasTable('study_groups')?DB::table('study_groups')->where('active',1)->orderBy('name')->get():collect();
         $students=Schema::hasTable('students')?DB::table('students')->where('status','active')->orderBy('last_name')->orderBy('first_name')->get():collect();
         $orders=Schema::hasTable('academic_orders')?DB::table('academic_orders')->orderByDesc('order_date')->orderByDesc('id')->limit(8)->get():collect();
         $studentCount=$students->count(); $groupCount=$groups->count();
-        $debts=Schema::hasTable('attestation_attempts')&&Schema::hasTable('attestation_sheets')?DB::table('attestation_attempts as a')->join('attestation_sheets as sh','sh.id','=','a.attestation_sheet_id')->where('sh.academic_period_id',$p->id)->where('a.passed',0)->count():0;
-        $openSheets=Schema::hasTable('attestation_sheets')?DB::table('attestation_sheets')->where('academic_period_id',$p->id)->where('status','open')->count():0;
-        $giaCount=Schema::hasTable('gia_campaigns')?DB::table('gia_campaigns')->where('academic_period_id',$p->id)->count():0;
-        $movementCount=Schema::hasTable('student_movements')?DB::table('student_movements')->where('academic_period_id',$p->id)->count():0;
+        $debts=Schema::hasTable('attestation_attempts')&&Schema::hasTable('attestation_sheets')?DB::table('attestation_attempts as a')->join('attestation_sheets as sh','sh.id','=','a.attestation_sheet_id')->where('sh.academic_period_id',$periodId)->where('a.passed',0)->count():0;
+        $openSheets=Schema::hasTable('attestation_sheets')?DB::table('attestation_sheets')->where('academic_period_id',$periodId)->where('status','open')->count():0;
+        $giaCount=Schema::hasTable('gia_campaigns')?DB::table('gia_campaigns')->where('academic_period_id',$periodId)->count():0;
+        $movementCount=Schema::hasTable('student_movements')?DB::table('student_movements')->where('academic_period_id',$periodId)->count():0;
         $stats=compact('studentCount','groupCount','debts','openSheets','giaCount','movementCount');
         return view('academic-office.index',compact('p','groups','students','orders','stats'));
     }
@@ -62,7 +62,7 @@ class AcademicOfficeController extends Controller
     public function orderUpdate(Request $r, $order)
     {
         $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
-        $x=DB::table('academic_orders')->where('academic_period_id',$p->id)->where('id',$order)->first(); abort_if(!$x,404);
+        $x=DB::table('academic_orders')->where('academic_period_id',$periodId)->where('id',$order)->first(); abort_if(!$x,404);
         $d=$r->validate(['number'=>'required|string|max:100','order_date'=>'required|date','student_id'=>'nullable|integer','type'=>'required|string|max:100','title'=>'required|string|max:500','basis'=>'nullable|string|max:5000']);
         DB::table('academic_orders')->where('id',$order)->update($d+['updated_at'=>now()]);
         return back()->with('success','Приказ обновлён.');
@@ -71,7 +71,7 @@ class AcademicOfficeController extends Controller
     public function orderDestroy(Request $r, $order)
     {
         $this->access($r); $p=$this->period($r); PeriodGuard::writable($p->id);
-        $x=DB::table('academic_orders')->where('academic_period_id',$p->id)->where('id',$order)->first(); abort_if(!$x,404);
+        $x=DB::table('academic_orders')->where('academic_period_id',$periodId)->where('id',$order)->first(); abort_if(!$x,404);
         DB::table('academic_orders')->where('id',$order)->delete();
         return back()->with('success','Ошибочно зарегистрированный приказ удалён из реестра.');
     }
