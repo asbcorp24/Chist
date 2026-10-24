@@ -1,5 +1,7 @@
 <?php
 use App\Http\Controllers\SocialTeacherController;
+use App\Http\Controllers\UpbringingRatingController;
+use App\Http\Controllers\UpbringingSurveyController;
 use App\Http\Controllers\PsychologistController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{AdmissionDossierController,AdmissionExamController,ApplicantPortalController,AuthController,ProfileController,DashboardController,JournalController,JournalControlController,AcademicPeriodController,ReportController,SemesterResultController,PublicScheduleController,AnnouncementController,StudentProgressController,HomeworkController,CalendarController,GradebookController,PrintReportController,FormalReportController,OfficialDocumentController,StudentLifeController,AcademicOfficeController,PracticeController,AcademicControlController,StudentRecordController,StudentMovementController,StudentProfileController,AnalyticsController,ManagementDashboardController,TeacherWorkspaceController,TeacherCuratorController,CurriculumController,WorkProgramController,TeachingLoadController,TarificationController,SpecialtyCurriculumController,RectorExchangeController,AttestationController,GiaController,GraduationController,ComplianceController,LocalRegulationController,LibraryController,LibraryOperationsController,LibraryPrintController,UpbringingController,UpbringingExtendedController,UpbringingWorkflowController,UpbringingManagementController,UpbringingIntegrationController,StudentDisciplineController,DormitoryController,DormitoryOperationsController,DormitoryExtendedController,DormitoryStudentController,DormitoryAssetController};
@@ -67,6 +69,17 @@ Route::middleware(['auth','academic.period'])->group(function(){
 
  Route::put('/journal/grades/{grade}',[JournalController::class,'gradeUpdate'])->name('journal.grade.update');
  Route::delete('/journal/grades/{grade}',[JournalController::class,'gradeDelete'])->name('journal.grade.delete');
+ Route::get('/upbringing/merits',[UpbringingRatingController::class,'merits'])->name('upbringing.merits');
+ Route::post('/upbringing/merits',[UpbringingRatingController::class,'meritStore'])->name('upbringing.merits.store');
+ Route::post('/upbringing/merits/{id}/cancel',[UpbringingRatingController::class,'meritCancel'])->name('upbringing.merits.cancel');
+ Route::get('/upbringing/ratings',[UpbringingRatingController::class,'ratings'])->name('upbringing.ratings');
+ Route::get('/upbringing/public-assignments',[UpbringingRatingController::class,'assignments'])->name('upbringing.assignments');
+ Route::post('/upbringing/public-assignments',[UpbringingRatingController::class,'assignmentStore'])->name('upbringing.assignments.store');
+ Route::get('/upbringing/surveys',[UpbringingSurveyController::class,'index'])->name('upbringing.surveys');
+ Route::post('/upbringing/surveys',[UpbringingSurveyController::class,'store'])->name('upbringing.surveys.store');
+ Route::get('/upbringing/surveys/{id}',[UpbringingSurveyController::class,'show'])->name('upbringing.surveys.show');
+ Route::post('/upbringing/surveys/{id}/questions',[UpbringingSurveyController::class,'question'])->name('upbringing.surveys.question');
+ Route::post('/upbringing/surveys/{id}/status',[UpbringingSurveyController::class,'status'])->name('upbringing.surveys.status');
  Route::get('/upbringing/discipline',[StudentDisciplineController::class,'index'])->name('discipline.index');
  Route::post('/upbringing/discipline',[StudentDisciplineController::class,'store'])->name('discipline.store');
  Route::post('/upbringing/discipline/{incident}',[StudentDisciplineController::class,'resolve'])->name('discipline.resolve');
