@@ -48,10 +48,12 @@ class LessonOccurrenceGenerator
             $updated++;
         }
 
-        // Rector is authoritative only for still-editable schedule slots. A lesson with journal
-        // data is historical evidence and is never cancelled by a later weekly import.
+        // Rector is authoritative for schedule slots in the imported period. This must also
+        // clean obsolete past *empty* occurrences (for example after switching from individual
+        // Rector lessons to paired lessons). Filled journal history is historical evidence and
+        // is never cancelled by a later weekly import.
         foreach(DB::table('lesson_occurrences')->where('academic_period_id',$periodId)
-            ->whereDate('lesson_date','>=',now()->toDateString())->where('status','planned')->cursor() as $lesson){
+            ->where('status','planned')->cursor() as $lesson){
             $key=$this->key((string)$lesson->lesson_date,$lesson->study_group_id,$lesson->subgroup,$lesson->lesson_number);
             if(isset($expected[$key])) continue;
             if($this->hasJournalData($lesson)){ $protected++; continue; }
