@@ -1,7 +1,7 @@
 <?php
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PreventionCouncilResource\Pages;
+use App\Filament\Resources\PreventionCouncilResource\Pages;use App\Filament\Resources\PreventionCouncilResource\RelationManagers\CasesRelationManager;
 use App\Models\PreventionCouncil;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -49,6 +49,11 @@ class PreventionCouncilResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->whereNull('archived_at');
+    }
+
+    public static function getRelations(): array
+    {
+        return [CasesRelationManager::class];
     }
 
     public static function getPages(): array
