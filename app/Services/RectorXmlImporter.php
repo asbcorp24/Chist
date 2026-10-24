@@ -13,13 +13,13 @@ class RectorXmlImporter
         // Rector-College 1.7 exports Windows-1251. After conversion the XML declaration
         // must also be changed, otherwise libxml interprets UTF-8 bytes as Windows-1251.
         $encoding = 'Windows-1251';
-        if (preg_match('/<\\?xml[^>]+encoding=["\\']([^"\\']+)["\\']/i', substr($raw, 0, 256), $m)) {
+        if (preg_match('~<\\?xml[^>]+encoding="([^"]+)"~i', substr($raw, 0, 256), $m)) {
             $encoding = $m[1];
         } elseif (str_starts_with($raw, "\xEF\xBB\xBF") || mb_check_encoding($raw, 'UTF-8')) {
             $encoding = 'UTF-8';
         }
         $utf8 = mb_convert_encoding($raw, 'UTF-8', $encoding);
-        $utf8 = preg_replace('/(<\\?xml[^>]+encoding=["\\'])[^"\\']+(["\\'])/i', '$1UTF-8$2', $utf8, 1) ?? $utf8;
+        $utf8 = preg_replace('~(<\\?xml[^>]+encoding=")[^"]+(")~i', '$1UTF-8$2', $utf8, 1) ?? $utf8;
 
         libxml_use_internal_errors(true);
         libxml_clear_errors();
@@ -158,13 +158,15 @@ class RectorXmlImporter
                 $subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');
                 $studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');
                 $roomId=DB::table('rooms')->where('source_id',(int)$s->room_id)->value('id');
-                DB::table('schedule_entries')->updateOrInsert(
-                    ['academic_period_id'=>$periodId,'source_id'=>$scheduleIndex + 1],
-                    ['subgroup'=>$subgroup,'source_load_id'=>$loadId,'study_group_id'=>$groupId,'teacher_id'=>$teacherId,'subject_id'=>$subjectId,
-                     'room_id'=>$roomId,'study_type_id'=>$studyTypeId,'weekday'=>(int)$s->day,'lesson_number'=>(int)$s->hour,
-                     'starts_on'=>$this->date((string)$s->begin_date),'ends_on'=>$this->date((string)$s->end_date),
-                     'active'=>1,'import_run_id'=>$runId,'created_at'=>now(),'updated_at'=>now()]
-                );
+                // Always insert the new schedule version. Reusing an old row by file position
+                // could reconnect an already-filled journal lesson to another Rector lesson.
+                DB::table('schedule_entries')->insert([
+                    'academic_period_id'=>$periodId,'source_id'=>$scheduleIndex + 1,'subgroup'=>$subgroup,
+                    'source_load_id'=>$loadId,'study_group_id'=>$groupId,'teacher_id'=>$teacherId,'subject_id'=>$subjectId,
+                    'room_id'=>$roomId,'study_type_id'=>$studyTypeId,'weekday'=>(int)$s->day,'lesson_number'=>(int)$s->hour,
+                    'starts_on'=>$this->date((string)$s->begin_date),'ends_on'=>$this->date((string)$s->end_date),
+                    'active'=>1,'import_run_id'=>$runId,'created_at'=>now(),'updated_at'=>now()
+                ]);
                 $count++;
             }
 
