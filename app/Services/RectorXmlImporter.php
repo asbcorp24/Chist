@@ -6,7 +6,7 @@ use RuntimeException;
 
 class RectorXmlImporter
 {
-    public function import(string $path, string $filename, ?int $userId = null): array
+    public function import(string $path, string $filename, ?int $userId = null, string $lessonUnitMode = 'lesson'): array
     {
         $raw = file_get_contents($path);
         if ($raw === false) throw new RuntimeException('Не удалось прочитать XML.');
@@ -33,7 +33,7 @@ class RectorXmlImporter
             throw new RuntimeException('Файл не является выгрузкой Rector-College.');
         }
 
-        return DB::transaction(function () use ($xml, $raw, $filename, $userId) {
+        return DB::transaction(function () use ($xml, $raw, $filename, $userId, $lessonUnitMode) {
             $begin = $this->date((string)$xml->term->begin_date);
             $end = $this->date((string)$xml->term->end_date);
             $startYear = (int)substr($begin, 0, 4);
@@ -47,7 +47,7 @@ class RectorXmlImporter
 
             $periodNo = (int)substr($begin,5,2) >= 7 ? 1 : 2;
             $periodId = DB::table('academic_periods')->where(['academic_year_id'=>$yearId,'number'=>$periodNo])->value('id');
-            $periodData = ['name'=>$periodNo===1?'I полугодие':'II полугодие','starts_on'=>$begin,'ends_on'=>$end,'updated_at'=>now()];
+            $periodData = ['name'=>$periodNo===1?'I полугодие':'II полугодие','starts_on'=>$begin,'ends_on'=>$end,'lesson_unit_mode'=>$lessonUnitMode,'updated_at'=>now()];
             if ($periodId) DB::table('academic_periods')->where('id',$periodId)->update($periodData);
             else $periodId = DB::table('academic_periods')->insertGetId($periodData + ['academic_year_id'=>$yearId,'number'=>$periodNo,'is_current'=>0,'is_closed'=>0,'created_at'=>now()]);
 
@@ -143,29 +143,63 @@ class RectorXmlImporter
             }
 
             $count=0;
+            $rows=[];
             foreach ($xml->scheds->sched as $scheduleIndex=>$s) {
                 $loadId=(int)$s->load_id; $load=$loads[$loadId]??null;
                 if (!$load || $load['class']===null) continue;
                 $groupId=DB::table('study_groups')->where('source_id',$load['class'])->value('id');
                 if (!$groupId) continue;
 
-                // Rector 1.7 stores the load subgroup index in <sched><group>.
-                // A sched node has no own <id>, so use its stable file position as source_id.
                 $subgroup=(int)$s->group;
                 $d=$load['details'][$subgroup]??null;
                 if (!$d) continue;
-                $teacherId=DB::table('teachers')->where('source_id',$d['teacher'])->value('id');
-                $subjectId=DB::table('subjects')->where('source_id',$d['subject'])->value('id');
-                $studyTypeId=DB::table('study_types')->where('source_id',$d['study_type'])->value('id');
-                $roomId=DB::table('rooms')->where('source_id',(int)$s->room_id)->value('id');
-                // Always insert the new schedule version. Reusing an old row by file position
-                // could reconnect an already-filled journal lesson to another Rector lesson.
-                DB::table('schedule_entries')->insert([
-                    'academic_period_id'=>$periodId,'source_id'=>((int)$scheduleIndex) + 1,'subgroup'=>$subgroup,
-                    'source_load_id'=>$loadId,'study_group_id'=>$groupId,'teacher_id'=>$teacherId,'subject_id'=>$subjectId,
-                    'room_id'=>$roomId,'study_type_id'=>$studyTypeId,'weekday'=>(int)$s->day,'lesson_number'=>(int)$s->hour,
-                    'starts_on'=>$this->date((string)$s->begin_date),'ends_on'=>$this->date((string)$s->end_date),
-                    'active'=>1,'import_run_id'=>$runId,'created_at'=>now(),'updated_at'=>now()
+                $sourceHour=(int)$s->hour;
+                $rows[]=[
+                    'source_id'=>((int)$scheduleIndex)+1,
+                    'source_lesson_number'=>$sourceHour,
+                    'source_lesson_number_end'=>$sourceHour,
+                    'subgroup'=>$subgroup,
+                    'source_load_id'=>$loadId,
+                    'study_group_id'=>$groupId,
+                    'teacher_id'=>DB::table('teachers')->where('source_id',$d['teacher'])->value('id'),
+                    'subject_id'=>DB::table('subjects')->where('source_id',$d['subject'])->value('id'),
+                    'room_id'=>DB::table('rooms')->where('source_id',(int)$s->room_id)->value('id'),
+                    'study_type_id'=>DB::table('study_types')->where('source_id',$d['study_type'])->value('id'),
+                    'weekday'=>(int)$s->day,
+                    'lesson_number'=>$lessonUnitMode==='pair' ? intdiv(max(1,$sourceHour)-1,2)+1 : $sourceHour,
+                    'starts_on'=>$this->date((string)$s->begin_date),
+                    'ends_on'=>$this->date((string)$s->end_date),
+                ];
+            }
+
+            if ($lessonUnitMode === 'pair') {
+                $merged=[];
+                foreach ($rows as $row) {
+                    $key=implode('|',[
+                        $row['study_group_id'],$row['subgroup'],$row['source_load_id'],$row['teacher_id']??0,
+                        $row['subject_id']??0,$row['room_id']??0,$row['study_type_id']??0,$row['weekday'],
+                        $row['lesson_number'],$row['starts_on'],$row['ends_on']
+                    ]);
+                    if (!isset($merged[$key])) {
+                        $merged[$key]=$row;
+                        continue;
+                    }
+                    $prev=$merged[$key];
+                    if ($prev['source_lesson_number_end'] + 1 === $row['source_lesson_number']
+                        && $prev['source_lesson_number'] % 2 === 1) {
+                        $merged[$key]['source_lesson_number_end']=$row['source_lesson_number'];
+                        continue;
+                    }
+                    // A non-compatible duplicate in the same pair slot is kept as a separate row.
+                    $merged[$key.'|'.$row['source_id']]=$row;
+                }
+                $rows=array_values($merged);
+            }
+
+            foreach ($rows as $row) {
+                DB::table('schedule_entries')->insert($row+[
+                    'academic_period_id'=>$periodId,'active'=>1,'import_run_id'=>$runId,
+                    'created_at'=>now(),'updated_at'=>now()
                 ]);
                 $count++;
             }
