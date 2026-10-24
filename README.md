@@ -758,30 +758,164 @@ ls -la public/storage
 
 ---
 
-## Альтернатива: MySQL вместо SQLite
+## MySQL / MariaDB для production (рекомендуется)
 
-Текущая конфигурация Chist рассчитана на SQLite и это самый простой вариант установки. Для более нагруженной production-системы можно использовать MySQL/MariaDB после проверки всех миграций и SQL-запросов проекта на совместимость.
+Для рабочей установки Chist рекомендуется **MySQL 8.x** или совместимая **MariaDB**. SQLite удобно использовать для локальной разработки и небольших тестовых экземпляров, но production Chist активно использует связанные таблицы и миграции схемы, поэтому MySQL/MariaDB предпочтительнее.
 
-В панели Timeweb создайте БД и пользователя, затем измените `.env`:
+### 1. Проверить PHP-драйвер MySQL
+
+На Timeweb:
+
+```bash
+/opt/php82/bin/php -m | grep -Ei 'pdo|mysql'
+```
+
+В списке должен присутствовать `pdo_mysql`. Если его нет, включите расширение MySQL/PDO MySQL для выбранной версии PHP в панели хостинга.
+
+### 2. Создать базу и пользователя
+
+В панели Timeweb создайте новую MySQL-базу и отдельного пользователя БД. Сохраните:
+
+- имя базы;
+- имя пользователя;
+- пароль;
+- адрес сервера MySQL (на конкретном тарифе это может быть не `127.0.0.1`, поэтому используйте значение из панели Timeweb);
+- порт, обычно `3306`.
+
+Не добавляйте пароль базы в Git или README.
+
+### 3. Настроить .env
+
+Сначала сохраните резервную копию текущего `.env`:
+
+```bash
+cd ~/Chist/public_html
+cp .env ~/.chist-env-backup
+nano .env
+```
+
+Замените настройки БД:
 
 ```dotenv
 DB_CONNECTION=mysql
-DB_HOST=localhost
+DB_HOST=АДРЕС_MYSQL_ИЗ_ПАНЕЛИ
 DB_PORT=3306
 DB_DATABASE=ИМЯ_БАЗЫ
 DB_USERNAME=ПОЛЬЗОВАТЕЛЬ
-DB_PASSWORD=СЛОЖНЫЙ_ПАРОЛЬ
+DB_PASSWORD=ПАРОЛЬ
 ```
 
-После этого:
+`DB_FOREIGN_KEYS=true` относится к SQLite и для MySQL не требуется.
+
+После изменения `.env` обязательно очистите закэшированную конфигурацию:
 
 ```bash
 /opt/php82/bin/php artisan optimize:clear
-/opt/php82/bin/php artisan migrate --force
-/opt/php82/bin/php artisan db:seed --force
 ```
 
-Не переносите рабочую SQLite-базу в MySQL простым копированием файла.
+### 4. Проверить подключение ДО миграций
+
+```bash
+/opt/php82/bin/php artisan about
+/opt/php82/bin/php artisan migrate:status
+```
+
+Если Laravel сообщает `Access denied`, проверьте пользователя/пароль и разрешения пользователя на базу. Если появляется `Connection refused` или `Unknown MySQL server host`, проверьте `DB_HOST` в панели Timeweb.
+
+Не запускайте миграции, пока подключение к нужной MySQL-базе не подтверждено.
+
+### 5A. Новая или тестовая установка — данных SQLite сохранять не нужно
+
+Это самый простой и рекомендуемый вариант для нового сайта.
+
+После проверки, что `.env` указывает именно на новую MySQL-базу:
+
+```bash
+cd ~/Chist/public_html
+/opt/php82/bin/php artisan migrate --force
+/opt/php82/bin/php artisan db:seed --force
+/opt/php82/bin/php artisan chist:superadmin
+/opt/php82/bin/php artisan optimize:clear
+/opt/php82/bin/php artisan config:cache
+```
+
+Проверка:
+
+```bash
+/opt/php82/bin/php artisan migrate:status
+```
+
+Все актуальные миграции должны иметь статус `Ran`.
+
+Если расписание ранее было только тестовым, после переключения на MySQL импортируйте Rector XML заново и сформируйте занятия штатными средствами Chist.
+
+### 5B. Существующая SQLite содержит нужные рабочие данные
+
+**Не запускайте `migrate:fresh` и не удаляйте `database/database.sqlite`.**
+
+Сначала сделайте резервную копию:
+
+```bash
+cd ~/Chist/public_html
+cp database/database.sqlite ~/chist-before-mysql-$(date +%Y%m%d-%H%M).sqlite
+cp .env ~/chist-before-mysql.env
+```
+
+Правильная последовательность перехода:
+
+1. оставить исходный SQLite-файл неизменным;
+2. создать пустую MySQL-базу;
+3. переключить `.env` на MySQL;
+4. выполнить все миграции на пустой MySQL;
+5. перенести данные из SQLite с сохранением первичных `id` и внешних связей;
+6. проверить пользователей, студентов, группы, учебные периоды, расписание, журнал, посещаемость, оценки, приказы и документы;
+7. только после проверки оставить MySQL основной production-базой.
+
+Не импортируйте SQLite-файл напрямую командой MySQL: форматы схемы, типов и внешних ключей отличаются.
+
+До появления штатной команды переноса Chist рабочую SQLite-базу следует сохранять как резервный источник данных и выполнять перенос контролируемым скриптом/импортом.
+
+### 6. Проверить production после перехода
+
+```bash
+/opt/php82/bin/php artisan optimize:clear
+/opt/php82/bin/php artisan config:cache
+/opt/php82/bin/php artisan route:cache
+/opt/php82/bin/php artisan view:cache
+/opt/php82/bin/php artisan migrate:status
+```
+
+В веб-интерфейсе обязательно проверить:
+
+1. вход администратора;
+2. пользователей и права;
+3. студентов и группы;
+4. импорт Rector XML;
+5. расписание и подгруппы;
+6. электронный журнал;
+7. посещаемость и оценки;
+8. контроль учебной части;
+9. приказы/переводы;
+10. загрузку и скачивание документов.
+
+### 7. Резервное копирование MySQL
+
+Уточните имя хоста MySQL в панели Timeweb:
+
+```bash
+mysqldump -h DB_HOST -u DB_USERNAME -p DB_DATABASE > ~/chist-$(date +%Y%m%d-%H%M).sql
+```
+
+Пароль будет запрошен интерактивно. Не записывайте пароль непосредственно в команду shell.
+
+Восстановление выполняйте только в заранее выбранную базу:
+
+```bash
+mysql -h DB_HOST -u DB_USERNAME -p DB_DATABASE < backup.sql
+```
+
+Также отдельно сохраняйте `storage/app` и другие каталоги с загруженными пользователями файлами.
+
 
 ---
 
