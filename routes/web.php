@@ -32,6 +32,12 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::delete('/psychologist/assessments/{id}',[PsychologistController::class,'assessmentDelete'])->name('psychologist.assessments.delete');
  Route::post('/psychologist/plans',[PsychologistController::class,'planStore'])->name('psychologist.plans.store');
  Route::delete('/psychologist/plans/{id}',[PsychologistController::class,'planDelete'])->name('psychologist.plans.delete');
+ Route::get('/psychologist/screenings',[PsychologistController::class,'screenings'])->name('psychologist.screenings');
+ Route::post('/psychologist/screenings',[PsychologistController::class,'screeningStore'])->name('psychologist.screenings.store');
+ Route::get('/psychologist/screenings/{id}',[PsychologistController::class,'screeningShow'])->name('psychologist.screenings.show');
+ Route::put('/psychologist/screenings/{id}/result/{assignment}',[PsychologistController::class,'screeningResult'])->name('psychologist.screenings.result');
+ Route::delete('/psychologist/screenings/{id}',[PsychologistController::class,'screeningDelete'])->name('psychologist.screenings.delete');
+ Route::get('/psychologist/reports',[PsychologistController::class,'reports'])->name('psychologist.reports');
  Route::get('/my-schedule',[PublicScheduleController::class,'mine'])->name('my.schedule');
  Route::put('/profile/password',[ProfileController::class,'password'])->name('profile.password');
  Route::post('/period/select',[AcademicPeriodController::class,'select'])->name('period.select');
