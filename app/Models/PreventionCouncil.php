@@ -15,7 +15,7 @@ class PreventionCouncil extends Model
             $period = request()->attributes->get('academic_period');
             if ($period) {
                 $query->where('academic_period_id', $period->id);
-            }
+            public function cases(){return $this->hasMany(PreventionCouncilCase::class,'prevention_council_id');}}
             $query->whereNull('archived_at');
         });
 
