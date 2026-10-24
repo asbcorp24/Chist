@@ -1,0 +1,2 @@
+@props(['title','subtitle'=>null,'back'=>null])
+<div class="up-head"><div>@if($back)<a class="up-breadcrumb text-decoration-none" href="{{$back}}">← Воспитательный отдел</a>@endif<h1>{{$title}}</h1>@if($subtitle)<div class="up-sub">{{$subtitle}}</div>@endif</div><div class="up-actions">{{$actions ?? ''}}</div></div>
