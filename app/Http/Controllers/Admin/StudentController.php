@@ -13,7 +13,12 @@ class StudentController extends Controller {
     $achievements=DB::table('student_achievements')->where('student_id',$id)->orderByDesc('achievement_date')->get();
     $grades=DB::table('grade_records')->where('student_id',$id)->selectRaw('count(*) as cnt, avg(value) as avg_grade')->first();
     $attendance=DB::table('attendance_records')->where('student_id',$id)->selectRaw("count(*) as total, sum(case when status in ('absent','excused','sick') then 1 else 0 end) as missed")->first();
-    return view('admin.students.form',compact('account','movements','orders','private','representatives','social','achievements','grades','attendance')+['student'=>$s,'groups'=>$this->groups()]);}
+    $semesterResults=DB::table('semester_results as r')->join('subjects as sub','sub.id','=','r.subject_id')->where('r.student_id',$id)->select('r.*','sub.name as subject_name')->orderByDesc('r.id')->limit(50)->get();
+    $practice=DB::table('practice_placements')->where('student_id',$id)->orderByDesc('id')->get();
+    $scholarships=DB::table('scholarship_decisions as d')->join('scholarship_commissions as sc','sc.id','=','d.scholarship_commission_id')->where('d.student_id',$id)->select('d.*','sc.protocol_number','sc.meeting_on')->orderByDesc('sc.meeting_on')->get();
+    $dormitory=DB::table('dormitory_stays')->where('student_id',$id)->orderByDesc('id')->get();
+    $library=DB::table('library_loans')->where('student_id',$id)->orderByDesc('id')->limit(30)->get();
+    return view('admin.students.form',compact('account','movements','orders','private','representatives','social','achievements','grades','attendance','semesterResults','practice','scholarships','dormitory','library')+['student'=>$s,'groups'=>$this->groups()]);}
  public function update(Request $r,$id){abort_unless(DB::table('students')->where('id',$id)->exists(),404);$d=$this->validated($r);DB::table('students')->where('id',$id)->update($d+['updated_at'=>now()]);if($d['status']==='active')$this->membership($id,$d['current_group_id']);return back()->with('success','Карточка сохранена');}
  public function destroy($id){$s=DB::table('students')->find($id);abort_if(!$s,404);DB::transaction(function()use($id){DB::table('students')->where('id',$id)->update(['status'=>'expelled','left_on'=>date('Y-m-d'),'updated_at'=>now()]);DB::table('student_group_memberships')->where('student_id',$id)->where('status','active')->update(['status'=>'inactive','updated_at'=>now()]);});return redirect()->route('admin.students.index')->with('success','Студент переведён в архив (отчислен)');}
  public function bulk(Request $r){return view('admin.students.bulk',['groups'=>$this->groups(),'selectedGroup'=>$r->integer('group')?:null]);}
