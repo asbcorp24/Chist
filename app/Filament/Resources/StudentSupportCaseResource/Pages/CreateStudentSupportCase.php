@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\StudentSupportCaseResource\Pages;use App\Filament\Resources\StudentSupportCaseResource;use Filament\Resources\Pages\CreateRecord;class CreateStudentSupportCase extends CreateRecord{protected static string $resource=StudentSupportCaseResource::class;}

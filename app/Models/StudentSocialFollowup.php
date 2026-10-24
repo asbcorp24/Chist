@@ -1,0 +1,1 @@
+<?php namespace App\Models;use Illuminate\Database\Eloquent\Model;class StudentSocialFollowup extends Model{protected $table='student_social_followups';protected $guarded=[];}
