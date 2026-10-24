@@ -1,13 +1,17 @@
 @extends('layouts.app')
 @section('title','Общественные поручения')
 @section('content')
+
 @include('upbringing._ui')<div class="up-shell">
 <a href="{{route('upbringing.index')}}">← Воспитательный отдел</a>
 <h1 class="h4">🤝 Общественные поручения студентов</h1>
 <form method="post" action="{{route('upbringing.assignments.store')}}" class="up-create row g-2 mb-3">@csrf<div class="col-md-4">
 <select name="student_id" class="form-select" required>
+
 @foreach($students as $s)<option value="{{$s->id}}">{{$s->last_name}} {{$s->first_name}}</option>
+
 @endforeach
+
 </select>
 </div>
 <div class="col-md-4">
@@ -32,6 +36,7 @@
 </tr>
 </thead>
 <tbody>
+
 @foreach($rows as $x)<tr>
 <td>{{$x->last_name}} {{$x->first_name}}</td>
 <td>{{$x->group_name}}</td>
@@ -39,9 +44,13 @@
 <td>{{$x->starts_on}} — {{$x->ends_on}}</td>
 <td>{{$x->status}}</td>
 </tr>
+
 @endforeach
+
 </tbody>
 </table>
 </div>
 </div>
+
 @endsection
+
