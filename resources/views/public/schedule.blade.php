@@ -55,8 +55,8 @@
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="schedule-day h-100 border rounded-3 p-3">
                     <div class="d-flex justify-content-between align-items-center mb-3"><strong>{{$day['name']}}</strong><span class="text-secondary small">{{$day['date']}}</span></div>
-                    @forelse($items as $l)
-                        @include('public.partials.schedule-lesson',['l'=>$l])
+                    @forelse($items->groupBy('lesson_number') as $pairNo=>$pairItems)
+                        @include('public.partials.schedule-pair',['pairNo'=>$pairNo,'items'=>$pairItems])
                     @empty
                         <div class="text-secondary small py-2">Занятий нет</div>
                     @endforelse
@@ -66,7 +66,7 @@
         </div>
         @else
             @php $items=$sg->days->get($date,collect()); @endphp
-            <div class="row g-2">@foreach($items as $l)<div class="col-12 col-lg-6">@include('public.partials.schedule-lesson',['l'=>$l])</div>@endforeach</div>
+            <div class="row g-2">@foreach($items->groupBy('lesson_number') as $pairNo=>$pairItems)<div class="col-12 col-lg-6">@include('public.partials.schedule-pair',['pairNo'=>$pairNo,'items'=>$pairItems])</div>@endforeach</div>
         @endif
     </div>
 </section>
@@ -77,8 +77,8 @@
 </div>
 <style>
 .schedule-page{max-width:1500px;margin:0 auto}.schedule-day{background:var(--bs-tertiary-bg)}.schedule-days-strip{-webkit-overflow-scrolling:touch}
-.schedule-lesson{background:var(--bs-body-bg);transition:.15s ease}.schedule-lesson:hover{transform:translateY(-1px);box-shadow:0 .25rem .75rem rgba(0,0,0,.06)}
+.schedule-pair{background:var(--bs-body-bg);transition:.15s ease}.schedule-pair:hover{box-shadow:0 .25rem .75rem rgba(0,0,0,.06)}.schedule-pair-head{background:var(--bs-primary-bg-subtle);border-bottom:1px solid var(--bs-border-color)}.schedule-subgroups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.schedule-subgroup+.schedule-subgroup{border-left:1px solid var(--bs-border-color)}
 .schedule-pair-no{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:var(--bs-primary-bg-subtle);color:var(--bs-primary-text-emphasis);font-weight:800;flex:0 0 48px}
-@media(max-width:575.98px){.card-body{padding-left:.75rem!important;padding-right:.75rem!important}.schedule-pair-no{width:42px;height:42px;flex-basis:42px;border-radius:12px}}
+@media(max-width:575.98px){.schedule-subgroups{grid-template-columns:1fr}.schedule-subgroup+.schedule-subgroup{border-left:0;border-top:1px solid var(--bs-border-color)}.card-body{padding-left:.75rem!important;padding-right:.75rem!important}.schedule-pair-no{width:42px;height:42px;flex-basis:42px;border-radius:12px}}
 </style>
 @endsection
