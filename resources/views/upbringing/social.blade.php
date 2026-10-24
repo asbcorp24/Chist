@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title','Социальный паспорт')
-@section('content')
+@section('content')@include('upbringing._ui')<div class="up-shell">
 <div class="ch-page-head"><div><a href="{{route('upbringing.index')}}">← Воспитательный отдел</a><h1 class="h4 mb-0">Социальный паспорт групп</h1><p>Автоматически рассчитывается по действующим социальным статусам студентов.</p></div><a class="btn btn-primary" href="{{route('upbringing.social-statuses')}}">Социальные статусы</a></div>
 <div class="alert alert-info">Показатели не вводятся вручную. Измените социальный статус конкретного студента — сводка группы пересчитается автоматически.</div>
 <div class="row g-3">
@@ -13,4 +13,4 @@
 </div></div></div>
 @endforeach
 </div>
-@endsection
+</div>@endsection
