@@ -14,7 +14,7 @@ class PreventionCouncilResource extends Resource
 {
     protected static ?string $model = PreventionCouncil::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-    protected static bool $shouldRegisterNavigation = false;
+    
     protected static ?string $navigationLabel = 'Совет профилактики';
     protected static ?string $modelLabel = 'заседание';
     protected static ?string $pluralModelLabel = 'Совет профилактики';
