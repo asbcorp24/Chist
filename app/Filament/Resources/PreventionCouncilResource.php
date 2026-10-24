@@ -51,6 +51,11 @@ class PreventionCouncilResource extends Resource
         return parent::getEloquentQuery()->whereNull('archived_at');
     }
 
+    public static function getRelations(): array
+    {
+        return [CasesRelationManager::class];
+    }
+
     public static function getPages(): array
     {
         return [
