@@ -161,7 +161,7 @@ class RectorXmlImporter
                 // Always insert the new schedule version. Reusing an old row by file position
                 // could reconnect an already-filled journal lesson to another Rector lesson.
                 DB::table('schedule_entries')->insert([
-                    'academic_period_id'=>$periodId,'source_id'=>$scheduleIndex + 1,'subgroup'=>$subgroup,
+                    'academic_period_id'=>$periodId,'source_id'=>((int)$scheduleIndex) + 1,'subgroup'=>$subgroup,
                     'source_load_id'=>$loadId,'study_group_id'=>$groupId,'teacher_id'=>$teacherId,'subject_id'=>$subjectId,
                     'room_id'=>$roomId,'study_type_id'=>$studyTypeId,'weekday'=>(int)$s->day,'lesson_number'=>(int)$s->hour,
                     'starts_on'=>$this->date((string)$s->begin_date),'ends_on'=>$this->date((string)$s->end_date),
