@@ -8,5 +8,5 @@ protected $hidden=['password','password_encrypted','remember_token'];protected $
 public function roles(){return $this->belongsToMany(Role::class);}public function teacher(){return $this->belongsTo(Teacher::class);}public function student(){return $this->belongsTo(Student::class);}
 public function hasRole(string $code):bool{return $this->roles()->where('code',$code)->exists();}public function isSuperAdmin():bool{return $this->hasRole('super_admin');}
 public function canDo(string $permission):bool{if($this->isSuperAdmin())return true;return $this->roles()->whereHas('permissions',fn($q)=>$q->where('code',$permission))->exists();}public function maxRoleLevel():int{return(int)$this->roles()->max('level');}
-public function canAccessFilament():bool{return $this->is_active && ($this->isSuperAdmin()||$this->hasRole('admin')||$this->hasRole('upbringing_head'));}
+public function canAccessFilament():bool{return (bool)$this->is_active;}
 }
