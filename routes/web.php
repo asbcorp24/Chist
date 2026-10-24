@@ -558,6 +558,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
   Route::post('students/bulk-action',[StudentController::class,'bulkAction'])->name('students.bulk.action')->middleware('permission:students.manage');
   Route::resource('students',StudentController::class)->except(['show'])->middleware('permission:students.manage');
   Route::get('teachers',[TeacherController::class,'index'])->name('teachers.index');
+  Route::get('teachers/{teacher}',[TeacherController::class,'edit'])->name('teachers.show');
   Route::middleware('permission:users.manage')->group(function(){
    Route::get('teachers/create',[TeacherController::class,'create'])->name('teachers.create');
    Route::post('teachers',[TeacherController::class,'store'])->name('teachers.store');
