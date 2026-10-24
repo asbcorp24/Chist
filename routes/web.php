@@ -529,7 +529,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::get('/reports/student/{student}',[ReportController::class,'student'])->name('reports.student')->middleware('permission:reports.view');
  Route::get('/semester/{group}/{subject}',[SemesterResultController::class,'edit'])->name('semester.edit')->middleware('permission:semester.view');
  Route::post('/semester/{group}/{subject}',[SemesterResultController::class,'save'])->name('semester.save')->middleware('permission:semester.mark');
- Route::get('/journal',[JournalController::class,'today'])->name('journal.today')->middleware('permission:schedule.view');
+ Route::get('/journal',[JournalController::class,'today'])->name('journal.today');
  Route::get('/journal/lesson/{lesson}',[JournalController::class,'show'])->name('journal.lesson');
  Route::post('/journal/lesson/{lesson}/attendance',[JournalController::class,'attendance'])->name('journal.attendance');
  Route::post('/journal/lesson/{lesson}/attendance/all-present',[JournalController::class,'allPresent'])->name('journal.attendance.all');
