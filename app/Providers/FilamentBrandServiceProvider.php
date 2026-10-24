@@ -21,10 +21,20 @@ if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('head_academic'))$add('
 if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('social_teacher')||$u->canDo('socialwork.view'))$add('Социальный педагог',route('social-teacher.index'),'heroicon-o-heart','Подразделения',1);
 if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('psychologist')||$u->canDo('psychology.view'))$add('Психолог',route('psychologist.index'),'heroicon-o-light-bulb','Подразделения',2);
 if(!$psych&&!$social&&($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('upbringing_head')||$u->hasRole('curator')))$add('Воспитательная работа',route('upbringing.index'),'heroicon-o-heart','Подразделения',3);
+if($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('medical_worker')||$u->hasRole('academic_head'))$add('Медицинский кабинет',route('medical.index'),'heroicon-o-plus-circle','Подразделения',4);
+if(!$psych&&!$social&&($u->isSuperAdmin()||$u->hasRole('admin')||$u->hasRole('academic_head')||$u->canDo('students.manage')))$add('Трудоустройство',route('employment.index'),'heroicon-o-briefcase','Подразделения',5);
+if($u->isSuperAdmin()||$u->hasRole('admin'))$add('Кадры',route('admin.hr.index'),'heroicon-o-identification','Подразделения',6);
 if($u->canDo('library.view'))$add('Библиотека',route('library.index'),'heroicon-o-book-open','Подразделения',10);
+if($u->canDo('dormitory.view'))$add('Общежитие',route('dormitory.index'),'heroicon-o-home','Подразделения',12);
+if($u->canDo('canteen.view'))$add('Столовая',route('canteen.index'),'heroicon-o-shopping-bag','Подразделения',13);
+if($u->canDo('methodical.view'))$add('Методический отдел',route('methodical.index'),'heroicon-o-book-open','Подразделения',14);
+if($u->canDo('quality.view'))$add('Качество',route('quality.index'),'heroicon-o-check-circle','Подразделения',15);
+if($u->canDo('edo.view'))$add('ЭДО',route('edo.index'),'heroicon-o-folder','Подразделения',16);
+if($u->canDo('office.view'))$add('Канцелярия',route('office.index'),'heroicon-o-office-building','Подразделения',17);
+if($u->canDo('facility.view'))$add('АХЧ',route('facility.index'),'heroicon-o-cog','Подразделения',18);
 if($u->canDo('practice.view'))$add('Практика',route('practice-office.index'),'heroicon-o-briefcase','Подразделения',11);
 if($u->canDo('users.manage')){$add('Пользователи',route('admin.users.index'),'heroicon-o-user','Система',1);$add('Учётные данные',route('admin.credentials.index'),'heroicon-o-key','Система',2);}
-if($u->canDo('roles.manage'))$add('Роли и права',route('admin.roles.index'),'heroicon-o-lock-closed','Система',3);
+if($u->canDo('roles.manage'))$add('Роли и права',route('admin.roles.index'),'heroicon-o-lock-closed','Система',3);if($u->canDo('schedule.import'))$add('Импорт Rector XML',route('admin.schedule.import'),'heroicon-o-refresh','Система',4);
 Filament::registerNavigationItems($items);
 });
 }}
