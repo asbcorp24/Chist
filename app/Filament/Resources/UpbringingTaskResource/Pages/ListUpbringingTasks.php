@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\UpbringingTaskResource\Pages;use App\Filament\Resources\UpbringingTaskResource;use Filament\Resources\Pages\ListRecords;class ListUpbringingTasks extends ListRecords{protected static string $resource=UpbringingTaskResource::class;protected function getActions():array{return[\Filament\Pages\Actions\CreateAction::make()->label('Добавить')];}}
