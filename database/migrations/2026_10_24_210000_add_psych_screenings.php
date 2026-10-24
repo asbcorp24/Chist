@@ -1,0 +1,6 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{
+Schema::create('psych_screenings',function(Blueprint $t){$t->id();$t->string('title');$t->unsignedBigInteger('psych_method_id')->nullable()->index();$t->unsignedBigInteger('study_group_id')->nullable()->index();$t->date('starts_on');$t->date('ends_on')->nullable();$t->string('status',30)->default('planned');$t->text('purpose')->nullable();$t->unsignedBigInteger('psychologist_user_id')->index();$t->timestamps();});
+Schema::create('psych_screening_assignments',function(Blueprint $t){$t->id();$t->unsignedBigInteger('psych_screening_id')->index();$t->unsignedBigInteger('student_id')->index();$t->string('status',30)->default('assigned');$t->dateTime('completed_at')->nullable();$t->decimal('score',10,2)->nullable();$t->string('level',80)->nullable();$t->text('result')->nullable();$t->timestamps();$t->unique(['psych_screening_id','student_id']);});
+}public function down():void{Schema::dropIfExists('psych_screening_assignments');Schema::dropIfExists('psych_screenings');}};
