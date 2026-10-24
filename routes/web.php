@@ -323,6 +323,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/upbringing/social-passport/{student}/followup',[SocialSupportController::class,'followupStore'])->name('upbringing.social-followup.store');
  Route::put('/upbringing/social-followup/{id}/close',[SocialSupportController::class,'followupClose'])->name('upbringing.social-followup.close');
  Route::get('/upbringing/social-group/{group}',[SocialSupportController::class,'groupPassport'])->name('upbringing.social-group');
+ Route::get('/upbringing/social-college',[SocialSupportController::class,'collegePassport'])->name('upbringing.social-college');
  Route::post('/upbringing/social-categories',[SocialSupportController::class,'category'])->name('upbringing.social-category.store');
  Route::post('/upbringing/social-statuses',[SocialSupportController::class,'store'])->name('upbringing.social-status.store');
  Route::post('/upbringing/social-statuses/{status}/close',[SocialSupportController::class,'close'])->name('upbringing.social-status.close');
