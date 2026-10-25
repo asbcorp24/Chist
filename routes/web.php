@@ -538,6 +538,8 @@ Route::post('/teacher/curator/{group}/student/{student}/characteristic',[Teacher
  Route::post('/academic-office/regulations/rule',[LocalRegulationController::class,'rule'])->name('regulations.rule');
  Route::post('/academic-office/regulations/rule/{rule}',[LocalRegulationController::class,'updateRule'])->name('regulations.rule.update');
  Route::get('/academic-office/attestation',[AttestationController::class,'index'])->name('attestation.index');
+ Route::get('/academic-office/attestation/debts',[AttestationController::class,'debts'])->name('attestation.debts');
+ Route::get('/academic-office/attestation/calendar',[AttestationController::class,'calendar'])->name('attestation.calendar');
  Route::get('/academic-office/gia',[GiaController::class,'index'])->name('gia.index');
  Route::get('/academic-office/graduation',[GraduationController::class,'index'])->name('graduation.index');
  Route::post('/academic-office/graduation/generate',[GraduationController::class,'generate'])->name('graduation.generate');
