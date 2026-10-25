@@ -46,5 +46,9 @@ class MySchedule extends Page
         $this->days=[]; for($d=$from->copy();$d->lte($to);$d->addDay()){$this->days[$d->toDateString()]=['short'=>['Пн','Вт','Ср','Чт','Пт','Сб','Вс'][$d->isoWeekday()-1],'name'=>['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'][$d->isoWeekday()-1],'date'=>$d->format('d.m')];}
     }
 
-    public static function canAccess(): bool { $u=auth()->user(); return $u && ($u->teacher_id || $u->student_id); }
+    public static function canAccess(): bool
+    {
+        $u = auth()->user();
+        return (bool) ($u && ($u->teacher_id || $u->student_id || $u->isSuperAdmin() || $u->hasRole('admin') || $u->hasRole('head_academic') || $u->hasRole('academic_head')));
+    }
 }
