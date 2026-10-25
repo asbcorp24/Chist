@@ -13,7 +13,7 @@ class MySchedule extends Page
     protected static ?int $navigationSort = 2;
     protected static string $view = 'filament.pages.my-schedule';
 
-    public string $date;
+    public string $date = '';
     public string $mode = 'day';
     public array $days = [];
     public array $scheduleGroups = [];
