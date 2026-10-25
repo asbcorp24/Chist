@@ -64,4 +64,4 @@ class PreventionCouncilResource extends Resource
             'edit' => Pages\EditPreventionCouncil::route('/{record}/edit'),
         ];
     }
-}
+public static function canViewAny():bool{$u=auth()->user();return $u&&($u->isSuperAdmin()||$u->hasRole('admin')||$u->canDo('upbringing.view'));}public static function canCreate():bool{$u=auth()->user();return $u&&($u->isSuperAdmin()||$u->hasRole('admin')||$u->canDo('upbringing.manage'));}public static function canEdit($record):bool{return static::canCreate();}public static function canDelete($record):bool{return false;}}
