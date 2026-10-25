@@ -351,7 +351,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::post('/upbringing/events/{event}/done',[UpbringingController::class,'eventDone'])->name('upbringing.event.done');
  Route::redirect('/upbringing/cases','/admin/student-support-cases')->name('upbringing.cases');
  Route::post('/upbringing/cases',[UpbringingController::class,'caseStore'])->name('upbringing.case.store');
- Route::get('/upbringing/cases/{case}',[UpbringingController::class,'caseShow'])->name('upbringing.case');
+ Route::get('/upbringing/cases/{case}',fn($case)=>redirect('/admin/student-support-cases/'.$case.'/edit'))->name('upbringing.case');
  Route::post('/upbringing/cases/{case}/action',[UpbringingController::class,'action'])->name('upbringing.action');
  Route::post('/upbringing/cases/{case}/close',[UpbringingController::class,'closeCase'])->name('upbringing.case.close');
  Route::redirect('/upbringing/achievements','/admin/student-achievements')->name('upbringing.achievements');
@@ -404,7 +404,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::redirect('/upbringing/tasks','/admin/upbringing-tasks')->name('upbringing.tasks');
  Route::post('/upbringing/tasks',[UpbringingManagementController::class,'taskStore'])->name('upbringing.task.store');
  Route::post('/upbringing/tasks/{task}/done',[UpbringingManagementController::class,'taskDone'])->name('upbringing.task.done');
- Route::get('/upbringing/events/{event}/participants',[UpbringingManagementController::class,'participants'])->name('upbringing.participants');
+ Route::get('/upbringing/events/{event}/participants',fn($event)=>redirect('/admin/upbringing-events/'.$event.'/edit'))->name('upbringing.participants');
  Route::post('/upbringing/events/{event}/participants',[UpbringingManagementController::class,'participantsStore'])->name('upbringing.participants.store');
  Route::redirect('/upbringing/analytics','/admin/upbringing-insights')->name('upbringing.analytics');
  Route::get('/upbringing/councils/{council}/print',[UpbringingManagementController::class,'printCouncil'])->name('upbringing.council.print');
