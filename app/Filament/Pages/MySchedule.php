@@ -12,6 +12,7 @@ class MySchedule extends Page
     protected static ?string $navigationGroup = 'Рабочее пространство';
     protected static ?int $navigationSort = 2;
     protected static string $view = 'filament.pages.my-schedule';
+    protected static ?string $title = 'Моё расписание';
 
     public string $date = '';
     public string $mode = 'day';
