@@ -7,6 +7,7 @@ class DatabaseSeeder extends Seeder {
    'super_admin'=>['Супер-администратор',100],
    'admin'=>['Администратор',90],
    'head_academic'=>['Заведующий учебной частью',80],
+   'upbringing_head'=>['Руководитель воспитательной работы',70],
    'schedule_member'=>['Участник расписания',60],
    'psychologist'=>['Педагог-психолог',55],
    'social_teacher'=>['Социальный педагог',54],
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder {
    'semester.view'=>['Просмотр семестровых результатов','Журнал'],'semester.mark'=>['Выставление семестровых результатов','Журнал'],
    'reports.view'=>['Просмотр отчётов','Отчёты'],'reports.export'=>['Экспорт отчётов','Отчёты'],
    'psychology.view'=>['Просмотр кабинета психолога','Психолог'],'psychology.manage'=>['Ведение психологического сопровождения','Психолог'],'psychology.reports'=>['Отчётность психолога','Психолог'],
+   'upbringing.view'=>['Просмотр воспитательного отдела','Воспитательная работа'],'upbringing.manage'=>['Ведение воспитательной работы','Воспитательная работа'],'upbringing.reports'=>['Отчётность воспитательного отдела','Воспитательная работа'],
    'socialwork.view'=>['Просмотр кабинета социального педагога','Социальный педагог'],'socialwork.manage'=>['Ведение социальной работы','Социальный педагог'],'socialwork.reports'=>['Отчётность социального педагога','Социальный педагог'],
    'audit.view'=>['Просмотр аудита','Система'],'settings.manage'=>['Системные настройки','Система']
   ];
@@ -35,6 +37,7 @@ class DatabaseSeeder extends Seeder {
    'admin'=>array_keys($p),
    'head_academic'=>['users.view','periods.manage','periods.close','schedule.view','schedule.import','schedule.manage','students.view','attendance.view','grades.view','semester.view','semester.mark','reports.view','reports.export','audit.view'],
    'schedule_member'=>['schedule.view','schedule.import','schedule.manage','students.view'],
+   'upbringing_head'=>['schedule.view','students.view','reports.view','reports.export','upbringing.view','upbringing.manage','upbringing.reports'],
    'psychologist'=>['schedule.view','students.view','psychology.view','psychology.manage','psychology.reports'],
    'social_teacher'=>['schedule.view','students.view','socialwork.view','socialwork.manage','socialwork.reports'],
    'curator'=>['schedule.view','students.view','students.manage','attendance.view','grades.view','semester.view','reports.view','reports.export'],
