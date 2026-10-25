@@ -1,0 +1,9 @@
+<?php namespace App\Filament\Resources;
+use App\Filament\Resources\ScholarshipCommissionResource\Pages;
+use App\Filament\Resources\ScholarshipCommissionResource\RelationManagers\DecisionsRelationManager;
+use App\Models\ScholarshipCommission;use Filament\Forms;use Filament\Resources\Form;use Filament\Resources\Resource;use Filament\Resources\Table;use Filament\Tables;
+class ScholarshipCommissionResource extends Resource{
+protected static ?string $model=ScholarshipCommission::class;protected static ?string $navigationGroup='Воспитательная работа';protected static ?string $navigationLabel='Стипендиальная комиссия';protected static ?string $pluralModelLabel='Стипендиальные комиссии';
+public static function form(Form $f):Form{return $f->schema([Forms\Components\TextInput::make('protocol_number')->label('№ протокола')->required(),Forms\Components\DatePicker::make('meeting_on')->label('Дата заседания')->required(),Forms\Components\Select::make('status')->label('Статус')->options(['draft'=>'Проект','approved'=>'Утверждено','closed'=>'Закрыто'])->default('draft')->required(),Forms\Components\Textarea::make('note')->label('Примечание')]);}
+public static function table(Table $t):Table{return $t->columns([Tables\Columns\TextColumn::make('protocol_number')->label('Протокол')->searchable(),Tables\Columns\TextColumn::make('meeting_on')->label('Дата')->date('d.m.Y')->sortable(),Tables\Columns\BadgeColumn::make('status')->label('Статус'),Tables\Columns\TextColumn::make('decisions_count')->counts('decisions')->label('Решений')])->actions([Tables\Actions\EditAction::make()]);}
+public static function getRelations():array{return[DecisionsRelationManager::class];}public static function getPages():array{return['index'=>Pages\ListScholarshipCommissions::route('/'),'create'=>Pages\CreateScholarshipCommission::route('/create'),'edit'=>Pages\EditScholarshipCommission::route('/{record}/edit')];}}
