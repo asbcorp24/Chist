@@ -47,7 +47,7 @@ Route::middleware(['auth','academic.period'])->group(function(){
  Route::put('/social-teacher/activities/{id}',[SocialTeacherController::class,'activityUpdate'])->name('social-teacher.activities.update');
  Route::delete('/social-teacher/activities/{id}',[SocialTeacherController::class,'activityDelete'])->name('social-teacher.activities.delete');
  Route::get('/social-teacher/report',[SocialTeacherController::class,'report'])->name('social-teacher.report');
- Route::get('/my-schedule',[PublicScheduleController::class,'mine'])->name('my.schedule');
+ Route::get('/my-schedule',fn()=>redirect('/admin/my-schedule'))->name('my.schedule');
  Route::put('/profile/password',[ProfileController::class,'password'])->name('profile.password');
  Route::post('/period/select',[AcademicPeriodController::class,'select'])->name('period.select');
  Route::post('/period/{period}/close',[AcademicPeriodController::class,'close'])->name('period.close');
