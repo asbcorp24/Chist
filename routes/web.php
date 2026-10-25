@@ -561,6 +561,7 @@ Route::post('/teacher/curator/{group}/student/{student}/characteristic',[Teacher
  Route::get('/academic-office/attestation/{sheet}',[AttestationController::class,'show'])->name('attestation.show');
  Route::put('/academic-office/attestation/{sheet}',[AttestationController::class,'update'])->name('attestation.update');
  Route::post('/academic-office/attestation/{sheet}/close',[AttestationController::class,'close'])->name('attestation.close');
+ Route::post('/academic-office/attestation/{sheet}/bulk-results',[AttestationController::class,'bulkResults'])->name('attestation.bulk-results');
  Route::post('/academic-office/attestation/{sheet}/reopen',[AttestationController::class,'reopen'])->name('attestation.reopen');
  Route::post('/academic-office/attestation/attempt/{attempt}/result',[AttestationController::class,'result'])->name('attestation.result');
  Route::post('/academic-office/attestation/attempt/{attempt}/retake',[AttestationController::class,'retake'])->name('attestation.retake');
