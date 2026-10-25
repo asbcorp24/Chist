@@ -1,0 +1,1 @@
+<?php namespace App\Models;use Illuminate\Database\Eloquent\Model;class AcademicOrder extends Model{protected $table='academic_orders';protected $guarded=[];protected $casts=['order_date'=>'date'];}
