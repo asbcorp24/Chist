@@ -626,7 +626,7 @@ Route::post('/journal/lesson/{lesson}/grade-type',[JournalController::class,'les
   Route::post('hr/staffing',[HrDashboardController::class,'staffing'])->name('hr.staffing.store');
   Route::get('organization',[OrganizationSettingsController::class,'edit'])->name('organization.edit');
   Route::put('organization',[OrganizationSettingsController::class,'update'])->name('organization.update');
-  Route::get('schedule/import',[ScheduleImportController::class,'index'])->name('schedule.import')->middleware('permission:schedule.import');
+  Route::get('schedule/import',fn()=>redirect('/admin/schedule-import'))->name('schedule.import')->middleware('permission:schedule.import');
   Route::post('schedule/import',[ScheduleImportController::class,'store'])->name('schedule.import.store')->middleware('permission:schedule.import');
   Route::get('credentials',[CredentialController::class,'index'])->name('credentials.index');
   Route::post('credentials/generate',[CredentialController::class,'generate'])->name('credentials.generate');
